@@ -1,6 +1,10 @@
 # ohtu-miniprojekti2021
 Käyttö:
-Linux: ```$gradle run``` tai ``` $./gradlew run ```
+
+
+Linux: ```$gradle run```
+
+Windows: ``` $./gradlew run ```
 
 ## Tiedostorakenne
 ```
