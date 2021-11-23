@@ -41,4 +41,5 @@ Riippuvuudet lisätään ```build.gradle```-tiedostoon.[Lisätietoa](https://doc
 
 
 Mukana:
-- [JDBC](https://github.com/xerial/sqlite-jdbc).
+- [JDBC](https://github.com/xerial/sqlite-jdbc)
+- [JavaFX](https://openjfx.io/)
