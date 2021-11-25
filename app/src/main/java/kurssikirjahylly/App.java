@@ -1,4 +1,5 @@
 package kurssikirjahylly;
+import tietokantaDemo.libraryObjectDAO;
 import tietokantaDemo.tietokantaDemo;
 
 import kurssikirjahylly.ui.AppUi;
@@ -17,12 +18,9 @@ Poista k. tiedosto jos haluat nollata.
         AppUi.main(args);
 
         System.out.println(new App().getGreeting());
-        tietokantaDemo td = new tietokantaDemo();
-        td.createNewDatabase("test");
-        td.createNewTable();
-        td.insert("Weapons of Math Destruction");
-        td.insert("Clean Code");
-        td.connect();
-        td.selectAll();
+        libraryObjectDAO dao = new libraryObjectDAO();
+        dao.getAll();
+
+
     }
 }

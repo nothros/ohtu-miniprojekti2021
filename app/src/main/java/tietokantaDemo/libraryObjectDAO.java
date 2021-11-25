@@ -1,4 +1,5 @@
 package tietokantaDemo;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -6,11 +7,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class tietokantaDemo {
+
+/*
+Luokka sisältää tällä hetkellä vain selectAll()-metodin.
+Aja 'createNewDatabase("testi.db")' main-metodissa jos tarvitset uuden tietokannan.
+*/
+public class libraryObjectDAO implements DAO<libraryObject> {
     
+    private List<libraryObject> list = new ArrayList<>();
     private String url = "jdbc:sqlite:test.db";
     private Connection conn;
+
+    public libraryObjectDAO() {
+        tietokantaDemo td = new tietokantaDemo();
+        td.connect();
+    }
 
     // Luo tietokanta
     public void createNewDatabase(String fileName) {
@@ -41,7 +55,7 @@ public class tietokantaDemo {
         
         try (Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
-            // create a new table
+            // Tässä uusi tietokanta luodaan
             stmt.execute(sql);
             System.out.println("Table created");
         } catch (SQLException e) {
@@ -51,7 +65,7 @@ public class tietokantaDemo {
     // Lisää olio
     public void insert(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
         String sql = "INSERT INTO libraryObjects(laji, otsikko, kirjoittaja, ISBN, URL) VALUES(?,?,?,?,?)";
-
+        // prepared statement on aika kömpelö, mutta jokainen kokonaisluku viittaa yllä olevan SQL-komennon kysymysmerkkiin.
         try (Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, laji);
@@ -75,24 +89,44 @@ public class tietokantaDemo {
         return conn;
     }
 
- 
-    // Haku
-    public void selectAll(){
+    @Override
+    public List<libraryObject> getAll() {
+    
         String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM libraryObjects";
-        
+            
         try (Connection conn = this.connect();
-             Statement stmt  = conn.createStatement();
-             ResultSet rs    = stmt.executeQuery(sql)){
+            Statement stmt  = conn.createStatement();
+            ResultSet rs    = stmt.executeQuery(sql)){
             
             // loop through the result set
             while (rs.next()) {
-                System.out.println(rs.getInt("id") +  "\t" + 
-                                   rs.getString("otsikko") + "\t" +
-                                   rs.getString("ISBN"));
+                libraryObject libraryObjectFromDB = new libraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
+                list.add(libraryObjectFromDB);
+                System.out.println("GET: \n" + libraryObjectFromDB.toString());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
     
+    
+        return list;
+    }
+
+    @Override
+    public void save(libraryObject t) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void update(libraryObject t, String[] params) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void delete(libraryObject t) {
+        // TODO Auto-generated method stub
+        
+    }
 }
