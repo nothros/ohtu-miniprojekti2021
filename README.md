@@ -1,4 +1,4 @@
-# ohtu-miniprojekti2021
+# ohtu-miniprojekti2021 ![workflow](https://github.com/nothros/ohtu-miniprojekti2021/actions/workflows/main.yml/badge.svg)
 Käyttö:
 
 
