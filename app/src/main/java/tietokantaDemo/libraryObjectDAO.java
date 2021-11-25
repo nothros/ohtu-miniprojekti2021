@@ -22,8 +22,14 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     private Connection conn;
 
     public libraryObjectDAO() {
-        tietokantaDemo td = new tietokantaDemo();
-        td.connect();
+        //tietokantaDemo td = new tietokantaDemo();
+        //td.connect();
+        conn = connect();
+    }
+    
+    public libraryObjectDAO(String url) {
+        this.url = url;
+        conn = connect();
     }
 
     // Luo tietokanta
@@ -53,21 +59,35 @@ public class libraryObjectDAO implements DAO<libraryObject> {
         "ISBN text UNIQUE," + 
         "URL text);";
         
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try (Statement stmt = conn.createStatement()) {
             // Tässä uusi tietokanta luodaan
             stmt.execute(sql);
             System.out.println("Table created");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
+    
+    /**
+    Poistaa libraryObjects taulukon conn olion osoittamasta tietokannasta
+    */
+    public void deleteTable(){
+        try {
+            Statement s = conn.createStatement();
+            s.execute("DROP TABLE libraryObjects");
+            System.out.println("Table deleted");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     // Lisää olio
     public void insert(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
         String sql = "INSERT INTO libraryObjects(laji, otsikko, kirjoittaja, ISBN, URL) VALUES(?,?,?,?,?)";
         // prepared statement on aika kömpelö, mutta jokainen kokonaisluku viittaa yllä olevan SQL-komennon kysymysmerkkiin.
-        try (Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql))
+        {    
             pstmt.setInt(1, laji);
             pstmt.setString(2, otsikko);
             pstmt.setString(3, kirjoittaja);
@@ -76,6 +96,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     // Tietokantayhteys
@@ -94,8 +115,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     
         String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM libraryObjects";
             
-        try (Connection conn = this.connect();
-            Statement stmt  = conn.createStatement();
+        try (Statement stmt  = conn.createStatement();
             ResultSet rs    = stmt.executeQuery(sql)){
             
             // loop through the result set
@@ -129,4 +149,5 @@ public class libraryObjectDAO implements DAO<libraryObject> {
         // TODO Auto-generated method stub
         
     }
+
 }
