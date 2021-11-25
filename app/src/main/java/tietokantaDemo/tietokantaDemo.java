@@ -7,6 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+/*
+    TODO: Refaktorointi siis tässä kesken. 
+    Tulen poistamaan tämän luokan; Yhteys tietokantaan libraryObjectDAO:n kautta.
+    - Leo
+*/
 public class tietokantaDemo {
     
     private String url = "jdbc:sqlite:test.db";
@@ -41,7 +47,7 @@ public class tietokantaDemo {
         
         try (Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement()) {
-            // create a new table
+            // Taulu luodaan tässä.
             stmt.execute(sql);
             System.out.println("Table created");
         } catch (SQLException e) {
@@ -75,6 +81,7 @@ public class tietokantaDemo {
         return conn;
     }
 
+    
  
     // Haku
     public void selectAll(){
