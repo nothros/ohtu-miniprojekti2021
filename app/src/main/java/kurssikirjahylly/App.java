@@ -11,6 +11,7 @@ public class App {
     public String getGreeting() {
         return "Tervehdys. Ilman minua eka testi kaatuu.";
     }
+    
 
 /*
 LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
@@ -18,7 +19,7 @@ LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
 */
     public static void main(String[] args) {
         AppUi.main(args);
-
+        
         System.out.println(new App().getGreeting());
         libraryObjectDAO dao = new libraryObjectDAO();
         
