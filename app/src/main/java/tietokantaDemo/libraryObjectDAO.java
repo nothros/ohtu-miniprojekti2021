@@ -145,8 +145,19 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     }
 
     @Override
-    public void delete(libraryObject t) {
-        // TODO Auto-generated method stub
+    public void delete(libraryObject t) { //deletointi toistaiseksi vain objektin otsikon mukaisesti
+        
+        String sq1 = "DELETE FROM libraryObjects WHERE otsikko = ?"; 
+        
+        try (PreparedStatement prepStat = conn.prepareStatement(sq1)){
+            prepStat.setString(1, t.getOtsikko());
+            prepStat.execute();
+            
+            
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
         
     }
 

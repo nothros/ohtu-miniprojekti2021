@@ -121,6 +121,7 @@ public class AppUi extends Application {
             if (title.isEmpty()) {
                 error.setVisible(true);
             } else {
+                // TODO tehd‰‰n daon mukaisesti (k‰ytet‰‰n libraryobjectDAON save metodia)
                 library.insert(1, title, tags, isbn, null);      //n‰it‰ kaksi, kumpi turha?
                 error.setText("Kirja lis√§tty");
                 error.setTextFill(Color.GREEN);
@@ -202,6 +203,7 @@ public class AppUi extends Application {
             if (title.isEmpty()) {
                 error.setVisible(true);
             } else {
+                // TODO tehd‰‰n daon mukaisesti (k‰ytet‰‰n libraryobjectDAON save metodia)
                 library.insert(1, title, tags, isbn, null);  //n‰it‰ kaksi, kumpi turha?
                 error.setText("Kirja lis√§tty");
                 error.setTextFill(Color.GREEN);
