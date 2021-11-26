@@ -21,6 +21,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 
@@ -44,7 +46,7 @@ public class AppUi extends Application {
         library = new LibraryObjectDAO("jdbc:sqlite:test.db");
         service = new LibraryService(library);
 
-        mainScene = buildMainScene();
+        mainScene = buildListReableScene();
         addReadble = buildAddReableScene();
 
     }
@@ -59,6 +61,7 @@ public class AppUi extends Application {
         mainStage.show();
     }
 
+    /*
     public Scene buildMainScene() {
         VBox mainPane = new VBox();
         mainPane.setAlignment(Pos.CENTER);
@@ -70,6 +73,7 @@ public class AppUi extends Application {
         mainScene = new Scene(mainPane);
         return mainScene;
     }
+    */
 
     public Scene buildAddReableScene() {
         BorderPane pane = new BorderPane();
@@ -144,7 +148,7 @@ public class AppUi extends Application {
 
         Button returnB = new Button("Palaa takaisin");
         returnB.setOnAction(e -> {
-            Scene scene = buildListReableScene();
+            mainScene = buildListReableScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
         });
@@ -155,12 +159,29 @@ public class AppUi extends Application {
         return scene;
     }
 
+    
     public Scene buildListReableScene() {
+        VBox mainPane = new VBox();
+        mainPane.setSpacing(5);
+        mainPane.setPadding(new Insets(5, 5, 5, 5));
+        mainPane.setAlignment(Pos.CENTER);
+        
+        Button addBook = new Button("Add new book");
+        addBook.setOnAction(e -> {
+            mainStage.setScene(addReadble);
+        });
+        
+        ListView bookview = new ListView();
         List<LibraryObject> books = service.getAllObjects();
         for (LibraryObject book : books){
-            System.out.println(book.toString());
+            String bookString = book.getOtsikko() + " (" + book.getKirjoittaja() + ") ISBN: " + book.getISBN();
+            bookview.getItems().add(bookString);
         }
-        return null;
+        
+        ScrollPane scrollpane = new ScrollPane(bookview);
+        scrollpane.setFitToWidth(true);
+        mainPane.getChildren().addAll(addBook, scrollpane);
+        return new Scene(mainPane);
     }
 
     public static void main(String[] args) {
