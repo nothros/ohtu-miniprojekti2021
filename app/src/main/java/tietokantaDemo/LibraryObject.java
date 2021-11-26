@@ -1,13 +1,13 @@
 package tietokantaDemo;
 
-public class libraryObject {
+public class LibraryObject {
     private int laji;
     private String otsikko;
     private String kirjoittaja;
     private String ISBN;
     private String URL;
 
-    public libraryObject(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
+    public LibraryObject(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
         this.laji = laji;
         this.otsikko = otsikko;
         this. kirjoittaja = kirjoittaja;

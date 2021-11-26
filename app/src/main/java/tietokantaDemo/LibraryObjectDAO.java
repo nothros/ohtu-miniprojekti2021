@@ -1,5 +1,6 @@
 package tietokantaDemo;
 
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -15,19 +16,18 @@ import java.util.List;
 Luokka sisältää tällä hetkellä vain selectAll()-metodin.
 Aja 'createNewDatabase("testi.db")' main-metodissa jos tarvitset uuden tietokannan.
 */
-public class libraryObjectDAO implements DAO<libraryObject> {
-    
-    private List<libraryObject> list = new ArrayList<>();
+public class LibraryObjectDAO implements DAO<LibraryObject> {
+    private List<LibraryObject> list = new ArrayList<>();
     private String url = "jdbc:sqlite:test.db";
     private Connection conn;
 
-    public libraryObjectDAO() {
+    public LibraryObjectDAO() {
         //tietokantaDemo td = new tietokantaDemo();
         //td.connect();
         conn = connect();
     }
     
-    public libraryObjectDAO(String url) {
+    public LibraryObjectDAO(String url) {
         this.url = url;
         conn = connect();
     }
@@ -83,22 +83,26 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     }
     
     // Lisää olio
-    public void insert(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
+    //Välihuom. Tarvittas se service luokka sitä varten, et se tarkistas onko syotteet vaaria. (tagitkin pitas erotella)
+    //Sillon voitas kayttaa booleania, eli jos lisaaminen onnistuu, niin virheilmo toimii oikein.
+    public void insert(LibraryObject libraryObject) {
         String sql = "INSERT INTO libraryObjects(laji, otsikko, kirjoittaja, ISBN, URL) VALUES(?,?,?,?,?)";
         // prepared statement on aika kömpelö, mutta jokainen kokonaisluku viittaa yllä olevan SQL-komennon kysymysmerkkiin.
         try (PreparedStatement pstmt = conn.prepareStatement(sql))
         {    
-            pstmt.setInt(1, laji);
-            pstmt.setString(2, otsikko);
-            pstmt.setString(3, kirjoittaja);
-            pstmt.setString(4, ISBN);
-            pstmt.setString(5, URL);
+            pstmt.setInt(1, libraryObject.getLaji());
+            pstmt.setString(2, libraryObject.getOtsikko());
+            pstmt.setString(3, libraryObject.getKirjoittaja());
+            pstmt.setString(4, libraryObject.getISBN());
+            pstmt.setString(5, libraryObject.getURL());
             pstmt.executeUpdate();
+        
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
+
     // Tietokantayhteys
     public Connection connect() {
         conn = null;
@@ -111,7 +115,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     }
 
     @Override
-    public List<libraryObject> getAll() {
+    public List<LibraryObject> getAll() {
     
         String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM libraryObjects";
             
@@ -120,7 +124,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
             
             // loop through the result set
             while (rs.next()) {
-                libraryObject libraryObjectFromDB = new libraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
+                LibraryObject libraryObjectFromDB = new LibraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
                 list.add(libraryObjectFromDB);
                 System.out.println("GET: \n" + libraryObjectFromDB.toString());
             }
@@ -133,18 +137,18 @@ public class libraryObjectDAO implements DAO<libraryObject> {
     }
 
     @Override
-    public void save(libraryObject t) {
-        insert(t.getLaji(), t.getOtsikko(), t.getKirjoittaja(), t.getISBN(), t.getURL());
+    public void save(LibraryObject t) {
+        insert(t);
     }
 
     @Override
-    public void update(libraryObject t, String[] params) {
+    public void update(LibraryObject t, String[] params) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void delete(libraryObject t) { //deletointi toistaiseksi vain objektin otsikon mukaisesti
+    public void delete(LibraryObject t) { //deletointi toistaiseksi vain objektin otsikon mukaisesti
         
         String sq1 = "DELETE FROM libraryObjects WHERE otsikko = ?"; 
         

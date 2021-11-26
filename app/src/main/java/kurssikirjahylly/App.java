@@ -1,14 +1,14 @@
 package kurssikirjahylly;
 
-import tietokantaDemo.libraryObjectDAO;
+import tietokantaDemo.LibraryObjectDAO;
 import tietokantaDemo.tietokantaDemo;
 
 import kurssikirjahylly.ui.AppUi;
-import tietokantaDemo.libraryObject;
+import tietokantaDemo.LibraryObject;
 
 public class App {
 
-    private libraryObjectDAO dao;
+    private LibraryObjectDAO dao;
 
     public String getGreeting() {
         return "Tervehdys. Ilman minua eka testi kaatuu.";
@@ -23,7 +23,7 @@ LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
         AppUi.main(args);
 
         System.out.println(new App().getGreeting());
-        libraryObjectDAO dao = new libraryObjectDAO();
+        LibraryObjectDAO dao = new LibraryObjectDAO();
 
 
         /* 
@@ -39,7 +39,7 @@ LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
         
     /*
         
-        // luodaan testiobjekti joka lisätään tietokantaan insertillä, jälkeenpäin poistetaan deletellä.
+        // luodaan testiobjekti joka lisï¿½tï¿½ï¿½n tietokantaan insertillï¿½, jï¿½lkeenpï¿½in poistetaan deletellï¿½.
         
         libraryObject testObject = new libraryObject(1, "poistettava", "joku", "54321", null);
         dao.insert(testObject.getLaji(), testObject.getOtsikko(), testObject.getKirjoittaja(), testObject.getISBN(), testObject.getURL());

@@ -1,7 +1,15 @@
 package kurssikirjahylly.ui;
+import tietokantaDemo.LibraryObject;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+
+import java.util.List;
+
+import javax.sql.rowset.serial.SerialArray;
+
+import com.google.common.util.concurrent.Service;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -15,8 +23,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
-import tietokantaDemo.libraryObject;
-import tietokantaDemo.libraryObjectDAO;
+
+import tietokantaDemo.LibraryObjectDAO;
+import kurssikirjahylly.domain.LibraryService;
 
 public class AppUi extends Application {
     // Olen t√§√§ll√§ javafx:√§√§ varten. ja keulin nyt kaiken muun edelle
@@ -25,13 +34,15 @@ public class AppUi extends Application {
     private Scene addReadble;
     private Scene listReadbles;
     private Stage mainStage;
-    private libraryObjectDAO library;
+    private LibraryObjectDAO library;
+    private LibraryService service;
 
     @Override
     public void init() {
         //Initoi t√§h√§n tietokanta ja luokka ja service, muista importtaa
 
-        library = new libraryObjectDAO("jdbc:sqlite:test.db");
+        library = new LibraryObjectDAO("jdbc:sqlite:test.db");
+        service = new LibraryService(library);
 
         mainScene = buildMainScene();
         addReadble = buildAddReableScene();
@@ -73,18 +84,18 @@ public class AppUi extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
-        error.setText("ERROR");
+        error.setText("Kirjan lis√§√§minen ei onnistunut..");
         error.setTextFill(Color.RED);
         error.setVisible(false);
 
-        Text scenetitle = new Text("Add new Book");
+        Text scenetitle = new Text("Lis√§√§ kirja!");
         grid.add(scenetitle, 0, 0, 2, 1);
         for (int i = 0; i < listOfTitles.length; i++) {
             Label s = new Label(listOfTitles[i]);
             grid.add(s, 0, i + 1);
         }
-        Label commentTitle = new Label("Comments:");
-        grid.add(commentTitle, 0, 0, 2, 12);
+        Label commentTitle = new Label("Kommentit:");
+        grid.add(commentTitle, 0, 0, 2, 13);
 
         TextField titleTF = new TextField();
         titleTF.setId("title");
@@ -110,7 +121,7 @@ public class AppUi extends Application {
         grid.add(tagsTF, 1, 5);
         grid.add(courseTF, 1, 6);
         grid.add(commentTF, 1, 7);
-        Button createBookB = new Button("Add new book!");
+        Button createBookB = new Button("Lis√§√§ uusi kirja!");
         createBookB.setOnAction(e -> {
             String title = titleTF.getText();
             String author = authorTF.getText();
@@ -118,13 +129,12 @@ public class AppUi extends Application {
             String tags = tagsTF.getText();
             String course = courseTF.getText();
             String comment = commentTF.getText();
-            if (title.isEmpty()) {
-                error.setVisible(true);
-            } else {
-                // TODO tehd‰‰n daon mukaisesti (k‰ytet‰‰n libraryobjectDAON save metodia)
-                library.insert(1, title, tags, isbn, null);      //n‰it‰ kaksi, kumpi turha?
+
+            if (service.createLibraryObject(1, title, author, isbn, null)) {
                 error.setText("Kirja lis√§tty");
                 error.setTextFill(Color.GREEN);
+                error.setVisible(true);
+            } else {
                 error.setVisible(true);
             }
 
@@ -134,6 +144,7 @@ public class AppUi extends Application {
 
         Button returnB = new Button("Palaa takaisin");
         returnB.setOnAction(e -> {
+            Scene scene = buildListReableScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
         });
@@ -145,76 +156,11 @@ public class AppUi extends Application {
     }
 
     public Scene buildListReableScene() {
-        VBox addPane = new VBox();
-        addPane.setPadding(new Insets(10, 5, 5, 5));
-        addPane.setAlignment(Pos.CENTER);
-        String[] listOfTitles = {"Title:", "Author:", "Type:", "ISBN/website:", "Tags:", "Course:"};
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        Label error = new Label();
-        error.setText("ERROR");
-        error.setTextFill(Color.RED);
-        error.setVisible(false);
-
-        Text scenetitle = new Text("Add new Book");
-        grid.add(scenetitle, 0, 0, 2, 1);
-        for (int i = 0; i < listOfTitles.length; i++) {
-            Label s = new Label(listOfTitles[i]);
-            grid.add(s, 0, i + 1);
+        List<LibraryObject> books = service.getAllObjects();
+        for (LibraryObject book : books){
+            System.out.println(book.toString());
         }
-        Label commentTitle = new Label("Comments:");
-        grid.add(commentTitle, 0, 0, 2, 12);
-
-        TextField titleTF = new TextField();
-        titleTF.setId("title");
-        TextField authorTF = new TextField();
-        titleTF.setId("author");
-        TextField typeTF = new TextField();
-        titleTF.setId("type");
-        TextField ISBNTF = new TextField();
-        titleTF.setId("isbn");
-        TextField tagsTF = new TextField();
-        titleTF.setId("tags");
-        TextField courseTF = new TextField();
-        titleTF.setId("course");
-        TextArea commentTF = new TextArea();
-        titleTF.setId("comment");
-        commentTF.setPrefSize(50, 200);
-        commentTF.setWrapText(true);
-
-        grid.add(titleTF, 1, 1);
-        grid.add(authorTF, 1, 2);
-        grid.add(typeTF, 1, 3);
-        grid.add(ISBNTF, 1, 4);
-        grid.add(tagsTF, 1, 5);
-        grid.add(courseTF, 1, 6);
-        grid.add(commentTF, 1, 7);
-        Button createBookB = new Button("Add new book!");
-        createBookB.setOnAction(e -> {
-            String title = titleTF.getText();
-            String author = authorTF.getText();
-            String isbn = ISBNTF.getText();
-            String tags = tagsTF.getText();
-            String course = courseTF.getText();
-            String comment = commentTF.getText();
-            if (title.isEmpty()) {
-                error.setVisible(true);
-            } else {
-                // TODO tehd‰‰n daon mukaisesti (k‰ytet‰‰n libraryobjectDAON save metodia)
-                library.insert(1, title, tags, isbn, null);  //n‰it‰ kaksi, kumpi turha?
-                error.setText("Kirja lis√§tty");
-                error.setTextFill(Color.GREEN);
-                error.setVisible(true);
-            }
-
-        });
-        grid.add(createBookB, 1, 8);
-        addPane.getChildren().addAll(error, grid);
-        Scene scene = new Scene(addPane);
-        return scene;
+        return null;
     }
 
     public static void main(String[] args) {
