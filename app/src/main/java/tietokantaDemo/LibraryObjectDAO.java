@@ -17,24 +17,15 @@ Luokka sisältää tällä hetkellä vain selectAll()-metodin.
 Aja 'createNewDatabase("testi.db")' main-metodissa jos tarvitset uuden tietokannan.
 */
 public class LibraryObjectDAO implements DAO<LibraryObject> {
-    private List<LibraryObject> list = new ArrayList<>();
-    private String url = "jdbc:sqlite:test.db";
     private Connection conn;
 
-    public LibraryObjectDAO() {
-        //tietokantaDemo td = new tietokantaDemo();
-        //td.connect();
-        conn = connect();
-    }
-    
     public LibraryObjectDAO(String url) {
-        this.url = url;
-        conn = connect();
+        conn = connect(url);
     }
 
     // Luo tietokanta
-    public void createNewDatabase(String fileName) {
-        url = "jdbc:sqlite:" + fileName;
+    public static void createNewDatabase(String fileName) {
+        String url = "jdbc:sqlite:" + fileName;
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
@@ -85,7 +76,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     // Lisää olio
     //Välihuom. Tarvittas se service luokka sitä varten, et se tarkistas onko syotteet vaaria. (tagitkin pitas erotella)
     //Sillon voitas kayttaa booleania, eli jos lisaaminen onnistuu, niin virheilmo toimii oikein.
-    public void insert(LibraryObject libraryObject) {
+    public boolean insert(LibraryObject libraryObject) {
         String sql = "INSERT INTO libraryObjects(laji, otsikko, kirjoittaja, ISBN, URL) VALUES(?,?,?,?,?)";
         // prepared statement on aika kömpelö, mutta jokainen kokonaisluku viittaa yllä olevan SQL-komennon kysymysmerkkiin.
         try (PreparedStatement pstmt = conn.prepareStatement(sql))
@@ -100,11 +91,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     // Tietokantayhteys
-    public Connection connect() {
+    public Connection connect(String url) {
         conn = null;
         try {
             conn = DriverManager.getConnection(url);

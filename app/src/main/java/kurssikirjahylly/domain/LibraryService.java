@@ -16,8 +16,7 @@ public class LibraryService {
             return false;
         }
         LibraryObject libraryObject = new LibraryObject(laji, otsikko, kirjoittaja, ISBN, URL);
-        libraryDao.insert(libraryObject);
-        return true;
+        return libraryDao.insert(libraryObject);
     }
 
     public List<LibraryObject> getAllObjects(){
