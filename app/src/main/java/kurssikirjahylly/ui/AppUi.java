@@ -121,7 +121,7 @@ public class AppUi extends Application {
             if (title.isEmpty()) {
                 error.setVisible(true);
             } else {
-                library.insert(1, title, tags, isbn, null);
+                library.insert(1, title, tags, isbn, null);      //n‰it‰ kaksi, kumpi turha?
                 error.setText("Kirja lis√§tty");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -202,7 +202,7 @@ public class AppUi extends Application {
             if (title.isEmpty()) {
                 error.setVisible(true);
             } else {
-                library.insert(1, title, tags, isbn, null);
+                library.insert(1, title, tags, isbn, null);  //n‰it‰ kaksi, kumpi turha?
                 error.setText("Kirja lis√§tty");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
