@@ -134,8 +134,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
 
     @Override
     public void save(libraryObject t) {
-        // TODO Auto-generated method stub
-        
+        insert(t.getLaji(), t.getOtsikko(), t.getKirjoittaja(), t.getISBN(), t.getURL());
     }
 
     @Override
