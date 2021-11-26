@@ -38,3 +38,12 @@ application {
     // Define the main class for the application.
     mainClass = 'kurssikirjahylly.App'
 }
+
+
+
+test {
+    //print test results in console
+    afterTest { desc, result -> 
+        logger.quiet "Test: [${desc.className}] ${desc.name}, result: ${result.resultType}"
+    }
+}

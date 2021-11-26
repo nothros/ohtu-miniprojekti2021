@@ -1,7 +1,6 @@
 package kurssikirjahylly;
 
 import tietokantaDemo.LibraryObjectDAO;
-import tietokantaDemo.tietokantaDemo;
 
 import kurssikirjahylly.ui.AppUi;
 import tietokantaDemo.LibraryObject;
