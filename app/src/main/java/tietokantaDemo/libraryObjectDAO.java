@@ -16,25 +16,16 @@ Luokka sisältää tällä hetkellä vain selectAll()-metodin.
 Aja 'createNewDatabase("testi.db")' main-metodissa jos tarvitset uuden tietokannan.
 */
 public class libraryObjectDAO implements DAO<libraryObject> {
-    
-    private List<libraryObject> list = new ArrayList<>();
-    private String url = "jdbc:sqlite:test.db";
     private Connection conn;
 
-    public libraryObjectDAO() {
-        //tietokantaDemo td = new tietokantaDemo();
-        //td.connect();
-        conn = connect();
-    }
-    
     public libraryObjectDAO(String url) {
-        this.url = url;
-        conn = connect();
+        //this.url = url;
+        conn = connect(url);
     }
 
     // Luo tietokanta
-    public void createNewDatabase(String fileName) {
-        url = "jdbc:sqlite:" + fileName;
+    public static void createNewDatabase(String fileName) {
+        String url = "jdbc:sqlite:" + fileName;
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
@@ -100,7 +91,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
         }
     }
     // Tietokantayhteys
-    public Connection connect() {
+    public Connection connect(String url) {
         conn = null;
         try {
             conn = DriverManager.getConnection(url);
@@ -112,7 +103,7 @@ public class libraryObjectDAO implements DAO<libraryObject> {
 
     @Override
     public List<libraryObject> getAll() {
-    
+        ArrayList<libraryObject> list = new ArrayList();
         String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM libraryObjects";
             
         try (Statement stmt  = conn.createStatement();

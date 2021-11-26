@@ -1,19 +1,11 @@
 package kurssikirjahylly;
 
 import tietokantaDemo.libraryObjectDAO;
-import tietokantaDemo.tietokantaDemo;
 
 import kurssikirjahylly.ui.AppUi;
 import tietokantaDemo.libraryObject;
 
 public class App {
-
-    private libraryObjectDAO dao;
-
-    public String getGreeting() {
-        return "Tervehdys. Ilman minua eka testi kaatuu.";
-    }
-
 
     /*
 LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
@@ -21,25 +13,20 @@ LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
      */
     public static void main(String[] args) {
         AppUi.main(args);
-
-        System.out.println(new App().getGreeting());
-        libraryObjectDAO dao = new libraryObjectDAO();
-
-
-        /* 
         
-//        Seuraavat rivit alustavat uuden tietokannan ja lisÃ¤Ã¤vÃ¤t siihen olioita.
-        dao.createNewDatabase("test.db");
+        /*
+        //Seuraavat rivit alustavat uuden tietokannan ja lisÃ¤Ã¤vÃ¤t siihen olioita.
+        libraryObjectDAO dao = new libraryObjectDAO("jdbc:sqlite:test.db");
+        libraryObjectDAO.createNewDatabase("test.db");
         dao.createNewTable();
         dao.insert(1, "Weapons of Math Destruction","Cathy O'Neil", "123456", null);
         dao.insert(1, "Clean code","Joku Muu", "111222", null);
-        
          */
         
         
     /*
         
-        // luodaan testiobjekti joka lisätään tietokantaan insertillä, jälkeenpäin poistetaan deletellä.
+        // luodaan testiobjekti joka lisï¿½tï¿½ï¿½n tietokantaan insertillï¿½, jï¿½lkeenpï¿½in poistetaan deletellï¿½.
         
         libraryObject testObject = new libraryObject(1, "poistettava", "joku", "54321", null);
         dao.insert(testObject.getLaji(), testObject.getOtsikko(), testObject.getKirjoittaja(), testObject.getISBN(), testObject.getURL());
@@ -48,7 +35,7 @@ LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
     */
                 
         
-        dao.getAll();
+        //dao.getAll();
 
     }
 
