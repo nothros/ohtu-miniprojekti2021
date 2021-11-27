@@ -81,7 +81,7 @@ public class AppUi extends Application {
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        String[] listOfTitles = {"Title:", "Author:", "Type:", "ISBN/website:", "Tags:", "Course:"};
+        String[] listOfTitles = {"Otsikko:", "Kirjoittaja:", "Tyyppi:", "ISBN:", "Tagit:", "Kurssi:"};
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -174,7 +174,7 @@ public class AppUi extends Application {
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setAlignment(Pos.CENTER);
         
-        Button addBook = new Button("Add new book");
+        Button addBook = new Button("Lisää uusi kirja");
         addBook.setOnAction(e -> {
             mainStage.setScene(addReadble);
         });
