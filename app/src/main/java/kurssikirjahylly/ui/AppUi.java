@@ -139,6 +139,8 @@ public class AppUi extends Application {
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
             } else {
+                error.setText("Kirjan lisääminen ei onnistunut..");
+                error.setTextFill(Color.RED);
                 error.setVisible(true);
             }
 
@@ -148,6 +150,12 @@ public class AppUi extends Application {
 
         Button returnB = new Button("Palaa takaisin");
         returnB.setOnAction(e -> {
+   /*          titleTF.clear();
+            authorTF.clear();
+            ISBNTF.clear();
+            tagsTF.clear();
+            courseTF.clear();
+            commentTF.clear(); */
             mainScene = buildListReableScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
