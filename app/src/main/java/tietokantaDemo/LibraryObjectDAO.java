@@ -1,6 +1,5 @@
 package tietokantaDemo;
 
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.regex.Pattern;
 
 /*
 Luokka sisältää tällä hetkellä vain selectAll()-metodin.
@@ -106,6 +105,69 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return conn;
     }
+    
+    /* 
+     * Tarkista onko taulu %name jo olemassa tietokannassa.
+    */
+    public boolean hasTable(String name) {
+        boolean t = false;
+        try (ResultSet rs = conn.getMetaData().getTables(null, null, name, null)) {
+            while (rs.next()) { 
+                String tableName = rs.getString("TABLE_NAME");
+                if (tableName != null && tableName.equals(name)) {
+                    t = true;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+        	System.out.println(e.getMessage());
+        }
+        return t;
+    }
+    
+    /*
+     * Tarkista %s on validi ISBN arvo. 
+    */
+    public boolean isValidISBN(String s) {
+        if (s == null)
+            return false;
+        if (s.length() < 10 || s.length() > 13)
+        	return false;
+        Pattern p = Pattern.compile("^\\d+$");
+        return p.matcher(s).matches();
+    }
+    
+    /*
+     * Tarkista %s arvo on uniikki taulussa %table.
+    */
+    public boolean isUnique(String s, String table) {
+    	boolean t = false;
+        String sql = "SELECT COUNT(*) FROM " + table + " where ISBN=?";
+        try {
+        	PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1, s);
+            ResultSet rs = ptmt.executeQuery();
+            rs.next();
+            if (rs.getInt(1) == 0)
+            	t = true;
+        } catch (SQLException e) {
+        	System.out.println(e.getMessage());
+        } 
+        return t;
+    }
+    /*
+     * Poista kannasta tietue %t sen ISBN arvon mukaan. 
+     */
+    public void removeEntry(LibraryObject t) {         
+        String sq1 = "DELETE FROM libraryObjects WHERE ISBN = ?"; 
+        try (PreparedStatement prepStat = conn.prepareStatement(sq1)){
+            prepStat.setString(1, t.getISBN());
+            prepStat.execute();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public List<LibraryObject> getAll() {
@@ -138,7 +200,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public void update(LibraryObject t, String[] params) {
         
     }
-
+   
     @Override
     public void delete(LibraryObject t) { //deletointi toistaiseksi vain objektin otsikon mukaisesti
         
