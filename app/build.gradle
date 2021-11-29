@@ -27,6 +27,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
 
+    //testfx
+    testImplementation "org.testfx:testfx-core:4.0.+"
+    testImplementation "org.testfx:testfx-junit:4.0.+"    
+    testImplementation "org.testfx:openjfx-monocle:jdk-11+26"
 }
 
 javafx {
@@ -42,6 +46,9 @@ application {
 
 
 test {
+    systemProperty 'testfx.robot', 'glass'
+    systemProperty 'testfx.headless', 'true' // set false to see test running
+
     //print test results in console
     afterTest { desc, result -> 
         logger.quiet "Test: [${desc.className}] ${desc.name}, result: ${result.resultType}"
