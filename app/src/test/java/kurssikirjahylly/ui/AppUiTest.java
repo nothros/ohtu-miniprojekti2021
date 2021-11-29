@@ -4,11 +4,15 @@ import kurssikirjahylly.ui.AppUi;
 import org.junit.Test;
 import org.testfx.assertions.api.Assertions;
 import org.testfx.framework.junit.ApplicationTest;
+import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
+import static org.testfx.api.FxAssert.verifyThat;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.application.Application;
+import javafx.scene.Node;
 
 
 /* This is the example code from the testfx github readme
@@ -17,31 +21,24 @@ import javafx.stage.Stage;
 
 
 public class AppUiTest extends ApplicationTest {
+    private Stage stage;
 
-    private Button button;
-
-    /**
-     * Will be called with {@code @Before} semantics, i. e. before each test method.
-     */
     @Override
-    public void start(Stage stage) {
-        button = new Button("click me!");
-        button.setOnAction(actionEvent -> button.setText("clicked!"));
-        stage.setScene(new Scene(new StackPane(button), 100, 100));
-        stage.show();
+    public void start(Stage stage) throws Exception {
+        AppUi sovellus = new AppUi();
+        Application app = Application.class.cast(sovellus);
+        app.init();
+	app.start(stage);
+        this.stage = stage;
     }
 
     @Test
-    public void should_contain_button_with_text() {
-        Assertions.assertThat(button).hasText("click me!");
+    public void testDemo() {    
+        clickOn("Lisää uusi kirja");
+	TextField titleTF = lookup("#comment").query(); //FIX: titleTF id is set to comment in AppUI
+	titleTF.setText("testi");
+        verifyThat("#comment", hasText("testi"));
     }
+    
 
-    @Test
-    public void when_button_is_clicked_text_changes() {
-        // when:
-        clickOn(".button");
-
-        // then:
-        Assertions.assertThat(button).hasText("clicked!");
-    }
 }

@@ -4,7 +4,7 @@ Käyttö:
 
 Linux: ```$gradle run```
 
-Windows: ``` $./gradlew run ```
+Windows: ``` $gradlew.bat run ```
 
 ## Tiedostorakenne
 ```
@@ -47,3 +47,4 @@ Riippuvuudet lisätään ```build.gradle```-tiedostoon.[Lisätietoa](https://doc
 Mukana:
 - [JDBC](https://github.com/xerial/sqlite-jdbc)
 - [JavaFX](https://openjfx.io/)
+- [TestFX](https://github.com/TestFX/TestFX)
