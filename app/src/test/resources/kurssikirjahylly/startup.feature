@@ -1,4 +1,4 @@
-Feature: A user can add a book
+Feature: As a user I can add a new book
 
     Scenario: ???
         Given ???

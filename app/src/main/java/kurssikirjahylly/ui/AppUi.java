@@ -1,5 +1,6 @@
 package kurssikirjahylly.ui;
 
+import javafx.scene.control.ComboBox;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,6 +26,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.ScrollPane;
@@ -56,8 +58,8 @@ public class AppUi extends Application {
         library = new LibraryObjectDAO("jdbc:sqlite:test.db");
         service = new LibraryService(library);
 
-        mainScene = buildListReableScene();
-        addReadble = buildAddReableScene();
+        
+        addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
     }
 
@@ -67,6 +69,7 @@ public class AppUi extends Application {
         mainStage.setTitle("Kurssikirjahylly");
         mainStage.setWidth(800);
         mainStage.setHeight(600);
+        mainScene = buildMainScene();
         mainStage.setScene(mainScene);
         mainStage.show();
     }
@@ -85,13 +88,17 @@ public class AppUi extends Application {
     }
     */
 
-    public Scene buildAddReableScene() {
+    public Scene buildAddReableScene(String typeValue) {
+        String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
+        if (typeValue != "Book"){
+            listOfTitles[2] = "Website";
+        }
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        String[] listOfTitles = {"Otsikko:", "Kirjoittaja:", "Tyyppi:", "ISBN:", "Tagit:", "Kurssi:"};
+        
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -105,23 +112,21 @@ public class AppUi extends Application {
         error.setTextFill(Color.RED);
         error.setVisible(false);
 
-        Text scenetitle = new Text("Lisää kirja!");
+        Text scenetitle = new Text("Add new "+typeValue);
         grid.add(scenetitle, 0, 0, 2, 1);
         for (int i = 0; i < listOfTitles.length; i++) {
             Label s = new Label(listOfTitles[i]);
             grid.add(s, 0, i + 1);
         }
-        Label commentTitle = new Label("Kommentit:");
+        Label commentTitle = new Label("Comments:");
         grid.add(commentTitle, 0, 0, 2, 13);
 
         TextField titleTF = new TextField();
         titleTF.setId("title");
         TextField authorTF = new TextField();
         titleTF.setId("author");
-        TextField typeTF = new TextField();
-        titleTF.setId("type");
         TextField ISBNTF = new TextField();
-        titleTF.setId("isbn");
+        titleTF.setId("isbn_website");
         TextField tagsTF = new TextField();
         titleTF.setId("tags");
         TextField courseTF = new TextField();
@@ -133,12 +138,11 @@ public class AppUi extends Application {
 
         grid.add(titleTF, 1, 1);
         grid.add(authorTF, 1, 2);
-        grid.add(typeTF, 1, 3);
-        grid.add(ISBNTF, 1, 4);
-        grid.add(tagsTF, 1, 5);
-        grid.add(courseTF, 1, 6);
-        grid.add(commentTF, 1, 7);
-        Button createBookB = new Button("Lisää uusi kirja!");
+        grid.add(ISBNTF, 1, 3);
+        grid.add(tagsTF, 1, 4);
+        grid.add(courseTF, 1, 5);
+        grid.add(commentTF, 1, 6);
+        Button createBookB = new Button("Add new "+typeValue);
         createBookB.setOnAction(e -> {
             String title = titleTF.getText();
             String author = authorTF.getText();
@@ -158,10 +162,10 @@ public class AppUi extends Application {
             }
 
         });
-        grid.add(createBookB, 1, 8);
+        grid.add(createBookB, 1, 7);
         addPane.getChildren().addAll(error, grid);
 
-        Button returnB = new Button("Palaa takaisin");
+        Button returnB = new Button("Return mainpage");
         returnB.setOnAction(e -> {
         /* Huom: Kirjan lisäämisen jälkeen voisi resetoida kentät. Nämä
          * rivit voisi lisätä yllä olevan IF haaran alle. Kun lisäsys ei
@@ -174,7 +178,7 @@ public class AppUi extends Application {
             tagsTF.clear();
             courseTF.clear();
             commentTF.clear(); */
-            mainScene = buildListReableScene();
+            mainScene = buildMainScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
         });
@@ -185,16 +189,31 @@ public class AppUi extends Application {
         return scene;
     }
     
-    public Scene buildListReableScene() {
+    public Scene buildMainScene() {
         VBox mainPane = new VBox();
         mainPane.setSpacing(5);
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setAlignment(Pos.CENTER);
         
-        Button addBook = new Button("Lisää uusi kirja");
+        Text addReadable = new Text("Choose what you want to add?");
+        HBox comboBoxAndButton = new HBox();
+        comboBoxAndButton.setAlignment(Pos.CENTER);
+        ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll(
+            "Book",
+            "Blog",
+            "Podcast"
+        );
+
+        typeComboBox.getSelectionModel().selectFirst();
+        Button addBook = new Button("Add new Readable");
         addBook.setOnAction(e -> {
-            mainStage.setScene(addReadble);
+            String typeValue = (String) typeComboBox.getValue();
+            System.out.println(typeValue);
+            mainStage.setScene(buildAddReableScene(typeValue));
         });
+        comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
+
         Button viewBooks = new Button("Näytä kirjat");
         viewBooks.setOnAction(e -> {
         	showBooks = buildShowBooksScene();
@@ -219,7 +238,7 @@ public class AppUi extends Application {
         mainPane.getChildren().addAll(addBook, viewBooks);
         mainScene = new Scene(mainPane);*/
         
-        mainPane.getChildren().addAll(addBook,viewBooks, scrollpane);
+        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane);
         return new Scene(mainPane);
     }
     
@@ -273,7 +292,7 @@ public class AppUi extends Application {
         addPane.getChildren().addAll(error, grid, createBookB);
         Button returnB = new Button("Palaa takaisin");
         returnB.setOnAction(e -> {
-        	mainScene = buildListReableScene();
+        	mainScene = buildMainScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
         });
