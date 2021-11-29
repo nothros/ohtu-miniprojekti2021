@@ -15,15 +15,12 @@ public class LibraryService {
         if (otsikko.isEmpty() || kirjoittaja.isEmpty() || ISBN.isEmpty()) {
             return false;
         }
-        /*
-         * Tarkista että ISBN on uniikki ja validi.
-        */
         if (!libraryDao.isUnique(ISBN,"libraryObjects")) {
-        	//System.out.println("Ei ole uniikki ISBN.");
+        	System.out.println("Ei ole uniikki ISBN.");
     		return false;
     	}
         if (!libraryDao.isValidISBN(ISBN)) {
-    		//System.out.println("Ei ole validi ISBN.");
+    		System.out.println("Ei ole validi ISBN.");
     		return false;
     	}
         LibraryObject libraryObject = new LibraryObject(laji, otsikko, kirjoittaja, ISBN, URL);
@@ -33,4 +30,9 @@ public class LibraryService {
     public List<LibraryObject> getAllObjects(){
         return libraryDao.getAll();
     }
+    
+    public List<LibraryObject> getAllObjects(String s){
+        return libraryDao.getAll(s);
+    }
+
 }

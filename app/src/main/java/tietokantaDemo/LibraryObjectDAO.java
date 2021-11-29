@@ -155,18 +155,42 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } 
         return t;
     }
+    
     /*
      * Poista kannasta tietue %t sen ISBN arvon mukaan. 
      */
     public void removeEntry(LibraryObject t) {         
         String sq1 = "DELETE FROM libraryObjects WHERE ISBN = ?"; 
-        try (PreparedStatement prepStat = conn.prepareStatement(sq1)){
-            prepStat.setString(1, t.getISBN());
-            prepStat.execute();
+        try (PreparedStatement ptmt = conn.prepareStatement(sq1)){
+            ptmt.setString(1, t.getISBN());
+            ptmt.execute();
         } catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    /*
+     * Hae kannasta kaikki lajia %s olevat objektit. 
+    */
+    public List<LibraryObject> getAll(String s) {
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sql = "SELECT * FROM libraryObjects WHERE laji = ?";
+        try {
+        	Pattern p = Pattern.compile("[123]");
+            if (!p.matcher(s).matches())
+            	return List.of();
+        	PreparedStatement ptmt  = conn.prepareStatement(sql);
+        	ptmt.setString(1, s);
+            ResultSet rs = ptmt.executeQuery();
+            while (rs.next()) {
+                LibraryObject libObj = new LibraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
+                list.add(libObj);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     @Override

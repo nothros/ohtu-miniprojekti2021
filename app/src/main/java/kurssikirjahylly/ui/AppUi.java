@@ -14,13 +14,6 @@ import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -31,6 +24,13 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
@@ -59,7 +59,6 @@ public class AppUi extends Application {
         mainScene = buildListReableScene();
         addReadble = buildAddReableScene();
         showBooks = buildShowBooksScene();
-
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -185,7 +184,7 @@ public class AppUi extends Application {
         Scene scene = new Scene(pane);
         return scene;
     }
-
+    
     public Scene buildListReableScene() {
         VBox mainPane = new VBox();
         mainPane.setSpacing(5);
@@ -226,14 +225,13 @@ public class AppUi extends Application {
     
     /*
      * Ylläpitää alkuperäisen main stagen layouttia container objektejen suhteen.
-     * Generoi tableview listauksen kirjoista. Näkymästä voi myös poistaa kirjoja
-     * kannasta. Mahdollisesti painikkeen voisi nimetä "muokkaa tietoja" yms.
+     * Generoi tableview listauksen kirjoista.
     */
     public Scene buildShowBooksScene() {
     	TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
         final ObservableList<LibraryObject> data = 
-        		FXCollections.observableArrayList(service.getAllObjects());
+        		FXCollections.observableArrayList(service.getAllObjects("1"));
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
@@ -288,4 +286,5 @@ public class AppUi extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
 }
