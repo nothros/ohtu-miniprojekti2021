@@ -74,19 +74,60 @@ public class AppUi extends Application {
         mainStage.show();
     }
 
-    /*
     public Scene buildMainScene() {
         VBox mainPane = new VBox();
+        mainPane.setSpacing(5);
+        mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setAlignment(Pos.CENTER);
-        Button addBook = new Button("Add new book");
+        
+        Text addReadable = new Text("Choose what you want to add");
+        HBox comboBoxAndButton = new HBox();
+        comboBoxAndButton.setAlignment(Pos.CENTER);
+        ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll(
+            "Book",
+            "Blogpost",
+            "Podcast"
+        );
+
+        typeComboBox.getSelectionModel().selectFirst();
+        Button addBook = new Button("Add new LibraryItem");
         addBook.setOnAction(e -> {
-            mainStage.setScene(addReadble);
+            String typeValue = (String) typeComboBox.getValue();
+            System.out.println(typeValue);
+            mainStage.setScene(buildAddReableScene(typeValue));
         });
-        mainPane.getChildren().addAll(addBook);
-        mainScene = new Scene(mainPane);
-        return mainScene;
+        comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
+
+        Button viewBooks = new Button("Näytä kirjat");
+        viewBooks.setOnAction(e -> {
+        	showBooks = buildShowBooksScene();
+            mainStage.setScene(showBooks);
+        });
+        
+        ListView bookview = new ListView();
+        List<LibraryObject> books = service.getAllObjects();
+        for (LibraryObject book : books){
+            String bookString = book.getOtsikko() + " (" + book.getKirjoittaja() + ") ISBN: " + book.getISBN();
+            bookview.getItems().add(bookString);
+        }
+        
+        ScrollPane scrollpane = new ScrollPane(bookview);
+        scrollpane.setFitToWidth(true);
+        
+      /*  FlowPane mainPane = new FlowPane();
+        mainPane.setPadding(new Insets(10));
+        mainPane.setHgap(10);
+        mainPane.setVgap(10);
+        mainPane.setAlignment(Pos.CENTER);
+        mainPane.getChildren().addAll(addBook, viewBooks);
+        mainScene = new Scene(mainPane);*/
+        
+        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane);
+        return new Scene(mainPane);
     }
-    */
+    
+
 
     public Scene buildAddReableScene(String typeValue) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
@@ -108,7 +149,7 @@ public class AppUi extends Application {
         /*
          * Huom: Alla olevia kolmea riviä ei kait tarvita?
         */
-        error.setText("Kirjan lisääminen ei onnistunut..");
+        error.setText("Impossible to add "+typeValue);
         error.setTextFill(Color.RED);
         error.setVisible(false);
 
@@ -151,12 +192,14 @@ public class AppUi extends Application {
             String course = courseTF.getText();
             String comment = commentTF.getText();
 
+
+            //HUOM! typeValue on muuttuja jossa lukee mikä tyyppi toi lisättävä on antakaa se servicelle ja daoon
             if (service.createLibraryObject(1, title, author, isbn, null)) {
-                error.setText("Kirja lisätty");
+                error.setText("New "+typeValue+" added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
             } else {
-                error.setText("Kirjan lisääminen ei onnistunut..");
+                error.setText("Something went wrong while adding new "+typeValue);
                 error.setTextFill(Color.RED);
                 error.setVisible(true);
             }
@@ -189,59 +232,7 @@ public class AppUi extends Application {
         return scene;
     }
     
-    public Scene buildMainScene() {
-        VBox mainPane = new VBox();
-        mainPane.setSpacing(5);
-        mainPane.setPadding(new Insets(5, 5, 5, 5));
-        mainPane.setAlignment(Pos.CENTER);
-        
-        Text addReadable = new Text("Choose what you want to add?");
-        HBox comboBoxAndButton = new HBox();
-        comboBoxAndButton.setAlignment(Pos.CENTER);
-        ComboBox<String> typeComboBox = new ComboBox<>();
-        typeComboBox.getItems().addAll(
-            "Book",
-            "Blog",
-            "Podcast"
-        );
-
-        typeComboBox.getSelectionModel().selectFirst();
-        Button addBook = new Button("Add new Readable");
-        addBook.setOnAction(e -> {
-            String typeValue = (String) typeComboBox.getValue();
-            System.out.println(typeValue);
-            mainStage.setScene(buildAddReableScene(typeValue));
-        });
-        comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
-
-        Button viewBooks = new Button("Näytä kirjat");
-        viewBooks.setOnAction(e -> {
-        	showBooks = buildShowBooksScene();
-            mainStage.setScene(showBooks);
-        });
-        
-        ListView bookview = new ListView();
-        List<LibraryObject> books = service.getAllObjects();
-        for (LibraryObject book : books){
-            String bookString = book.getOtsikko() + " (" + book.getKirjoittaja() + ") ISBN: " + book.getISBN();
-            bookview.getItems().add(bookString);
-        }
-        
-        ScrollPane scrollpane = new ScrollPane(bookview);
-        scrollpane.setFitToWidth(true);
-        
-      /*  FlowPane mainPane = new FlowPane();
-        mainPane.setPadding(new Insets(10));
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
-        mainPane.setAlignment(Pos.CENTER);
-        mainPane.getChildren().addAll(addBook, viewBooks);
-        mainScene = new Scene(mainPane);*/
-        
-        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane);
-        return new Scene(mainPane);
-    }
-    
+   
     /*
      * Ylläpitää alkuperäisen main stagen layouttia container objektejen suhteen.
      * Generoi tableview listauksen kirjoista.
