@@ -1,4 +1,4 @@
-package kurssikirjahylly;
+package kurssikirjahylly.ui;
 
 import kurssikirjahylly.ui.AppUi;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class AppUiTest extends ApplicationTest {
 
     @Test
     public void testDemo() {    
-        clickOn("Lisää uusi kirja");
+        clickOn("Add new LibraryItem");
 	TextField titleTF = lookup("#comment").query(); //FIX: titleTF id is set to comment in AppUI
 	titleTF.setText("testi");
         verifyThat("#comment", hasText("testi"));
