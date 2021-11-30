@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 
-public class libraryObjectDaoTest {
+public class LibraryObjectDaoTest {
     
     private LibraryObjectDAO dao;
     
@@ -27,8 +27,8 @@ public class libraryObjectDaoTest {
     
     @Test
     public void testDatabaseInsertion(){
-        LibraryObject book1 = new LibraryObject(1, "Weapons of Math Destruction","Cathy O'Neil", "123456", null);
-        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "111222", null);
+        LibraryObject book1 = new LibraryObject(1, "Weapons of Math Destruction","Cathy O'Neil", "12345678910", null);
+        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "11122233344", null);
         dao.insert(book1);
         dao.insert(book2);
         assertEquals(2, dao.getAll().size());
@@ -45,5 +45,7 @@ public class libraryObjectDaoTest {
         LibraryObject book = objs.get(0);
         assertEquals("Clean code", book.getOtsikko());
     }
+
+   
     
 }
