@@ -273,7 +273,8 @@ public class AppUi extends Application {
         Button createBookB = new Button("Remove");
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.removeEntry(table.getSelectionModel().getSelectedItem()); 
+                        library.hideEntry(table.getSelectionModel().getSelectedItem());
+//        		library.removeEntry(table.getSelectionModel().getSelectedItem()); 
         		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
         	}
         });
