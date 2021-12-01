@@ -42,6 +42,7 @@ import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 
 public class AppUi extends Application {
+    // Olen täällä javafx:ää varten. ja keulin nyt kaiken muun edelle
 
     private Scene mainScene;
     private Scene addReadble;
@@ -53,15 +54,20 @@ public class AppUi extends Application {
 
     @Override
     public void init() {
+        //Initoi tähän tietokanta ja luokka ja service, muista importtaa
+
         library = new LibraryObjectDAO("jdbc:sqlite:test.db");
         service = new LibraryService(library);
+
+        
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
     }
 
     public void start(Stage primaryStage) throws Exception {
+
         mainStage = primaryStage;
-        mainStage.setTitle("Bookcase");
+        mainStage.setTitle("Kurssikirjahylly");
         mainStage.setWidth(800);
         mainStage.setHeight(600);
         mainScene = buildMainScene();
@@ -94,7 +100,7 @@ public class AppUi extends Application {
         });
         comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
 
-        Button viewBooks = new Button("Show books");
+        Button viewBooks = new Button("Näytä kirjat");
         viewBooks.setOnAction(e -> {
         	showBooks = buildShowBooksScene();
             mainStage.setScene(showBooks);
@@ -103,7 +109,7 @@ public class AppUi extends Application {
         ListView bookview = new ListView();
         List<LibraryObject> books = service.getAllObjects();
         for (LibraryObject book : books){
-            String bookString = book.getTitle() + " (" + book.getAuthor() + ") ISBN: " + book.getISBN();
+            String bookString = book.getOtsikko() + " (" + book.getKirjoittaja() + ") ISBN: " + book.getISBN();
             bookview.getItems().add(bookString);
         }
         
@@ -203,6 +209,10 @@ public class AppUi extends Application {
 
         Button returnB = new Button("Back");
         returnB.setOnAction(e -> {
+        /* Huom: Kirjan lisäämisen jälkeen voisi resetoida kentät. Nämä
+         * rivit voisi lisätä yllä olevan IF haaran alle. Kun lisäsys ei
+         * onnistu henkilö voi haluta korjata syöte virheen.
+        */
         	/*       
      		titleTF.clear();
          	authorTF.clear();
@@ -223,7 +233,8 @@ public class AppUi extends Application {
     
    
     /*
-     *  Generates a table view of entries in LIBRARY. Currently books (type=1).
+     * Ylläpitää alkuperäisen main stagen layouttia container objektejen suhteen.
+     * Generoi tableview listauksen kirjoista.
     */
     public Scene buildShowBooksScene() {
     	TableView<LibraryObject> table = new TableView<LibraryObject>();
@@ -242,10 +253,10 @@ public class AppUi extends Application {
         Text scenetitle = new Text("Bookcase items:");
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setPrefWidth(100);
-        colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
+        colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getOtsikko()));
         TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
         colAuthor.setPrefWidth(100);
-        colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
+        colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getKirjoittaja()));
         TableColumn<LibraryObject, String> colISBN = new TableColumn<>("ISBN");
         colISBN.setPrefWidth(100);
         colISBN.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));

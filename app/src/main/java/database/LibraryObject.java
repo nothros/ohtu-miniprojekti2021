@@ -2,25 +2,25 @@ package database;
 
 public class LibraryObject {
 	private int id;
-    private int type;
-    private String title;
-    private String author;
+    private int laji;
+    private String otsikko;
+    private String kirjoittaja;
     private String ISBN;
     private String URL;
 
-    public LibraryObject(int type, String title, String author, String ISBN, String URL) {
-        this.type = type;
-        this.title = title;
-        this. author = author;
+    public LibraryObject(int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
+        this.laji = laji;
+        this.otsikko = otsikko;
+        this. kirjoittaja = kirjoittaja;
         this.ISBN = ISBN;
         this.URL = URL;
     }
     
-    public LibraryObject(int id, int type, String title, String author, String ISBN, String URL) {
+    public LibraryObject(int id, int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
     	this.id = id;
-        this.type = type;
-        this.title = title;
-        this.author = author;
+        this.laji = laji;
+        this.otsikko = otsikko;
+        this.kirjoittaja = kirjoittaja;
         this.ISBN = ISBN;
         this.URL = URL;
     }
@@ -28,9 +28,9 @@ public class LibraryObject {
     @Override
     public String toString() {
         return "{" +
-            " type='" + getType() + "'" +
-            ", title='" + getTitle() + "'" +
-            ", author='" + getAuthor() + "'" +
+            " laji='" + getLaji() + "'" +
+            ", otsikko='" + getOtsikko() + "'" +
+            ", kirjoittaja='" + getKirjoittaja() + "'" +
             ", ISBN='" + getISBN() + "'" +
             ", URL='" + getURL() + "'" +
             "}";
@@ -44,28 +44,28 @@ public class LibraryObject {
         this.id = id;
     }
     
-    public int getType(){
-        return this.type;
+    public int getLaji(){
+        return this.laji;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setLaji(int laji) {
+        this.laji = laji;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getOtsikko() {
+        return this.otsikko;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setOtsikko(String otsikko) {
+        this.otsikko = otsikko;
     }
 
-    public String getAuthor() {
-        return this.author;
+    public String getKirjoittaja() {
+        return this.kirjoittaja;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setKirjoittaja(String kirjoittaja) {
+        this.kirjoittaja = kirjoittaja;
     }
 
     public String getISBN() {
@@ -83,5 +83,6 @@ public class LibraryObject {
     public void setURL(String URL) {
         this.URL = URL;
     }
+
 
 }
