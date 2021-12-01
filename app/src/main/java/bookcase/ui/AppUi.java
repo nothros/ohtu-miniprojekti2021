@@ -128,8 +128,6 @@ public class AppUi extends Application {
         return new Scene(mainPane);
     }
     
-
-
     public Scene buildAddReableScene(String typeValue) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
         if (typeValue != "Book"){
@@ -209,7 +207,7 @@ public class AppUi extends Application {
         grid.add(createBookB, 1, 7);
         addPane.getChildren().addAll(error, grid);
 
-        Button returnB = new Button("Return mainpage");
+        Button returnB = new Button("Back");
         returnB.setOnAction(e -> {
         /* Huom: Kirjan lisäämisen jälkeen voisi resetoida kentät. Nämä
          * rivit voisi lisätä yllä olevan IF haaran alle. Kun lisäsys ei
@@ -252,11 +250,11 @@ public class AppUi extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
-        Text scenetitle = new Text("Kirjaston kirjat");
-        TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Otsikko");
+        Text scenetitle = new Text("Bookcase items:");
+        TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setPrefWidth(100);
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getOtsikko()));
-        TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Kirjoittaja");
+        TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
         colAuthor.setPrefWidth(100);
         colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getKirjoittaja()));
         TableColumn<LibraryObject, String> colISBN = new TableColumn<>("ISBN");
@@ -272,7 +270,7 @@ public class AppUi extends Application {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
-        Button createBookB = new Button("Poista");
+        Button createBookB = new Button("Remove");
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
         		library.removeEntry(table.getSelectionModel().getSelectedItem()); 
@@ -282,7 +280,7 @@ public class AppUi extends Application {
         grid.add(scenetitle, 2, 0, 1, 1);
         grid.add(vbox, 2, 1, 1, 1);
         addPane.getChildren().addAll(error, grid, createBookB);
-        Button returnB = new Button("Palaa takaisin");
+        Button returnB = new Button("Back");
         returnB.setOnAction(e -> {
         	mainScene = buildMainScene();
             mainStage.setScene(mainScene);

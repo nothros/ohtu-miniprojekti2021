@@ -33,8 +33,8 @@ public class LibraryObjectDaoTest {
     public void testDatabaseInsertion(){
         LibraryObject book1 = new LibraryObject(1, "Weapons of Math Destruction","Cathy O'Neil", "12345678910", null);
         LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "11122233344", null);
-        dao.insert(book1);
-        dao.insert(book2);
+        dao.insertLibrary(book1);
+        dao.insertLibrary(book2);
         assertEquals(2, dao.getAll().size());
     }
     
@@ -42,7 +42,7 @@ public class LibraryObjectDaoTest {
     public void testReadAfterInsertion(){
         LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "111222", null);
 
-        dao.insert(book2);
+        dao.insertLibrary(book2);
         List<LibraryObject> objs = dao.getAll();
         assertEquals(1, objs.size());
         

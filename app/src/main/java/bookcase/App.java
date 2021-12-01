@@ -3,73 +3,70 @@ package bookcase;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import bookcase.ui.AppUi;
+import database.CourseObject;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 
 public class App {
 
-	// private static String url = "jdbc:sqlite:test.db";
-	// private static String filePath = "test.db";
+	private static String url = "jdbc:sqlite:test.db";
+	//private static String filePath = "test.db";
 	
 	private static LibraryObjectDAO dao;
-    /*
-LibraryObjectDAO:n kautta saat yhteyden lokaaliin tietokantaan.
+    
+	public static void initDummyDatabaseItems() {		
+		/*
+		 *  The absolute file path to your database file in windows is for example:
+		 *  Path p = Paths.get("C:\\Users\\tomit\\git\\ohtu-miniprojekti2021\\app\\test.db");
+		 *  You can also use Path p = Paths.get("test.db");
+		 *  
+		 *  Remove the database by deleting the file. Initialize a new empty database named
+		 *  BOOKCASE with tables LIBRARY, COURSE, COURSE_LIBRARY under the file test.db.
+		 *  
+		 *  Add 5 book entries to LIBRARY. Add 4 course entries to COURSE. 
+		 *  
+		 *  Modify me to your needs.
+		 *  
+		 *  Note: If you want to retain the state of a demo database you can simply copy it to another
+		 *  directory and then copy it back to the projects codes root directory.
+		 */
+		
+		Path p = Paths.get("test.db");
+		if (Files.isRegularFile(p)) {
+			try {
+				Files.delete(p);
+			}
+			catch (Exception e) {
+				System.out.println(e);
+			}
+        }
+		dao = new LibraryObjectDAO(url);
+		dao.createNewDatabase("test.db");
+		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 1", "Cathy O'Neil", "1234567890", null));
+		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 2", "Cathy O'Neil", "1234567891", null));
+		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 3", "Cathy O'Neil", "1234567892", null));
+		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 4", "Cathy O'Neil", "1234567893", null));
+		dao.insertLibrary(new LibraryObject(1, "Weapons of Mass Destruction", "Mathew O'Neil", "1234567894", null));
 
-     */
+		dao.insertCourse(new CourseObject("Logic 1", "Department of Mathematics"));
+		dao.insertCourse(new CourseObject("Logic 2", "Department of Mathematics"));
+		dao.insertCourse(new CourseObject("Programming in Python", "Department of Computer Science"));
+		dao.insertCourse(new CourseObject("Software Engineering", "Department of Computer Science"));
+		
+		/*
+		 *  The above entries are indexed according to successive ids. In this case we can simply bind them.
+		 *  Books 1 and 2 relate to course 1. Book 3 relates to course 3. Books 4 and 5 do not relate to any course.
+		 *  Function insertCL is a placeholder. Need to decide how we implement the database etc.
+		 */
+		dao.insertCL(1, 1);
+		dao.insertCL(2, 1);
+		dao.insertCL(3, 2);
+	}
+	
     public static void main(String[] args) {
-    	
-    	/*
-    	* Testaa onko tietokanta jo olemassa.
-    	*/
-    	/*
-    	Path p = Paths.get(filePath);
-    	if (Files.isRegularFile(p)) {
-    		try {
-    			dao = new LibraryObjectDAO(url);
-    			if (!dao.hasTable("libraryObjects")) {
-    				dao.createNewTable();
-    			}
-    		} catch (Exception e) {
-    			System.out.println(e);
-    		}
-    	}
-    	else {
-    		dao = new LibraryObjectDAO(url);
-    		dao.createNewDatabase(filePath);
-    		dao.createNewTable();
-    	}
-    	*/
-
+    	//initDummyDatabaseItems();
         AppUi.main(args);
-
-        //LibraryObjectDAO dao = new LibraryObjectDAO();
-
-        /* 
-        
-//        Seuraavat rivit alustavat uuden tietokannan ja lisäävät siihen olioita.
-        LibraryObjectDAO.createNewDatabase("test.db");
-        dao.createNewTable();
-        dao.insert(1, "Weapons of Math Destruction","Cathy O'Neil", "123456", null);
-        dao.insert(1, "Clean code","Joku Muu", "111222", null);
-        
-         */
-        
-        
-    /*
-        
-        // luodaan testiobjekti joka lisätään tietokantaan insertillä jälkeenpäin poistetaan deletellä
-        
-        libraryObject testObject = new libraryObject(1, "poistettava", "joku", "54321", null);
-        dao.insert(testObject.getLaji(), testObject.getOtsikko(), testObject.getKirjoittaja(), testObject.getISBN(), testObject.getURL());
-        dao.delete(testObject);
-        
-    */
-                
-        
-        //dao.getAll();
-
     }
 
 }

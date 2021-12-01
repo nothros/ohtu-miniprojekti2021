@@ -1,6 +1,7 @@
 package database;
 
 public class LibraryObject {
+	private int id;
     private int laji;
     private String otsikko;
     private String kirjoittaja;
@@ -11,6 +12,15 @@ public class LibraryObject {
         this.laji = laji;
         this.otsikko = otsikko;
         this. kirjoittaja = kirjoittaja;
+        this.ISBN = ISBN;
+        this.URL = URL;
+    }
+    
+    public LibraryObject(int id, int laji, String otsikko, String kirjoittaja, String ISBN, String URL) {
+    	this.id = id;
+        this.laji = laji;
+        this.otsikko = otsikko;
+        this.kirjoittaja = kirjoittaja;
         this.ISBN = ISBN;
         this.URL = URL;
     }
@@ -25,11 +35,15 @@ public class LibraryObject {
             ", URL='" + getURL() + "'" +
             "}";
     }
-    /*
-        1 = Kirja
-        2 = Blogi
-        3 = Podi
-    */
+    
+    public int getId(){
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public int getLaji(){
         return this.laji;
     }

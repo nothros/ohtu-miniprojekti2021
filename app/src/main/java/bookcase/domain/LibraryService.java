@@ -16,16 +16,16 @@ public class LibraryService {
         if (otsikko.isEmpty() || kirjoittaja.isEmpty() || ISBN.isEmpty()) {
             return false;
         }
-        if (!libraryDao.isUnique(ISBN,"libraryObjects")) {
-        	System.out.println("Ei ole uniikki ISBN.");
+        if (!libraryDao.isUnique(ISBN)) {
+        	System.out.println("Not a unique ISBN.");
     		return false;
     	}
         if (!libraryDao.isValidISBN(ISBN)) {
-    		System.out.println("Ei ole validi ISBN.");
+    		System.out.println("Not a valid ISBN.");
     		return false;
     	}
         LibraryObject libraryObject = new LibraryObject(laji, otsikko, kirjoittaja, ISBN, URL);
-        return libraryDao.insert(libraryObject);
+        return libraryDao.insertLibrary(libraryObject);
     }
 
     public List<LibraryObject> getAllObjects(){
