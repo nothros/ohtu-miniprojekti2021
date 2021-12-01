@@ -1,7 +1,6 @@
 package bookcase.domain;
 
 import java.util.List;
-
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 

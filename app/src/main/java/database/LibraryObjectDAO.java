@@ -10,23 +10,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class LibraryObjectDAO implements DAO<LibraryObject> {
-
     private Connection conn;
 
     public LibraryObjectDAO(String url) {
         conn = connect(url);
     }
-
+    
     /*
-     *  Create a database named BOOKCASE, if such does not exist.
-     *  This will be saved to a file with path fileName.
-     *  Further create all tables defined in createNewTable, if
-     *  these do not already exist.
+     *  If database is empty then create all database tables.
      */
     public void createNewDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
@@ -35,9 +29,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName() + ".");
                 File f = new File(fileName);
-                if (f.length() == 0) {
-                    System.out.println("A new database has been created.");
-                }
+                if (f.length() == 0)
+                	System.out.println("A new database has been created.");
                 createNewTable();
             }
         } catch (SQLException e) {
@@ -46,69 +39,68 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Create ALL database tables, if they do not exist.
+     *  Queries for all database tables, if they do not exist.
      */
     public void createNewTable() {
-        String sql1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
-                + "(ID integer PRIMARY KEY, "
-                + "laji integer NOT NULL,"
-                + "otsikko text NOT NULL,"
-                + "kirjoittaja text,"
-                + "ISBN text UNIQUE,"
-                + "URL text,"
-                + "deleted integer);";
-        String sql2 = "CREATE TABLE IF NOT EXISTS COURSE "
-                + "(ID INTEGER PRIMARY KEY,"
-                + "NAME TEXT NOT NULL,"
-                + "DEPARTMENT text)";
-        String sql3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "LIBRARY_ID INTEGER NOT NULL,"
-                + "COURSE_ID INTEGER NOT NULL, "
-                + "FOREIGN KEY(LIBRARY_ID) REFERENCES LIBRARY(ID) ON DELETE CASCADE,"
-                + "FOREIGN KEY(COURSE_ID) REFERENCES COURSE(ID) ON DELETE CASCADE)";
+        String sq1 = "CREATE TABLE IF NOT EXISTS LIBRARY " +
+        "(ID integer PRIMARY KEY, " +
+        "TYPE integer NOT NULL," +
+        "TITLE text NOT NULL," +
+        "AUTHOR text," + 
+        "ISBN text UNIQUE," + 
+        "URL text);";
+        String sq2 = "CREATE TABLE IF NOT EXISTS COURSE " +
+        "(ID INTEGER PRIMARY KEY," +
+        "NAME TEXT NOT NULL," +
+        "DEPARTMENT text)";
+        String sq3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY " +
+        "(ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+        "LIBRARY_ID INTEGER NOT NULL," +
+        "COURSE_ID INTEGER NOT NULL, " +
+        "FOREIGN KEY(LIBRARY_ID) REFERENCES LIBRARY(ID) ON DELETE CASCADE," +
+        "FOREIGN KEY(COURSE_ID) REFERENCES COURSE(ID) ON DELETE CASCADE)";
         try (Statement stmt = conn.createStatement()) {
-            if (!existsTable("LIBRARY")) {
-                stmt.execute(sql1);
-                System.out.println("Table LIBRARY created.");
-            }
-            if (!existsTable("COURSE")) {
-                stmt.execute(sql2);
-                System.out.println("Table COURSE created.");
-            }
-            if (!existsTable("COURSE_LIBRARY")) {
-                stmt.execute(sql3);
-                System.out.println("Table COURSE_LIBRARY created.");
-            }
+        	if (!existsTable("LIBRARY")) {
+        		stmt.execute(sq1);
+        		System.out.println("Table LIBRARY created.");
+        	}
+        	if (!existsTable("COURSE")) {
+        		stmt.execute(sq2);
+        		System.out.println("Table COURSE created.");
+        	}
+        	if (!existsTable("COURSE_LIBRARY")) {
+        		stmt.execute(sq3);
+        		System.out.println("Table COURSE_LIBRARY created.");
+        	}
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
-    /**
-     * Poistaa libraryObjects taulukon conn olion osoittamasta tietokannasta
+    
+    /*
+     *  Remove all database tables from conn objects location.
      */
-    public void deleteTable() {
+    public void deleteTable(){
         try {
             Statement s = conn.createStatement();
             if (existsTable("LIBRARY")) {
-                s.execute("DROP TABLE LIBRARY");
-                System.out.println("Table LIBRARY deleted.");
+            	s.execute("DROP TABLE LIBRARY");
+            	System.out.println("Table LIBRARY deleted.");
             }
             if (existsTable("COURSE")) {
-                s.execute("DROP TABLE COURSE");
-                System.out.println("Table COURSE deleted.");
+            	s.execute("DROP TABLE COURSE");
+            	System.out.println("Table COURSE deleted.");
             }
             if (existsTable("COURSE_LIBRARY")) {
-                s.execute("DROP TABLE COURSE_LIBRARY");
-                System.out.println("Table COURSE_LIBRARY deleted.");
+            	s.execute("DROP TABLE COURSE_LIBRARY");
+            	System.out.println("Table COURSE_LIBRARY deleted.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-
+    
     /*
      *  I am a placeholder table that links LIBRARY and COURSE content.
      */
@@ -125,21 +117,19 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return true;
     }
-
+    
     /*
-     *  Insert items into table LIBRARY
+     *  Insert entries into table LIBRARY.
      */
-    public boolean insertLibrary(LibraryObject libraryObject) {
-        String sql = "INSERT INTO LIBRARY(laji, otsikko, kirjoittaja, ISBN, URL, deleted) VALUES(?,?,?,?,?,?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, libraryObject.getLaji());
-            pstmt.setString(2, libraryObject.getOtsikko());
-            pstmt.setString(3, libraryObject.getKirjoittaja());
-            pstmt.setString(4, libraryObject.getISBN());
-            pstmt.setString(5, libraryObject.getURL());
-            pstmt.setInt(6, 0);
-            pstmt.executeUpdate();
-
+    public boolean insertLibrary(LibraryObject libObj) {
+        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL) VALUES(?,?,?,?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {    
+            pstmt.setInt(1, libObj.getType());
+            pstmt.setString(2, libObj.getTitle());
+            pstmt.setString(3, libObj.getAuthor());
+            pstmt.setString(4, libObj.getISBN());
+            pstmt.setString(5, libObj.getURL());
+            pstmt.executeUpdate();       
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -147,13 +137,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return true;
     }
-
+    
     /*
-     *  Insert items into table COURSE.
+     *  Insert entries into table COURSE.
      */
     public boolean insertCourse(CourseObject courseObject) {
-        String sql = "INSERT INTO COURSE(name, department) VALUES(?,?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = "INSERT INTO COURSE(NAME, DEPARTMENT) VALUES(?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {    
             pstmt.setString(1, courseObject.getName());
             pstmt.setString(2, courseObject.getDepartment());
             pstmt.executeUpdate();
@@ -177,14 +167,14 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return conn;
     }
-
+    
     /* 
      * Check if table %name exists in database.
-     */
+    */
     public boolean existsTable(String name) {
         boolean t = false;
         try (ResultSet rs = conn.getMetaData().getTables(null, null, name, null)) {
-            while (rs.next()) {
+            while (rs.next()) { 
                 String tableName = rs.getString("TABLE_NAME");
                 if (tableName != null && tableName.equals(name)) {
                     t = true;
@@ -192,100 +182,83 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        	System.out.println(e.getMessage());
         }
         return t;
     }
-
+    
     /*
-     *  Check string %s is a valid ISBN. 
-     */
+     *  Check string %s is a valid ISBN in table LIBRARY. 
+    */
     public boolean isValidISBN(String s) {
-        if (s == null) {
+        if (s == null)
             return false;
-        }
-        if (s.length() < 10 || s.length() > 13) {
-            return false;
-        }
+        if (s.length() < 10 || s.length() > 13)
+        	return false;
         Pattern p = Pattern.compile("^\\d+$");
         return p.matcher(s).matches();
     }
-
+    
     /*
      *  Check string %s is a unique ISBN in table LIBRARY.
-     */
+    */
     public boolean isUnique(String s) {
-        boolean t = false;
-        String sql = "SELECT COUNT(*) FROM LIBRARY where ISBN=?";
+    	boolean t = false;
+        String sq1 = "SELECT COUNT(*) FROM LIBRARY where ISBN=?";
         try {
-            PreparedStatement ptmt = conn.prepareStatement(sql);
-            ptmt.setString(1, s);
-            ResultSet rs = ptmt.executeQuery();
+        	PreparedStatement pstmt = conn.prepareStatement(sq1);
+            pstmt.setString(1, s);
+            ResultSet rs = pstmt.executeQuery();
             rs.next();
-            if (rs.getInt(1) == 0) {
-                t = true;
-            }
+            if (rs.getInt(1) == 0)
+            	t = true;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        	System.out.println(e.getMessage());
+        } 
         return t;
     }
-
+    
     /*
-     *  Remove record from LIBRARY based on its ID value.
+     *  Remove record from LIBRARY based on its ID value. Also
+     *  cascade and remove any foreign keys that reference the
+     *  entry.
      */
-    public void removeEntry(LibraryObject t) {
-        try {
-            // This is needed for cascading deletes for foreign keys.
-            String sql = "PRAGMA FOREIGN_KEYS = ON";
-            Statement stmt = conn.createStatement();
-            int rs = stmt.executeUpdate(sql);
-        } catch (SQLException e) {
+    public void removeEntry(LibraryObject t) {     
+    	try {
+    		// This is needed for cascading deletes for foreign keys.
+    		String sq1 = "PRAGMA FOREIGN_KEYS = ON";   
+    		Statement stmt = conn.createStatement();
+            stmt.executeUpdate(sq1);
+        } catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        String sql = "DELETE FROM LIBRARY WHERE ID = ?";
-        try (PreparedStatement ptmt = conn.prepareStatement(sql)) {
-            System.out.println(t.getId());
-            ptmt.setInt(1, t.getId());
-            ptmt.execute();
-        } catch (SQLException e) {
+        String sql = "DELETE FROM LIBRARY WHERE ID = ?"; 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)){
+        	System.out.println(t.getId());
+            pstmt.setInt(1, t.getId());
+            pstmt.execute();
+        } catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
+    
     /*
-    Hides an entry from the database by changing deleted from 0 to 1.
-     */
-    public void hideEntry(LibraryObject t) {
-        String sq1 = "UPDATE LIBRARY SET deleted = 1 WHERE ID = ?";
-
-        try {
-            PreparedStatement ptmt = conn.prepareStatement(sq1);
-            ptmt.setInt(1, t.getId());
-            ptmt.execute();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /*
-     * Get all items of type %s from LIBRARY.
-     */
+     * Fetch all entries of type %s from LIBRARY.
+    */
     public List<LibraryObject> getAll(String s) {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
-        String sql = "SELECT * FROM LIBRARY WHERE laji = ? AND deleted = 0";
+        String sq1 = "SELECT * FROM LIBRARY WHERE TYPE = ?";
         try {
-            Pattern p = Pattern.compile("[123]");
-            if (!p.matcher(s).matches()) {
-                return List.of();
-            }
-            PreparedStatement ptmt = conn.prepareStatement(sql);
-            ptmt.setString(1, s);
+        	Pattern p = Pattern.compile("[123]");
+            if (!p.matcher(s).matches())
+            	return List.of();
+        	PreparedStatement ptmt  = conn.prepareStatement(sq1);
+        	ptmt.setString(1, s);
             ResultSet rs = ptmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("id"), rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("id"), rs.getInt("type"), rs.getString("title"), rs.getString("author"), rs.getString("ISBN"), rs.getString("URL"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -294,21 +267,25 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         return list;
     }
 
+    /*
+     *  Fetch entries from LIBRARY, not including ID field.
+     */
     @Override
     public List<LibraryObject> getAll() {
-        ArrayList<LibraryObject> list = new ArrayList();
-        String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM LIBRARY WHERE deleted = 0";
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL FROM LIBRARY";
         try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+            ResultSet rs  = stmt.executeQuery(sq1)){
             while (rs.next()) {
-                LibraryObject libraryObjectFromDB = new LibraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
-                list.add(libraryObjectFromDB);
-                System.out.println("GET: \n" + libraryObjectFromDB.toString());
+                LibraryObject libObj = new LibraryObject(rs.getInt("type"), rs.getString("title"), rs.getString("author"), rs.getString("ISBN"), rs.getString("URL"));
+                list.add(libObj);
+                System.out.println("GET: \n" + libObj.toString());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
+    
+    
         return list;
     }
 
@@ -316,22 +293,22 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public void save(LibraryObject t) {
         insertLibrary(t);
     }
-
+    
     @Override
     public void update(LibraryObject t, String[] params) {
-
+        
     }
-
+    
     /*
-     *  Delete record based on its id.
+     *  Delete record from LIBRARY based on its ID.
      */
     @Override
     public void delete(LibraryObject t) {
-        String sq1 = "DELETE FROM LIBRARY WHERE ID = ?";
-        try (PreparedStatement prepStat = conn.prepareStatement(sq1)) {
-            prepStat.setInt(1, t.getId());
-            prepStat.execute();
-        } catch (SQLException e) {
+        String sq1 = "DELETE FROM LIBRARY WHERE ID = ?"; 
+        try (PreparedStatement pstmt = conn.prepareStatement(sq1)){
+            pstmt.setInt(1, t.getId());
+            pstmt.execute();
+        } catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }

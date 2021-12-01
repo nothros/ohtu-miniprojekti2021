@@ -16,7 +16,7 @@ public class LibraryObjectDaoTest {
     private LibraryObjectDAO dao;
     
     /**
-    T√§m√§ metodi suoritetaan ennen jokaista testi√§. Se luo tyhj√§n tietokannan muistiin.
+    T‰m‰ metodi suoritetaan ennen jokaista testi‰. Se luo tyhj‰n tietokannan muistiin.
     */
     @Before
     public void init(){
@@ -47,7 +47,7 @@ public class LibraryObjectDaoTest {
         assertEquals(1, objs.size());
         
         LibraryObject book = objs.get(0);
-        assertEquals("Clean code", book.getOtsikko());
+        assertEquals("Clean code", book.getTitle());
     }
 
    

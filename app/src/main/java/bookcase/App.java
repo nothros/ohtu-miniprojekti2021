@@ -56,7 +56,7 @@ public class App {
 		
 		/*
 		 *  The above entries are indexed according to successive ids. In this case we can simply bind them.
-		 *  Books 1 and 2 relate to course 1. Book 3 relates to course 3. Books 4 and 5 do not relate to any course.
+		 *  Books 1 and 2 relate to course 1. Book 3 relates to course 2. Books 4 and 5 do not relate to any course.
 		 *  Function insertCL is a placeholder. Need to decide how we implement the database etc.
 		 */
 		dao.insertCL(1, 1);
@@ -65,7 +65,7 @@ public class App {
 	}
 	
     public static void main(String[] args) {
-//    	initDummyDatabaseItems();
+    	initDummyDatabaseItems();
         AppUi.main(args);
     }
 
