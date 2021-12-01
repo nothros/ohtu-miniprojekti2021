@@ -23,10 +23,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Create a database named BOOKCASE, if such does not exist.
-     *  This will be saved to a file with path fileName.
-     *  Further create all tables defined in createNewTable, if
-     *  these do not already exist.
+     *  If database is empty then create all database tables.
      */
     public void createNewDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
@@ -46,22 +43,22 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Create ALL database tables, if they do not exist.
+     *  Queries for all database tables, if they do not exist.
      */
     public void createNewTable() {
-        String sql1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
+        String sq1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
                 + "(ID integer PRIMARY KEY, "
-                + "laji integer NOT NULL,"
-                + "otsikko text NOT NULL,"
-                + "kirjoittaja text,"
+                + "TYPE integer NOT NULL,"
+                + "TITLE text NOT NULL,"
+                + "AUTHOR text,"
                 + "ISBN text UNIQUE,"
                 + "URL text,"
                 + "deleted integer);";
-        String sql2 = "CREATE TABLE IF NOT EXISTS COURSE "
+        String sq2 = "CREATE TABLE IF NOT EXISTS COURSE "
                 + "(ID INTEGER PRIMARY KEY,"
                 + "NAME TEXT NOT NULL,"
                 + "DEPARTMENT text)";
-        String sql3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
+        String sq3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
                 + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "LIBRARY_ID INTEGER NOT NULL,"
                 + "COURSE_ID INTEGER NOT NULL, "
@@ -69,15 +66,15 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "FOREIGN KEY(COURSE_ID) REFERENCES COURSE(ID) ON DELETE CASCADE)";
         try (Statement stmt = conn.createStatement()) {
             if (!existsTable("LIBRARY")) {
-                stmt.execute(sql1);
+                stmt.execute(sq1);
                 System.out.println("Table LIBRARY created.");
             }
             if (!existsTable("COURSE")) {
-                stmt.execute(sql2);
+                stmt.execute(sq2);
                 System.out.println("Table COURSE created.");
             }
             if (!existsTable("COURSE_LIBRARY")) {
-                stmt.execute(sql3);
+                stmt.execute(sq3);
                 System.out.println("Table COURSE_LIBRARY created.");
             }
         } catch (SQLException e) {
@@ -86,8 +83,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     }
 
-    /**
-     * Poistaa libraryObjects taulukon conn olion osoittamasta tietokannasta
+    /*
+     *  Remove all database tables from conn objects location.
      */
     public void deleteTable() {
         try {
@@ -127,19 +124,18 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Insert items into table LIBRARY
+     *  Insert entries into table LIBRARY.
      */
-    public boolean insertLibrary(LibraryObject libraryObject) {
-        String sql = "INSERT INTO LIBRARY(laji, otsikko, kirjoittaja, ISBN, URL, deleted) VALUES(?,?,?,?,?,?)";
+    public boolean insertLibrary(LibraryObject libObj) {
+        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, deleted) VALUES(?,?,?,?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, libraryObject.getLaji());
-            pstmt.setString(2, libraryObject.getOtsikko());
-            pstmt.setString(3, libraryObject.getKirjoittaja());
-            pstmt.setString(4, libraryObject.getISBN());
-            pstmt.setString(5, libraryObject.getURL());
+            pstmt.setInt(1, libObj.getType());
+            pstmt.setString(2, libObj.getTitle());
+            pstmt.setString(3, libObj.getAuthor());
+            pstmt.setString(4, libObj.getISBN());
+            pstmt.setString(5, libObj.getURL());
             pstmt.setInt(6, 0);
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -149,10 +145,10 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Insert items into table COURSE.
+     *  Insert entries into table COURSE.
      */
     public boolean insertCourse(CourseObject courseObject) {
-        String sql = "INSERT INTO COURSE(name, department) VALUES(?,?)";
+        String sql = "INSERT INTO COURSE(NAME, DEPARTMENT) VALUES(?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, courseObject.getName());
             pstmt.setString(2, courseObject.getDepartment());
@@ -198,7 +194,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Check string %s is a valid ISBN. 
+     *  Check string %s is a valid ISBN in table LIBRARY. 
      */
     public boolean isValidISBN(String s) {
         if (s == null) {
@@ -216,11 +212,11 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public boolean isUnique(String s) {
         boolean t = false;
-        String sql = "SELECT COUNT(*) FROM LIBRARY where ISBN=?";
+        String sq1 = "SELECT COUNT(*) FROM LIBRARY where ISBN=?";
         try {
-            PreparedStatement ptmt = conn.prepareStatement(sql);
-            ptmt.setString(1, s);
-            ResultSet rs = ptmt.executeQuery();
+            PreparedStatement pstmt = conn.prepareStatement(sq1);
+            pstmt.setString(1, s);
+            ResultSet rs = pstmt.executeQuery();
             rs.next();
             if (rs.getInt(1) == 0) {
                 t = true;
@@ -232,23 +228,25 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Remove record from LIBRARY based on its ID value.
+     *  Remove record from LIBRARY based on its ID value. Also
+     *  cascade and remove any foreign keys that reference the
+     *  entry.
      */
     public void removeEntry(LibraryObject t) {
         try {
             // This is needed for cascading deletes for foreign keys.
-            String sql = "PRAGMA FOREIGN_KEYS = ON";
+            String sq1 = "PRAGMA FOREIGN_KEYS = ON";
             Statement stmt = conn.createStatement();
-            int rs = stmt.executeUpdate(sql);
+            stmt.executeUpdate(sq1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
         String sql = "DELETE FROM LIBRARY WHERE ID = ?";
-        try (PreparedStatement ptmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             System.out.println(t.getId());
-            ptmt.setInt(1, t.getId());
-            ptmt.execute();
+            pstmt.setInt(1, t.getId());
+            pstmt.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -285,7 +283,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             ptmt.setString(1, s);
             ResultSet rs = ptmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("id"), rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("id"), rs.getInt("type"), rs.getString("title"), rs.getString("author"), rs.getString("ISBN"), rs.getString("URL"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -294,16 +292,19 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         return list;
     }
 
+    /*
+     *  Fetch entries from LIBRARY, not including ID field.
+     */
     @Override
     public List<LibraryObject> getAll() {
-        ArrayList<LibraryObject> list = new ArrayList();
-        String sql = "SELECT id, laji, otsikko, kirjoittaja, ISBN, URL FROM LIBRARY WHERE deleted = 0";
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL FROM LIBRARY AND deleted = 0";
         try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sq1)) {
             while (rs.next()) {
-                LibraryObject libraryObjectFromDB = new LibraryObject(rs.getInt("laji"), rs.getString("otsikko"), rs.getString("kirjoittaja"), rs.getString("ISBN"), rs.getString("URL"));
-                list.add(libraryObjectFromDB);
-                System.out.println("GET: \n" + libraryObjectFromDB.toString());
+                LibraryObject libObj = new LibraryObject(rs.getInt("type"), rs.getString("title"), rs.getString("author"), rs.getString("ISBN"), rs.getString("URL"));
+                list.add(libObj);
+                System.out.println("GET: \n" + libObj.toString());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -323,14 +324,14 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Delete record based on its id.
+     *  Delete record from LIBRARY based on its ID.
      */
     @Override
     public void delete(LibraryObject t) {
         String sq1 = "DELETE FROM LIBRARY WHERE ID = ?";
-        try (PreparedStatement prepStat = conn.prepareStatement(sq1)) {
-            prepStat.setInt(1, t.getId());
-            prepStat.execute();
+        try (PreparedStatement pstmt = conn.prepareStatement(sq1)) {
+            pstmt.setInt(1, t.getId());
+            pstmt.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

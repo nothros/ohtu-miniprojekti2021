@@ -47,7 +47,7 @@ public class LibraryObjectDaoTest {
         assertEquals(1, objs.size());
         
         LibraryObject book = objs.get(0);
-        assertEquals("Clean code", book.getOtsikko());
+        assertEquals("Clean code", book.getTitle());
     }
 
    
