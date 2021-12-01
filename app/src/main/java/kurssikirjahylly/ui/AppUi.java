@@ -271,7 +271,7 @@ public class AppUi extends Application {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
-        Button createBookB = new Button("Poista kirja");
+        Button createBookB = new Button("Poista");
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
         		library.removeEntry(table.getSelectionModel().getSelectedItem()); 
