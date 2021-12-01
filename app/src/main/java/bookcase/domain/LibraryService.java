@@ -1,8 +1,9 @@
-package kurssikirjahylly.domain;
+package bookcase.domain;
 
 import java.util.List;
-import tietokantaDemo.LibraryObject;
-import tietokantaDemo.LibraryObjectDAO;
+
+import database.LibraryObject;
+import database.LibraryObjectDAO;
 
 public class LibraryService {
     private LibraryObjectDAO libraryDao;

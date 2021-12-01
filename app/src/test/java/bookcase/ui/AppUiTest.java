@@ -1,9 +1,11 @@
-package kurssikirjahylly.ui;
+package bookcase.ui;
 
-import kurssikirjahylly.ui.AppUi;
 import org.junit.Test;
 import org.testfx.assertions.api.Assertions;
 import org.testfx.framework.junit.ApplicationTest;
+
+import bookcase.ui.AppUi;
+
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 import static org.testfx.api.FxAssert.verifyThat;
 

@@ -1,11 +1,12 @@
-package kurssikirjahylly;
+package bookcase;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import kurssikirjahylly.ui.AppUi;
-import tietokantaDemo.LibraryObject;
-import tietokantaDemo.LibraryObjectDAO;
+
+import bookcase.ui.AppUi;
+import database.LibraryObject;
+import database.LibraryObjectDAO;
 
 public class App {
 

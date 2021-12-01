@@ -1,4 +1,4 @@
-package tietokantaDemo;
+package database;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -73,8 +73,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
     
     // Lisää olio
-    //Välihuom. Tarvittas se service luokka sitä varten, et se tarkistas onko syotteet vaaria. (tagitkin pitas erotella)
-    //Sillon voitas kayttaa booleania, eli jos lisaaminen onnistuu, niin virheilmo toimii oikein.
+    // Välihuom. Tarvittas se service luokka sitä varten, et se tarkistas onko syotteet vaaria. (tagitkin pitas erotella)
+    // Sillon voitas kayttaa booleania, eli jos lisaaminen onnistuu, niin virheilmo toimii oikein.
     public boolean insert(LibraryObject libraryObject) {
         String sql = "INSERT INTO libraryObjects(laji, otsikko, kirjoittaja, ISBN, URL) VALUES(?,?,?,?,?)";
         // prepared statement on aika kömpelö, mutta jokainen kokonaisluku viittaa yllä olevan SQL-komennon kysymysmerkkiin.

@@ -1,7 +1,11 @@
 
-package tietokantaDemo;
+package database;
 
 import org.junit.Test;
+
+import database.LibraryObject;
+import database.LibraryObjectDAO;
+
 import org.junit.Before;
 import static org.junit.Assert.*;
 import java.util.List;

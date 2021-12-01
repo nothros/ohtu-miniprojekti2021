@@ -1,4 +1,4 @@
-package tietokantaDemo;
+package database;
 
 import java.util.List;
 

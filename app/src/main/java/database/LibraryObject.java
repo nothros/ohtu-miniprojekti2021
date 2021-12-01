@@ -1,4 +1,4 @@
-package tietokantaDemo;
+package database;
 
 public class LibraryObject {
     private int laji;

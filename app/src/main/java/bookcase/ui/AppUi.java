@@ -1,4 +1,4 @@
-package kurssikirjahylly.ui;
+package bookcase.ui;
 
 import javafx.scene.control.ComboBox;
 import java.sql.PreparedStatement;
@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.sql.rowset.serial.SerialArray;
 import com.google.common.util.concurrent.Service;
+
+import bookcase.domain.LibraryService;
+import database.LibraryObject;
+import database.LibraryObjectDAO;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -36,9 +40,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
-import tietokantaDemo.LibraryObjectDAO;
-import tietokantaDemo.LibraryObject;
-import kurssikirjahylly.domain.LibraryService;
 
 public class AppUi extends Application {
     // Olen täällä javafx:ää varten. ja keulin nyt kaiken muun edelle
