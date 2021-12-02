@@ -65,7 +65,7 @@ public class App {
 	}
 	
     public static void main(String[] args) {
-    	initDummyDatabaseItems();
+//    	initDummyDatabaseItems();
         AppUi.main(args);
     }
 

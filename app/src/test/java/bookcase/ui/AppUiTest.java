@@ -36,10 +36,15 @@ public class AppUiTest extends ApplicationTest {
 
     @Test
     public void testDemo() {    
+        System.out.println("1");
         clickOn("Add new LibraryItem");
+        System.out.println("2");
 	TextField titleTF = lookup("#comment").query(); //FIX: titleTF id is set to comment in AppUI
+        System.out.println("3");
 	titleTF.setText("testi");
+        System.out.println("4");
         verifyThat("#comment", hasText("testi"));
+        System.out.println("5");
     }
     
 
