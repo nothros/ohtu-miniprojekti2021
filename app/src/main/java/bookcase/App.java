@@ -44,19 +44,19 @@ public class App {
 				System.out.println(e);
 			}
         }
-		dao = new LibraryObjectDAO(url);
+		//dao = new LibraryObjectDAO(url);
 		dao.createNewTable();
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 1", "Cathy O'Neil", "1234567890", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 2", "Cathy O'Neil", "1234567891", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 3", "Cathy O'Neil", "1234567892", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 4", "Cathy O'Neil", "1234567893", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Mass Destruction", "Mathew O'Neil", "1234567894", null));
-
+		
 		dao.insertCourse(new CourseObject("Logic 1", "Department of Mathematics"));
 		dao.insertCourse(new CourseObject("Logic 2", "Department of Mathematics"));
 		dao.insertCourse(new CourseObject("Programming in Python", "Department of Computer Science"));
 		dao.insertCourse(new CourseObject("Software Engineering", "Department of Computer Science"));
-		
+		dao.helperFunction();
 		/*
 		 *  The above entries are indexed according to successive ids. In this case we can simply bind them.
 		 *  Books 1 and 2 relate to course 1. Book 3 relates to course 2. Books 4 and 5 do not relate to any course.
@@ -69,7 +69,8 @@ public class App {
 	
     public static void main(String[] args) {
     	try {
-    		initDummyDatabaseItems();
+    		dao = new LibraryObjectDAO(url);
+    		//initDummyDatabaseItems();
     	} catch(SQLException ex) {
     		System.out.println(ex.getMessage());
     	}

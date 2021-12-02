@@ -54,9 +54,9 @@ public class AppUi extends Application {
     private String database;
 
     public AppUi(){
-        database = "bookcase.db";
+        //database = "bookcase.db";
+        database = "test.db";
     }
-
 
     @Override
     public void init() throws SQLException{
@@ -66,7 +66,6 @@ public class AppUi extends Application {
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
     }
-    
 
     public void start(Stage primaryStage) throws Exception {
         mainStage = primaryStage;
@@ -202,6 +201,12 @@ public class AppUi extends Application {
                 error.setText("New "+typeValue+" added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
+         		titleTF.clear();
+             	authorTF.clear();
+                ISBNTF.clear();
+                tagsTF.clear();
+                courseTF.clear();
+                commentTF.clear();
             } else {
                 error.setText("Something went wrong while adding new "+typeValue);
                 error.setTextFill(Color.RED);
@@ -214,13 +219,6 @@ public class AppUi extends Application {
 
         Button returnB = new Button("Back");
         returnB.setOnAction(e -> {
-        	/*       
-     		titleTF.clear();
-         	authorTF.clear();
-            ISBNTF.clear();
-            tagsTF.clear();
-            courseTF.clear();
-            commentTF.clear(); */
             mainScene = buildMainScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
@@ -270,11 +268,11 @@ public class AppUi extends Application {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
-        Button createBookB = new Button("Remove");
+        Button createBookB = new Button("Hide");
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
-                        library.hideEntry(table.getSelectionModel().getSelectedItem());
-//        		library.removeEntry(table.getSelectionModel().getSelectedItem()); 
+        		library.hideEntry(table.getSelectionModel().getSelectedItem());
+        		//library.removeEntry(table.getSelectionModel().getSelectedItem()); 
         		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
         	}
         });

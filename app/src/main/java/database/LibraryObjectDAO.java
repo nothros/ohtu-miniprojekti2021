@@ -23,7 +23,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
 
     /*
      *  If database is empty then create all database tables.
-     *  
+     *  DELETE ME ?
      */
    /*  public void createNewDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
@@ -212,7 +212,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public boolean isUnique(String s) {
         boolean t = false;
-        String sq1 = "SELECT COUNT(*) FROM LIBRARY where ISBN=?";
+        String sq1 = "SELECT COUNT(*) FROM LIBRARY WHERE ISBN = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sq1);
             pstmt.setString(1, s);
@@ -252,9 +252,23 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             e.printStackTrace();
         }
     }
+    
+    /*
+     *  On startup to display all entries in LIBRARY table in database.
+     *  This is redundant now that the database is created in AppUi, but
+     *  you can define "test.db" there.
+     */
+    public void helperFunction() {
+    	String sq1 = "UPDATE LIBRARY SET DELETED = 0";
+	    try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
+	        ptmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+    }
 
     /*
-        Hides entry instead of completely deleting it from database
+     *  Hides entry instead of completely deleting it from database
      */
     public void hideEntry(LibraryObject t) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
@@ -275,12 +289,11 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         String sq1 = "SELECT * FROM LIBRARY WHERE TYPE = ? AND DELETED = 0";
         try {
             Pattern p = Pattern.compile("[123]");
-            if (!p.matcher(s).matches()) {
+            if (!p.matcher(s).matches())
                 return List.of();
-            }
-            PreparedStatement ptmt = conn.prepareStatement(sq1);
-            ptmt.setString(1, s);
-            ResultSet rs = ptmt.executeQuery();
+            PreparedStatement pstmt = conn.prepareStatement(sq1);
+            pstmt.setString(1, s);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"));
                 list.add(libObj);
