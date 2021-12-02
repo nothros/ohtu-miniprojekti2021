@@ -10,6 +10,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'jacoco'
 }
 
 repositories {
@@ -52,5 +53,12 @@ test {
     //print test results in console
     afterTest { desc, result -> 
         logger.quiet "Test: [${desc.className}] ${desc.name}, result: ${result.resultType}"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
     }
 }
