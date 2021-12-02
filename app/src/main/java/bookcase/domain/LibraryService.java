@@ -35,4 +35,8 @@ public class LibraryService {
         return libraryDao.getAll(s);
     }
 
+    public void createNewTablesIfNotExists(){
+        libraryDao.createNewTable();
+    }
+
 }

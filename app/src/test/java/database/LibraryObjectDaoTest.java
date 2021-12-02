@@ -6,8 +6,11 @@ import org.junit.Test;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 
+import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
+
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -15,12 +18,14 @@ public class LibraryObjectDaoTest {
     
     private LibraryObjectDAO dao;
     
+    private String testDB;
     /**
-    Tämä metodi suoritetaan ennen jokaista testiä. Se luo tyhjän tietokannan muistiin.
+    Tï¿½mï¿½ metodi suoritetaan ennen jokaista testiï¿½. Se luo tyhjï¿½n tietokannan muistiin.
     */
     @Before
-    public void init(){
-        dao = new LibraryObjectDAO("jdbc:sqlite::memory:");
+    public void init() throws SQLException{
+        testDB = "daotest.db";
+        dao = new LibraryObjectDAO(testDB);
         dao.createNewTable();
     }
     
@@ -50,6 +55,10 @@ public class LibraryObjectDaoTest {
         assertEquals("Clean code", book.getTitle());
     }
 
+    @After
+    public void tearDown()throws SQLException{
+        dao.deleteDatabase(testDB);
+    }
    
     
 }

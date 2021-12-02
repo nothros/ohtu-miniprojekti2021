@@ -5,8 +5,11 @@ import bookcase.domain.LibraryService;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 
+import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class ServiceTest {
@@ -15,10 +18,11 @@ public class ServiceTest {
     private String tooShortISBN =  "123456789";
     private String tooLongISBN =  "11122233344455";
     private String validISBN = "12345678910";
-    
+    private String testDB;
     @Before
-    public void init(){
-        dao = new LibraryObjectDAO("jdbc:sqlite::memory:");
+    public void init() throws SQLException{
+        testDB = "servicetest.db";
+        dao = new LibraryObjectDAO(testDB);
         service = new LibraryService(dao);
         dao.createNewTable();
 
@@ -50,5 +54,10 @@ public class ServiceTest {
     public void duplicateISBNisRejected() {
         service.createLibraryObject(1, "A valid ISBN","Author", "12345678910", null);
         assertFalse(service.createLibraryObject(1, "This is a duplicate","Author", "12345678910", null));
+    }
+
+    @After
+    public void tearDown() throws SQLException{
+        dao.deleteDatabase(testDB);
     }
 }

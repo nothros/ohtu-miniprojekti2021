@@ -39,13 +39,16 @@ public class AppUiTest extends ApplicationTest {
         System.out.println("1");
         clickOn("Add new LibraryItem");
         System.out.println("2");
-	TextField titleTF = lookup("#comment").query(); //FIX: titleTF id is set to comment in AppUI
+	TextField titleTF = lookup("#title").query(); //FIX: titleTF id is set to comment in AppUI
         System.out.println("3");
 	titleTF.setText("testi");
         System.out.println("4");
-        verifyThat("#comment", hasText("testi"));
+        verifyThat("#title", hasText("testi"));
         System.out.println("5");
     }
-    
 
+    public <T extends Node> T find(final String query) {
+        /** TestFX provides many operations to retrieve elements from the loaded GUI. */
+        return lookup(query).query();
+    }
 }

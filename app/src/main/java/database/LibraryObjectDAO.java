@@ -12,18 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
 public class LibraryObjectDAO implements DAO<LibraryObject> {
 
     private Connection conn;
 
-    public LibraryObjectDAO(String url) {
-        conn = connect(url);
+    public LibraryObjectDAO(String url) throws SQLException{
+        conn = DriverManager.getConnection("jdbc:sqlite:" + url);
     }
 
     /*
      *  If database is empty then create all database tables.
+     *  
      */
-    public void createNewDatabase(String fileName) {
+   /*  public void createNewDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -38,7 +40,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
+    } */
 
     /*
      *  Queries for all database tables, if they do not exist.
@@ -335,4 +337,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     }
 
+    /*
+     *  Remove databasefile
+     */
+    public void deleteDatabase(String database) throws SQLException {
+        conn.close();
+        File deletedDB = new File(database);
+        deletedDB.delete();
+
+    }
 }

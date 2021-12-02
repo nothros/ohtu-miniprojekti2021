@@ -8,6 +8,7 @@ import javax.sql.rowset.serial.SerialArray;
 import com.google.common.util.concurrent.Service;
 
 import bookcase.domain.LibraryService;
+import database.DAO;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 import javafx.application.Application;
@@ -50,14 +51,22 @@ public class AppUi extends Application {
     private Stage mainStage;
     private LibraryObjectDAO library;
     private LibraryService service;
+    private String database;
+
+    public AppUi(){
+        database = "bookcase.db";
+    }
+
 
     @Override
-    public void init() {
-        library = new LibraryObjectDAO("jdbc:sqlite:test.db");
+    public void init() throws SQLException{
+        library = new LibraryObjectDAO(database);
         service = new LibraryService(library);
+        service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
     }
+    
 
     public void start(Stage primaryStage) throws Exception {
         mainStage = primaryStage;
@@ -87,6 +96,7 @@ public class AppUi extends Application {
 
         typeComboBox.getSelectionModel().selectFirst();
         Button addBook = new Button("Add new LibraryItem");
+        addBook.setId("addBook");
         addBook.setOnAction(e -> {
             String typeValue = (String) typeComboBox.getValue();
             System.out.println(typeValue);
@@ -140,7 +150,7 @@ public class AppUi extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
         /*
-         * Huom: Alla olevia kolmea riviä ei kait tarvita?
+         * Huom: Alla olevia kolmea riviï¿½ ei kait tarvita?
         */
         error.setText("Impossible to add "+typeValue);
         error.setTextFill(Color.RED);
@@ -158,15 +168,15 @@ public class AppUi extends Application {
         TextField titleTF = new TextField();
         titleTF.setId("title");
         TextField authorTF = new TextField();
-        titleTF.setId("author");
+        authorTF.setId("author");
         TextField ISBNTF = new TextField();
-        titleTF.setId("isbn_website");
+        ISBNTF.setId("isbn_website");
         TextField tagsTF = new TextField();
-        titleTF.setId("tags");
+        tagsTF.setId("tags");
         TextField courseTF = new TextField();
-        titleTF.setId("course");
+        courseTF.setId("course");
         TextArea commentTF = new TextArea();
-        titleTF.setId("comment");
+        commentTF.setId("comment");
         commentTF.setPrefSize(50, 200);
         commentTF.setWrapText(true);
 
@@ -176,8 +186,9 @@ public class AppUi extends Application {
         grid.add(tagsTF, 1, 4);
         grid.add(courseTF, 1, 5);
         grid.add(commentTF, 1, 6);
-        Button createBookB = new Button("Add new "+typeValue);
-        createBookB.setOnAction(e -> {
+        Button createBook = new Button("Add new "+typeValue);
+        createBook.setId("createBook");
+        createBook.setOnAction(e -> {
             String title = titleTF.getText();
             String author = authorTF.getText();
             String isbn = ISBNTF.getText();
@@ -186,7 +197,7 @@ public class AppUi extends Application {
             String comment = commentTF.getText();
 
 
-            //HUOM! typeValue on muuttuja jossa lukee mikä tyyppi toi lisättävä on antakaa se servicelle ja daoon
+            //HUOM! typeValue on muuttuja jossa lukee mikï¿½ tyyppi toi lisï¿½ttï¿½vï¿½ on antakaa se servicelle ja daoon
             if (service.createLibraryObject(1, title, author, isbn, null)) {
                 error.setText("New "+typeValue+" added");
                 error.setTextFill(Color.GREEN);
@@ -198,7 +209,7 @@ public class AppUi extends Application {
             }
 
         });
-        grid.add(createBookB, 1, 7);
+        grid.add(createBook, 1, 7);
         addPane.getChildren().addAll(error, grid);
 
         Button returnB = new Button("Back");
@@ -281,6 +292,7 @@ public class AppUi extends Application {
         Scene scene = new Scene(pane);
         return scene;
     }
+
 
     public static void main(String[] args) {
         launch(args);

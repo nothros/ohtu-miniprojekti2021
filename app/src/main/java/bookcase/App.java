@@ -3,6 +3,8 @@ package bookcase;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
+
 import bookcase.ui.AppUi;
 import database.CourseObject;
 import database.LibraryObject;
@@ -10,12 +12,12 @@ import database.LibraryObjectDAO;
 
 public class App {
 
-	private static String url = "jdbc:sqlite:test.db";
+	private static String url = "test.db";
 	//private static String filePath = "test.db";
 	
 	private static LibraryObjectDAO dao;
     
-	public static void initDummyDatabaseItems() {		
+	public static void initDummyDatabaseItems() throws SQLException {		
 		/*
 		 *  The absolute file path to your database file in windows is for example:
 		 *  Path p = Paths.get("C:\\Users\\tomit\\git\\ohtu-miniprojekti2021\\app\\test.db");
@@ -42,7 +44,7 @@ public class App {
 			}
         }
 		dao = new LibraryObjectDAO(url);
-		dao.createNewDatabase("test.db");
+		dao.createNewTable();
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 1", "Cathy O'Neil", "1234567890", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 2", "Cathy O'Neil", "1234567891", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 3", "Cathy O'Neil", "1234567892", null));
