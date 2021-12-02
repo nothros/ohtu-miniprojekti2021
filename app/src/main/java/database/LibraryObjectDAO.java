@@ -47,13 +47,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public void createNewTable() {
         String sq1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
-                + "(ID integer PRIMARY KEY, "
-                + "TYPE integer NOT NULL,"
-                + "TITLE text NOT NULL,"
-                + "AUTHOR text,"
-                + "ISBN text UNIQUE,"
-                + "URL text,"
-                + "DELETED integer);";
+                + "(ID INTEGER PRIMARY KEY, "
+                + "TYPE INTEGER NOT NULL,"
+                + "TITLE TEXT NOT NULL,"
+                + "AUTHOR TEXT,"
+                + "ISBN TEXT UNIQUE,"
+                + "URL TEXT,"
+                + "DELETED INTEGER);";
         String sq2 = "CREATE TABLE IF NOT EXISTS COURSE "
                 + "(ID INTEGER PRIMARY KEY,"
                 + "NAME TEXT NOT NULL,"
