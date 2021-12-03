@@ -10,32 +10,13 @@ Windows: ``` $gradlew.bat run ```
 **Testit** ``` $gradle test```
 **Checkstyle** ``` $gradle checkstyleMain```
 
-## Tiedostorakenne
-```
-.
-├── app
-│   ├
-│   ├── build.gradle
-│   └── src                          	<<<< Sovelluslogiikka
-│       ├── main
-│       │   ├── java
-│       │   │   └── kurssikirjahylly
-│       │   │       └── App.java
-│       │   └── resources
-│       └── test			            <<<< Testitiedostot
-│           ├── java
-│           │   └── kurssikirjahylly
-│           │       └── AppTest.java
-│           └── resources
-├── gradle
-│   └── wrapper
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
-├── gradlew
-├── gradlew.bat
-├── README.md
-└── settings.gradle
-```
+## Definition of done
+
+Sovimme että valmiiksi toteutettu osa ohjelmistoa on testattu sekä automaattisesti (Junit, Cucumber) että manuaalisesti. Automaattisessa yksikkötestauksessa edellytämme 70% rivi- ja haaraumakattavuutta. Manuaalisessa testauksessa jokainen jäsen kokeilee ohjelman toimivuutta omalla järjestelmällään. 
+
+Testien tulee olla relevantteja ja selkeästi luettavia. Niiden pitää mennä läpi lokaalisti ja GitHub Actionissa.
+
+Ylläpidämme koodin luettavuutta Checkstyle:n avulla. Luokka- ja metodijaon tulee olla järkevä.
 
 ## Backlog
 
