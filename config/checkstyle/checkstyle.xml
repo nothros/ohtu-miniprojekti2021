@@ -84,11 +84,8 @@
     <module name='FileLength'>
         <property name='max' value='500' />
     </module>
-    <!-- Use this to ignore classes for checkstyle (in theory).
-        i.e. edit config/checkstyle/suppressions.xml
     <module name="SuppressionFilter">
-        <property name="file" value="config/suppressions.xml"/>
+	<property name="file" value="${suppressionFile}"/>
         <property name="optional" value="false"/>
     </module>
-    -->
 </module>

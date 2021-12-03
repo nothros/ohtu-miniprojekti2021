@@ -64,4 +64,6 @@ jacocoTestReport {
     }
 }
 
-
+checkstyle {
+     configProperties = ["suppressionFile" : project(':').file("config/checkstyle/suppressions.xml")]
+}
