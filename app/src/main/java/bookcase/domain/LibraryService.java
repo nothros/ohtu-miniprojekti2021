@@ -1,6 +1,7 @@
 package bookcase.domain;
 
 import java.util.List;
+import database.CourseObject;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 
@@ -11,8 +12,8 @@ public class LibraryService {
         this.libraryDao = libraryDao;
     }
 
-    public boolean createLibraryObject(int laji, String otsikko, String kirjoittaja, String ISBN, String URL){
-        if (otsikko.isEmpty() || kirjoittaja.isEmpty() || ISBN.isEmpty()) {
+    public boolean createLibraryObject(int type, String title, String author, String ISBN, String URL){
+        if (title.isEmpty() || author.isEmpty() || ISBN.isEmpty()) {
             return false;
         }
         if (!libraryDao.isUnique(ISBN)) {
@@ -23,8 +24,17 @@ public class LibraryService {
     		System.out.println("Not a valid ISBN.");
     		return false;
     	}
-        LibraryObject libraryObject = new LibraryObject(laji, otsikko, kirjoittaja, ISBN, URL);
+        LibraryObject libraryObject = new LibraryObject(type, title, author, ISBN, URL);
         return libraryDao.insertLibrary(libraryObject);
+    }
+    
+    public boolean createCourseObject(String name, String isbn) {
+    	if (libraryDao.isUniqueCourse(name)) {
+    		CourseObject courseObj = new CourseObject(name);
+    		libraryDao.insertCourse(courseObj);
+    	}
+    	libraryDao.insertCL(libraryDao.getLibraryId(isbn),libraryDao.getCourseId(name));
+    	return true;
     }
 
     public List<LibraryObject> getAllObjects(){

@@ -56,8 +56,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "DELETED INTEGER);";
         String sq2 = "CREATE TABLE IF NOT EXISTS COURSE "
                 + "(ID INTEGER PRIMARY KEY,"
-                + "NAME TEXT NOT NULL,"
-                + "DEPARTMENT text)";
+                + "NAME TEXT NOT NULL)";
         String sq3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
                 + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "LIBRARY_ID INTEGER NOT NULL,"
@@ -105,7 +104,43 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             System.out.println(e.getMessage());
         }
     }
-
+    
+    /*
+     *  Get Id from COURSE where NAME is name. 
+     */
+    public int getCourseId(String name) {
+    	int id;
+        String sql = "SELECT ID FROM COURSE WHERE NAME = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            id = rs.getInt("ID");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return 1;
+        }
+        return id;
+    }
+    
+    /*
+     *  Get Id from LIBRARY where ISBN is isbn. 
+     */
+    public int getLibraryId(String isbn) {
+    	int id;
+        String sql = "SELECT ID FROM LIBRARY WHERE ISBN = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, isbn);
+            ResultSet rs = pstmt.executeQuery();
+            id = rs.getInt("ID");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return -1;
+        }
+        return id;
+    }
+    
     /*
      *  I am a placeholder table that links LIBRARY and COURSE content.
      */
@@ -143,15 +178,35 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return true;
     }
+    
+    /*
+     *  Check string %s is a unique course name in table COURSE.
+     */
+    public boolean isUniqueCourse(String s) {
+        boolean t = false;
+        String sq1 = "SELECT COUNT(*) FROM COURSE WHERE NAME = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sq1);
+            s = s.split(" ")[0];
+            pstmt.setString(1, s);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            if (rs.getInt(1) == 0) {
+                t = true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return t;
+    }
 
     /*
      *  Insert entries into table COURSE.
      */
     public boolean insertCourse(CourseObject courseObject) {
-        String sql = "INSERT INTO COURSE(NAME, DEPARTMENT) VALUES(?,?)";
+        String sql = "INSERT INTO COURSE(NAME) VALUES(?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, courseObject.getName());
-            pstmt.setString(2, courseObject.getDepartment());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

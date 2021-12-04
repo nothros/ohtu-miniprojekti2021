@@ -1,8 +1,11 @@
 package bookcase.ui;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import javax.sql.rowset.serial.SerialArray;
 import com.google.common.util.concurrent.Service;
@@ -12,14 +15,18 @@ import database.DAO;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -35,8 +42,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -48,6 +59,11 @@ public class AppUi extends Application {
     private Scene addReadble;
     private Scene listReadbles;
     private Scene showBooks;
+    private Scene addCourse;
+    /*
+     *  I am a TEST SCENE feel free to edit me as you wish.
+     */
+    private Scene testScene;
     private Stage mainStage;
     private LibraryObjectDAO library;
     private LibraryService service;
@@ -65,6 +81,8 @@ public class AppUi extends Application {
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
+        testScene = buildTestScene();
+        addCourse = buildAddCourseScene();
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -75,6 +93,10 @@ public class AppUi extends Application {
         mainScene = buildMainScene();
         mainStage.setScene(mainScene);
         mainStage.show();
+    }
+    
+    public Scene buildAddCourseScene() {
+    	return null;
     }
 
     public Scene buildMainScene() {
@@ -108,8 +130,14 @@ public class AppUi extends Application {
         	showBooks = buildShowBooksScene();
             mainStage.setScene(showBooks);
         });
+        Button testButton = new Button("Test");
+        testButton.setStyle("-fx-text-fill: #ff0000; ");
+        testButton.setOnAction(e -> {
+        	testScene = buildTestScene();
+            mainStage.setScene(testScene);
+        });
         
-        ListView bookview = new ListView();
+        ListView<String> bookview = new ListView<String>();
         List<LibraryObject> books = service.getAllObjects();
         for (LibraryObject book : books){
             String bookString = book.getTitle() + " (" + book.getAuthor() + ") ISBN: " + book.getISBN();
@@ -127,7 +155,7 @@ public class AppUi extends Application {
         mainPane.getChildren().addAll(addBook, viewBooks);
         mainScene = new Scene(mainPane);*/
         
-        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane);
+        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane,testButton);
         return new Scene(mainPane);
     }
     
@@ -185,7 +213,7 @@ public class AppUi extends Application {
         grid.add(tagsTF, 1, 4);
         grid.add(courseTF, 1, 5);
         grid.add(commentTF, 1, 6);
-        Button createBook = new Button("Add new "+typeValue);
+        Button createBook = new Button("Add new " + typeValue);
         createBook.setId("createBook");
         createBook.setOnAction(e -> {
             String title = titleTF.getText();
@@ -194,10 +222,9 @@ public class AppUi extends Application {
             String tags = tagsTF.getText();
             String course = courseTF.getText();
             String comment = commentTF.getText();
-
-
-            //HUOM! typeValue on muuttuja jossa lukee mik� tyyppi toi lis�tt�v� on antakaa se servicelle ja daoon
             if (service.createLibraryObject(1, title, author, isbn, null)) {
+            	if (course != null)
+            		service.createCourseObject(course, isbn);
                 error.setText("New "+typeValue+" added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -230,10 +257,128 @@ public class AppUi extends Application {
         return scene;
     }
     
-   
+    /*
+     *  Auto fit the column width in table view.
+     */
+    public void autoResizeColumns(TableView<LibraryObject> table) 
+    {
+        table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.getColumns().stream().forEach( (column) ->
+        {
+            Text t = new Text(column.getText());
+            double max = t.getLayoutBounds().getWidth();
+            for (int i = 0; i < table.getItems().size(); i++)
+            {
+                if (column.getCellData(i) != null)
+                {
+                    t = new Text(column.getCellData(i).toString());
+                    double calcwidth = t.getLayoutBounds().getWidth();
+                    if (calcwidth > max)
+                        max = calcwidth;
+                }
+            }
+            column.setPrefWidth(max + 10.0d);
+        } );
+    }
+    
+    /*
+     *  I am a test scene for the bookcase.
+     */
+    public Scene buildTestScene() {
+    	BorderPane pane = new BorderPane();
+        pane.setPadding(new Insets(5, 5, 5, 5));
+        pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
+        //pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        VBox addPane = new VBox();
+        addPane.setPadding(new Insets(10, 5, 5, 5));
+        addPane.setAlignment(Pos.CENTER);
+        //addPane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
+        addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+    	TabPane tabPane = new TabPane();
+    	tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+    	tabPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
+        Tab tab1 = new Tab("Book", new Label("Show all books"));
+        /////////////
+        TableView<LibraryObject> table1 = new TableView<LibraryObject>();
+    	table1.setPlaceholder(new Label(""));
+        final ObservableList<LibraryObject> data = 
+        		FXCollections.observableArrayList(service.getAllObjects("1"));
+        //pane.setPadding(new Insets(5, 5, 5, 5));
+        VBox addPane12 = new VBox();
+        addPane12.setPadding(new Insets(10, 5, 75, 5));
+        addPane12.setAlignment(Pos.CENTER);
+        //addPane2.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        addPane12.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, null, null)));
+        GridPane grid1 = new GridPane();
+        grid1.setAlignment(Pos.CENTER);
+        grid1.setPadding(new Insets(25, 25, 25, 25));
+        grid1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
+        Label error1 = new Label();
+        //Text scenetitle = new Text("Bookcase items:");
+        TableColumn<LibraryObject, String> colTitle1 = new TableColumn<>("Title");
+        colTitle1.setPrefWidth(100);
+        colTitle1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
+        TableColumn<LibraryObject, String> colAuthor1 = new TableColumn<>("Author");
+        colAuthor1.setPrefWidth(100);
+        colAuthor1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
+        TableColumn<LibraryObject, String> colISBN1 = new TableColumn<>("ISBN");
+        colISBN1.setPrefWidth(100);
+        colISBN1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
+        TableColumn<LibraryObject, String> colTags1 = new TableColumn<>("Tags");
+        colTags1.setPrefWidth(100);
+        TableColumn<LibraryObject, String> colCourse1 = new TableColumn<>("Related courses");
+        colCourse1.setPrefWidth(200);
+        table1.setItems(data);
+        table1.getColumns().addAll(Arrays.asList(colTitle1, colAuthor1, colISBN1, colTags1, colCourse1));
+        autoResizeColumns(table1);
+        ScrollPane sp1 = new ScrollPane(table1);
+        sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        sp1.setHmax(3);
+        VBox vbox1 = new VBox();
+        vbox1.setSpacing(5);
+        vbox1.setPadding(new Insets(10, 0, 0, 10));
+        vbox1.getChildren().addAll(sp1);
+        Button removeBook = new Button("Remove");
+        removeBook.setOnAction(e -> {
+        	if (table1.getSelectionModel().getSelectedItem() != null) {
+        		library.hideEntry(table1.getSelectionModel().getSelectedItem());
+        		//library.removeEntry(table.getSelectionModel().getSelectedItem()); 
+        		table1.getItems().removeAll(table1.getSelectionModel().getSelectedItems());
+        	}
+        });
+        grid1.add(vbox1, 2, 1, 1, 1);
+        Hyperlink myHyperlink = new Hyperlink();
+        myHyperlink.setText("My Link Text");
+
+        myHyperlink.setOnAction(e -> {
+        	HostServices host = getHostServices();
+            host.showDocument("http://google.com");
+        });
+        addPane12.getChildren().addAll(error1, grid1, removeBook,myHyperlink);
+        tab1.setContent(addPane12);
+        Tab tab2 = new Tab("Blog"  , new Label("Show all blogs"));
+        Tab tab3 = new Tab("Podcast" , new Label("Show all podcasts"));
+        Tab tab4 = new Tab("Course" , new Label("Show all courses"));
+        tabPane.getTabs().add(tab1);
+        tabPane.getTabs().add(tab2);
+        tabPane.getTabs().add(tab3);
+        tabPane.getTabs().add(tab4);
+        Button returnB = new Button("Back");
+        returnB.setOnAction(e -> {
+            mainScene = buildMainScene();
+            mainStage.setScene(mainScene);
+        });
+        addPane.getChildren().addAll(tabPane);
+        pane.setRight(returnB);
+        pane.setCenter(addPane);
+        Scene scene = new Scene(pane);
+        return scene;
+    }
+    
     /*
      *  Generates a table view of entries in LIBRARY. Currently books (type=1).
-    */
+     */
     public Scene buildShowBooksScene() {
     	TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
@@ -268,7 +413,7 @@ public class AppUi extends Application {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
-        Button createBookB = new Button("Hide");
+        Button createBookB = new Button("Remove");
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
         		library.hideEntry(table.getSelectionModel().getSelectedItem());

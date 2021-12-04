@@ -4,23 +4,20 @@ public class CourseObject {
 	private int id;
     private String name;
     private String department;
+    private String description;
 
-    public CourseObject(String name, String department) {
+    public CourseObject(String name) {
         this.name = name;
-        this.department = department;
     }
     
-    public CourseObject(int id, String name, String department) {
+    public CourseObject(int id, String name) {
     	this.id = id;
         this.name = name;
-        this.department = department;
     }
 
     @Override
     public String toString() {
-        return "{" +
-            " name='" + getName() + "'" +
-            ", department='" + getDepartment() + "'}";
+        return "{name='" + getName() + "'}";
     }
 
     public int getId(){
@@ -45,6 +42,14 @@ public class CourseObject {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+    
+    public String getDescription(){
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

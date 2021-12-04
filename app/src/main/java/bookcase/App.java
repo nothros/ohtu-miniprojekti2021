@@ -52,10 +52,10 @@ public class App {
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 4", "Cathy O'Neil", "1234567893", null));
 		dao.insertLibrary(new LibraryObject(1, "Weapons of Mass Destruction", "Mathew O'Neil", "1234567894", null));
 		
-		dao.insertCourse(new CourseObject("Logic 1", "Department of Mathematics"));
-		dao.insertCourse(new CourseObject("Logic 2", "Department of Mathematics"));
-		dao.insertCourse(new CourseObject("Programming in Python", "Department of Computer Science"));
-		dao.insertCourse(new CourseObject("Software Engineering", "Department of Computer Science"));
+		dao.insertCourse(new CourseObject("Logic 1"));
+		dao.insertCourse(new CourseObject("Logic 2"));
+		dao.insertCourse(new CourseObject("Programming in Python"));
+		dao.insertCourse(new CourseObject("Software Engineering"));
 		dao.helperFunction();
 		/*
 		 *  The above entries are indexed according to successive ids. In this case we can simply bind them.
