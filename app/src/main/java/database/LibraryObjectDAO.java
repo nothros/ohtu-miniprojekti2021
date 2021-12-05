@@ -236,18 +236,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         return true;
     }
 
-    /*
-     *  Database connection driver. 
-     */
-    public Connection connect(String url) {
-        conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
-    }
 
     /* 
      * Check if table %name exists in database.

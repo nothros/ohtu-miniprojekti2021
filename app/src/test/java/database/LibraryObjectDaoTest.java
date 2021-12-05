@@ -54,7 +54,30 @@ public class LibraryObjectDaoTest {
         LibraryObject book = objs.get(0);
         assertEquals("Clean code", book.getTitle());
     }
-
+    
+    @Test
+    public void testCourseInsertion(){
+        dao.insertCourse(new CourseObject("Kurssi1"));
+        dao.insertCourse(new CourseObject("Kurssi2"));
+        assertEquals(1, dao.getCourseId("Kurssi1"));
+        assertEquals(2, dao.getCourseId("Kurssi2"));
+    }
+    
+    @Test
+    public void testIsUniqueCourse(){
+        dao.insertCourse(new CourseObject("Kurssi1"));
+        assertTrue(dao.isUniqueCourse("Kurssi2"));
+        assertFalse(dao.isUniqueCourse("Kurssi1"));
+    }
+    
+    @Test
+    public void testDeleteTable(){
+        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "111222", null, null);
+        dao.insertLibrary(book2);
+        dao.deleteTable();
+        assertEquals(0, dao.getAll().size());
+    }
+    
     @After
     public void tearDown()throws SQLException{
         dao.deleteDatabase(testDB);
