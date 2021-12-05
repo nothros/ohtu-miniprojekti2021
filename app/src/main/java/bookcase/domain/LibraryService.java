@@ -12,28 +12,53 @@ public class LibraryService {
         this.libraryDao = libraryDao;
     }
 
-    public boolean createLibraryObject(int type, String title, String author, String ISBN, String URL){
-        if (title.isEmpty() || author.isEmpty() || ISBN.isEmpty()) {
-            return false;
-        }
-        if (!libraryDao.isUnique(ISBN)) {
-        	System.out.println("Not a unique ISBN.");
-    		return false;
+    public boolean createLibraryObject(int type, String title, String author, String ISBN, String URL, String course){
+    	LibraryObject libObj;
+    	switch(type) {
+    		case 1:
+    			if ((title.isEmpty() || author.isEmpty() || ISBN.isEmpty())) {
+    	            return false;
+    	        }
+    	        if (!libraryDao.isUnique(ISBN)) {
+    	        	System.out.println("Not a unique ISBN.");
+    	    		return false;
+    	    	}
+    	        if (!libraryDao.isValidISBN(ISBN)) {
+    	    		System.out.println("Not a valid ISBN.");
+    	    		return false;
+    	    	}
+    	        course = course.trim().replaceAll("\\s{2,}"," ");
+    	        libObj = new LibraryObject(type, title, author, ISBN, URL, course);
+    	        return libraryDao.insertLibrary(libObj);
+    		case 2:
+    			if ((title.isEmpty() || ISBN.isEmpty())) {
+    	            return false;
+    	        }
+    			course = course.trim().replaceAll("\\s{2,}"," ");
+    	        libObj = new LibraryObject(type, title, author, null, ISBN, course);
+    	        return libraryDao.insertLibrary(libObj);
+    		case 3:
+    			if ((title.isEmpty() || ISBN.isEmpty())) {
+    	            return false;
+    	        }
+    			course = course.trim().replaceAll("\\s{2,}"," ");
+    	        libObj = new LibraryObject(type, title, author, null, ISBN, course);
+    	        return libraryDao.insertLibrary(libObj);
     	}
-        if (!libraryDao.isValidISBN(ISBN)) {
-    		System.out.println("Not a valid ISBN.");
-    		return false;
-    	}
-        LibraryObject libraryObject = new LibraryObject(type, title, author, ISBN, URL);
-        return libraryDao.insertLibrary(libraryObject);
+        return false;
     }
     
     public boolean createCourseObject(String name, String isbn) {
-    	if (libraryDao.isUniqueCourse(name)) {
-    		CourseObject courseObj = new CourseObject(name);
-    		libraryDao.insertCourse(courseObj);
+    	//System.out.println(name);
+    	String[] course = name.split(",");
+    	for (String s : course) {
+    		name = s.trim().replaceAll("\\s{2,}"," ");
+    		if (libraryDao.isUniqueCourse(name)) {
+    			CourseObject courseObj = new CourseObject(name);
+    			libraryDao.insertCourse(courseObj);
+    		}
+    		libraryDao.insertCL(libraryDao.getCurrLibraryId(),libraryDao.getCourseId(name));
     	}
-    	libraryDao.insertCL(libraryDao.getLibraryId(isbn),libraryDao.getCourseId(name));
     	return true;
     }
 

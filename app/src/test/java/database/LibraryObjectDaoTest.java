@@ -20,7 +20,7 @@ public class LibraryObjectDaoTest {
     
     private String testDB;
     /**
-    T�m� metodi suoritetaan ennen jokaista testi�. Se luo tyhj�n tietokannan muistiin.
+    This method is performed before every test. It creates an empty db into memory.
     */
     @Before
     public void init() throws SQLException{
@@ -36,8 +36,8 @@ public class LibraryObjectDaoTest {
     
     @Test
     public void testDatabaseInsertion(){
-        LibraryObject book1 = new LibraryObject(1, "Weapons of Math Destruction","Cathy O'Neil", "12345678910", null);
-        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "11122233344", null);
+        LibraryObject book1 = new LibraryObject(1, "Weapons of Math Destruction","Cathy O'Neil", "12345678910", null, null);
+        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "11122233344", null, null);
         dao.insertLibrary(book1);
         dao.insertLibrary(book2);
         assertEquals(2, dao.getAll().size());
@@ -45,7 +45,7 @@ public class LibraryObjectDaoTest {
     
     @Test
     public void testReadAfterInsertion(){
-        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "111222", null);
+        LibraryObject book2 = new LibraryObject(1, "Clean code","Joku Muu", "111222", null, null);
 
         dao.insertLibrary(book2);
         List<LibraryObject> objs = dao.getAll();

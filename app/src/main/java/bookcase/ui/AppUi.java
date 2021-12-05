@@ -120,7 +120,7 @@ public class AppUi extends Application {
         addBook.setId("addBook");
         addBook.setOnAction(e -> {
             String typeValue = (String) typeComboBox.getValue();
-            System.out.println(typeValue);
+            //System.out.println(typeValue);
             mainStage.setScene(buildAddReableScene(typeValue));
         });
         comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
@@ -183,7 +183,7 @@ public class AppUi extends Application {
         error.setTextFill(Color.RED);
         error.setVisible(false);
 
-        Text scenetitle = new Text("Add new "+typeValue);
+        Text scenetitle = new Text("Add new " + typeValue);
         grid.add(scenetitle, 0, 0, 2, 1);
         for (int i = 0; i < listOfTitles.length; i++) {
             Label s = new Label(listOfTitles[i]);
@@ -222,10 +222,22 @@ public class AppUi extends Application {
             String tags = tagsTF.getText();
             String course = courseTF.getText();
             String comment = commentTF.getText();
-            if (service.createLibraryObject(1, title, author, isbn, null)) {
-            	if (course != null)
+            String index = "";
+            switch(typeValue) {
+            	case("Book"):
+            		index="1";
+            		break;
+            	case("Blogpost"):
+            		index="2";
+            		break;
+            	case("Podcast"):
+            		index="3";
+            		break;
+            }
+            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn, null, course)) {
+            	if (course.length() != 0)
             		service.createCourseObject(course, isbn);
-                error.setText("New "+typeValue+" added");
+                error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
          		titleTF.clear();
@@ -404,7 +416,7 @@ public class AppUi extends Application {
         colISBN.setPrefWidth(100);
         colISBN.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
         table.setItems(data);
-        table.getColumns().addAll(colTitle, colAuthor, colISBN);
+        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colISBN));
         ScrollPane sp = new ScrollPane(table);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);

@@ -51,8 +51,10 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "TYPE INTEGER NOT NULL,"
                 + "TITLE TEXT NOT NULL,"
                 + "AUTHOR TEXT,"
-                + "ISBN TEXT UNIQUE,"
+                //+ "ISBN TEXT UNIQUE,"
+                + "ISBN TEXT,"
                 + "URL TEXT,"
+                + "COURSE TEXT,"
                 + "DELETED INTEGER);";
         String sq2 = "CREATE TABLE IF NOT EXISTS COURSE "
                 + "(ID INTEGER PRIMARY KEY,"
@@ -124,6 +126,23 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
     
     /*
+     *  Get current index for table LIBRARY. 
+     */
+    public int getCurrLibraryId() {
+    	int count = 0;
+        String sql = "SELECT COUNT(*) FROM LIBRARY";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            count = rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    /*
      *  Get Id from LIBRARY where ISBN is isbn. 
      */
     public int getLibraryId(String isbn) {
@@ -162,14 +181,20 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      *  Insert entries into table LIBRARY.
      */
     public boolean insertLibrary(LibraryObject libObj) {
-        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, DELETED) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, COURSE, DELETED) VALUES(?,?,?,?,?,?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, libObj.getType());
             pstmt.setString(2, libObj.getTitle());
             pstmt.setString(3, libObj.getAuthor());
-            pstmt.setString(4, libObj.getISBN());
-            pstmt.setString(5, libObj.getURL());
-            pstmt.setInt(6, 0);
+            if (libObj.getType()==1) {
+            	pstmt.setString(4, libObj.getISBN());
+            	pstmt.setString(5, libObj.getURL());
+            } else {
+            	pstmt.setString(4, null);
+            	pstmt.setString(5, libObj.getISBN());
+            }
+            pstmt.setString(6, libObj.getCourse());
+            pstmt.setInt(7, 0);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -267,7 +292,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public boolean isUnique(String s) {
         boolean t = false;
-        String sq1 = "SELECT COUNT(*) FROM LIBRARY WHERE ISBN = ?";
+        String sq1 = "SELECT COUNT(*) FROM LIBRARY WHERE ISBN = ? AND DELETED = 0";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sq1);
             pstmt.setString(1, s);
@@ -299,7 +324,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         String sql = "DELETE FROM LIBRARY WHERE ID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            System.out.println(t.getId());
             pstmt.setInt(1, t.getId());
             pstmt.execute();
         } catch (SQLException e) {
@@ -350,7 +374,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(1, s);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -365,11 +389,11 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     @Override
     public List<LibraryObject> getAll() {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
-        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL FROM LIBRARY WHERE DELETED = 0";
+        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL, COURSE FROM LIBRARY WHERE DELETED = 0";
         try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sq1)) {
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
                 list.add(libObj);
                 System.out.println("GET: \n" + libObj.toString());
             }

@@ -3,8 +3,6 @@ package database;
 public class CourseObject {	
 	private int id;
     private String name;
-    private String department;
-    private String description;
 
     public CourseObject(String name) {
         this.name = name;
@@ -13,11 +11,6 @@ public class CourseObject {
     public CourseObject(int id, String name) {
     	this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "{name='" + getName() + "'}";
     }
 
     public int getId(){
@@ -35,21 +28,10 @@ public class CourseObject {
     public void setName(String name) {
         this.name = name;
     }
-	    
-    public String getDepartment(){
-        return this.department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
+    
+    @Override
+    public String toString() {
+        return "{name='" + getName() + "'}";
     }
     
-    public String getDescription(){
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
 }

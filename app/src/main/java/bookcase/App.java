@@ -44,27 +44,6 @@ public class App {
 				System.out.println(e);
 			}
         }
-		//dao = new LibraryObjectDAO(url);
-		dao.createNewTable();
-		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 1", "Cathy O'Neil", "1234567890", null));
-		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 2", "Cathy O'Neil", "1234567891", null));
-		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 3", "Cathy O'Neil", "1234567892", null));
-		dao.insertLibrary(new LibraryObject(1, "Weapons of Math Destruction 4", "Cathy O'Neil", "1234567893", null));
-		dao.insertLibrary(new LibraryObject(1, "Weapons of Mass Destruction", "Mathew O'Neil", "1234567894", null));
-		
-		dao.insertCourse(new CourseObject("Logic 1"));
-		dao.insertCourse(new CourseObject("Logic 2"));
-		dao.insertCourse(new CourseObject("Programming in Python"));
-		dao.insertCourse(new CourseObject("Software Engineering"));
-		dao.helperFunction();
-		/*
-		 *  The above entries are indexed according to successive ids. In this case we can simply bind them.
-		 *  Books 1 and 2 relate to course 1. Book 3 relates to course 2. Books 4 and 5 do not relate to any course.
-		 *  Function insertCL is a placeholder. Need to decide how we implement the database etc.
-		 */
-		dao.insertCL(1, 1);
-		dao.insertCL(2, 1);
-		dao.insertCL(3, 2);
 	}
 	
     public static void main(String[] args) {
