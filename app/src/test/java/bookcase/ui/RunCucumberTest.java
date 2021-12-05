@@ -1,15 +1,15 @@
 package bookcase.ui;
 
-    import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testfx.framework.junit.ApplicationTest;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty"},  features = "src/test/resources/bookcase")
+@CucumberOptions(plugin = {"pretty"}, features = "src/test/resources/bookcase")
 public class RunCucumberTest {
-    
+
     @BeforeClass
     public static void setupHeadlessMode() throws Exception {
         System.setProperty("isTestEnvironment", "true");
@@ -22,4 +22,3 @@ public class RunCucumberTest {
         System.setProperty("java.awt.headless", "true");
     }
 }
-

@@ -47,7 +47,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public void createNewTable() {
         String sq1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
                 + "(ID INTEGER PRIMARY KEY, "
-                + "TYPE INTEGER NOT NULL,"
+                + "TYPE TEXT NOT NULL,"
                 + "TITLE TEXT NOT NULL,"
                 + "AUTHOR TEXT,"
                 + "ISBN TEXT,"
@@ -184,7 +184,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public boolean insertLibrary(LibraryObject libObj) {
         String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, COURSE, DELETED) VALUES(?,?,?,?,?,?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, libObj.getType());
+            pstmt.setString(1, libObj.getType());
             pstmt.setString(2, libObj.getTitle());
             pstmt.setString(3, libObj.getAuthor());
             pstmt.setString(4, libObj.getISBN());
@@ -350,15 +350,11 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
         String sq1 = "SELECT * FROM LIBRARY WHERE TYPE = ? AND DELETED = 0";
         try {
-            Pattern p = Pattern.compile("[123]");
-            if (!p.matcher(s).matches()) {
-                return List.of();
-            }
             PreparedStatement pstmt = conn.prepareStatement(sq1);
             pstmt.setString(1, s);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -377,7 +373,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sq1)) {
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
                 list.add(libObj);
                 System.out.println("GET: \n" + libObj.toString());
             }
@@ -421,7 +417,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(1, isbn);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
                 return lib;
             }
         } catch (SQLException e) {

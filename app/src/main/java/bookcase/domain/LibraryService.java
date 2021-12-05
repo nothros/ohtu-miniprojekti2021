@@ -13,19 +13,19 @@ public class LibraryService {
         this.libraryDao = libraryDao;
     }
 
-    public boolean createLibraryObject(int type, String title, String author, String isbnWebsite, String course) {
+    public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course) {
         LibraryObject libObj;
         if ((title.isEmpty() || author.isEmpty() || isbnWebsite.isEmpty())) {
             return false;
         }
         switch (type) {
-            case 1:
+            case "book":
                 return createBook(title, author, isbnWebsite, course);
-            case 2:
+            case "podcast":
                 //	course = course.trim().replaceAll("\\s{2,}"," ");
                 libObj = new LibraryObject(type, title, author, null, isbnWebsite, course);
                 return libraryDao.insertLibrary(libObj);
-            case 3:
+            case "blogpost":
                 //	course = course.trim().replaceAll("\\s{2,}"," ");
                 libObj = new LibraryObject(type, title, author, null, isbnWebsite, course);
                 return libraryDao.insertLibrary(libObj);
@@ -43,7 +43,7 @@ public class LibraryService {
             System.out.println("Not a valid ISBN.");
             return false;
         }
-        libObj = new LibraryObject(1, title, author, isbn, null, course);
+        libObj = new LibraryObject("book", title, author, isbn, null, course);
         return libraryDao.insertLibrary(libObj);
     }
 

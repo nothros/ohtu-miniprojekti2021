@@ -1,4 +1,5 @@
 package bookcase.ui;
+
 import bookcase.ui.AppUi;
 import javafx.scene.Node;
 import javafx.stage.Stage;
@@ -15,7 +16,9 @@ import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.util.WaitForAsyncUtils;
 
 public class TestFXBase extends ApplicationTest {
-    Stage stage;  
+
+    Stage stage;
+
     @Before
     public void setUpClass() throws Exception {
         System.setProperty("isTestEnvironment", "true");
@@ -27,7 +30,7 @@ public class TestFXBase extends ApplicationTest {
         AppUi sovellus = new AppUi();
         Application app = Application.class.cast(sovellus);
         app.init();
-	    app.start(stage);
+        app.start(stage);
         this.stage = stage;
     }
 

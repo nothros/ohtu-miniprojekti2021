@@ -1,4 +1,5 @@
 package bookcase.domain;
+
 import org.junit.Test;
 
 import bookcase.domain.LibraryService;
@@ -13,14 +14,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ServiceTest {
+
     private LibraryService service;
     private LibraryObjectDAO dao;
-    private String tooShortISBN =  "123456789";
-    private String tooLongISBN =  "11122233344455";
+    private String tooShortISBN = "123456789";
+    private String tooLongISBN = "11122233344455";
     private String validISBN = "12345678910";
     private String testDB;
+
     @Before
-    public void init() throws SQLException{
+    public void init() throws SQLException {
         testDB = "servicetest.db";
         dao = new LibraryObjectDAO(testDB);
         service = new LibraryService(dao);
@@ -29,35 +32,37 @@ public class ServiceTest {
     }
 
     @Test
-    public void testEmptyDatabaseSize(){
+    public void testEmptyDatabaseSize() {
         assertEquals(0, dao.getAll().size());
     }
+
     @Test
     public void tooShortISBNisNotAdded() {
-        service.createLibraryObject(1, "","Author", tooShortISBN, null);
+        service.createLibraryObject("book", "", "Author", tooShortISBN, null);
         assertEquals(0, dao.getAll().size());
     }
+
     @Test
     public void tooLongISBNisNotAdded() {
-        service.createLibraryObject(1, "","Author", tooLongISBN, null);
+        service.createLibraryObject("book", "", "Author", tooLongISBN, null);
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void validISBNisAdded() {
-        service.createLibraryObject(1, " ","Author", validISBN, null);
+        service.createLibraryObject("book", " ", "Author", validISBN, null);
         List<LibraryObject> objs = dao.getAll();
-        assertEquals("12345678910", objs.get(0).getISBN() );
+        assertEquals("12345678910", objs.get(0).getISBN());
     }
 
     @Test
     public void duplicateISBNisRejected() {
-        service.createLibraryObject(1, "A valid ISBN","Author", "12345678910", null);
-        assertFalse(service.createLibraryObject(1, "This is a duplicate","Author", "12345678910", null));
+        service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", null);
+        assertFalse(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", null));
     }
 
     @After
-    public void tearDown() throws SQLException{
+    public void tearDown() throws SQLException {
         dao.deleteDatabase(testDB);
     }
 }

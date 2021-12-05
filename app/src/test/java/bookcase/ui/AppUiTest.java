@@ -20,9 +20,8 @@ import javafx.scene.Node;
 /* This is the example code from the testfx github readme
  * TODO: create actual tests
  * */
-
-
 public class AppUiTest extends ApplicationTest {
+
     private Stage stage;
 
     @Override
@@ -30,13 +29,13 @@ public class AppUiTest extends ApplicationTest {
         AppUi sovellus = new AppUi();
         Application app = Application.class.cast(sovellus);
         app.init();
-	app.start(stage);
+        app.start(stage);
         this.stage = stage;
     }
 
     @Test
-    public void testDemo() {    
-/*         System.out.println("1");
+    public void testDemo() {
+        /*         System.out.println("1");
         clickOn("Add new LibraryItem");
         System.out.println("2");
 	TextField titleTF = lookup("#title").query(); //FIX: titleTF id is set to comment in AppUI
@@ -48,7 +47,10 @@ public class AppUiTest extends ApplicationTest {
     }
 
     public <T extends Node> T find(final String query) {
-        /** TestFX provides many operations to retrieve elements from the loaded GUI. */
+        /**
+         * TestFX provides many operations to retrieve elements from the loaded
+         * GUI.
+         */
         return lookup(query).query();
     }
 }

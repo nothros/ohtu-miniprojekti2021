@@ -3,14 +3,14 @@ package database;
 public class LibraryObject {
 
     private int id;
-    private int type;
+    private String type;
     private String title;
     private String author;
     private String isbn;
     private String url;
     private String course;
 
-    public LibraryObject(int type, String title, String author, String isbn, String url, String course) {
+    public LibraryObject(String type, String title, String author, String isbn, String url, String course) {
         this.type = type;
         this.title = title;
         this.author = author;
@@ -19,7 +19,7 @@ public class LibraryObject {
         this.course = course;
     }
 
-    public LibraryObject(int id, int type, String title, String author, String isbn, String url, String course) {
+    public LibraryObject(int id, String type, String title, String author, String isbn, String url, String course) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -31,17 +31,17 @@ public class LibraryObject {
 
     @Override
     public String toString() {
-        String type = "";
-        if (getType() == 1) {
-            type = "Book";
-        }
-        if (getType() == 2) {
-            type = "Blogpost";
-        }
-        if (getType() == 3) {
-            type = "Podcast";
-        }
-        return " type: " + type
+//        String type = "";
+//        if (getType() == 1) {
+//            type = "Book";
+//        }
+//        if (getType() == 2) {
+//            type = "Blogpost";
+//        }
+//        if (getType() == 3) {
+//            type = "Podcast";
+//        }
+        return "type: " + getType()
                 + ", title: " + getTitle()
                 + ", author: " + getAuthor()
                 + ", ISBN: " + getISBN()
@@ -57,11 +57,11 @@ public class LibraryObject {
         this.id = id;
     }
 
-    public int getType() {
+    public String getType() {
         return this.type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 

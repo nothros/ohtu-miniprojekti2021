@@ -69,13 +69,13 @@ public class AppUi extends Application {
     private LibraryService service;
     private String database;
 
-    public AppUi(){
+    public AppUi() {
         //database = "bookcase.db";
         database = "test.db";
     }
 
     @Override
-    public void init() throws SQLException{
+    public void init() throws SQLException {
         library = new LibraryObjectDAO(database);
         service = new LibraryService(library);
         service.createNewTablesIfNotExists();
@@ -84,15 +84,15 @@ public class AppUi extends Application {
         testScene = buildTestScene();
         addCourse = buildAddCourseScene();
         LibraryObject l = service.getByIsbn("6767676766");
-            if(l == null){
-                return;
-            }else{
-                service.removeById(l);
-            }
+        if (l == null) {
+            return;
+        } else {
+            service.removeById(l);
+        }
     }
 
     public void start(Stage primaryStage) throws Exception {
-        
+
         mainStage = primaryStage;
         mainStage.setTitle("Bookcase");
         mainStage.setWidth(800);
@@ -101,9 +101,9 @@ public class AppUi extends Application {
         mainStage.setScene(mainScene);
         mainStage.show();
     }
-    
+
     public Scene buildAddCourseScene() {
-    	return null;
+        return null;
     }
 
     public Scene buildMainScene() {
@@ -118,9 +118,9 @@ public class AppUi extends Application {
         comboBoxAndButton.setAlignment(Pos.CENTER);
         ComboBox<String> typeComboBox = new ComboBox<>();
         typeComboBox.getItems().addAll(
-            "Book",
-            "Blogpost",
-            "Podcast"
+                "Book",
+                "Blogpost",
+                "Podcast"
         );
 
         typeComboBox.getSelectionModel().selectFirst();
@@ -135,41 +135,40 @@ public class AppUi extends Application {
 
         Button viewBooks = new Button("Show books");
         viewBooks.setOnAction(e -> {
-        	showBooks = buildShowBooksScene();
+            showBooks = buildShowBooksScene();
             mainStage.setScene(showBooks);
         });
         Button testButton = new Button("Test");
         testButton.setStyle("-fx-text-fill: #ff0000; ");
         testButton.setOnAction(e -> {
-        	testScene = buildTestScene();
+            testScene = buildTestScene();
             mainStage.setScene(testScene);
         });
-        
+
         ListView<String> bookview = new ListView<String>();
         List<LibraryObject> books = service.getAllObjects();
-        for (LibraryObject book : books){
+        for (LibraryObject book : books) {
             String bookString = book.toString();
             bookview.getItems().add(bookString);
         }
-        
+
         ScrollPane scrollpane = new ScrollPane(bookview);
         scrollpane.setFitToWidth(true);
-        
-      /*  FlowPane mainPane = new FlowPane();
+
+        /*  FlowPane mainPane = new FlowPane();
         mainPane.setPadding(new Insets(10));
         mainPane.setHgap(10);
         mainPane.setVgap(10);
         mainPane.setAlignment(Pos.CENTER);
         mainPane.getChildren().addAll(addBook, viewBooks);
         mainScene = new Scene(mainPane);*/
-        
-        mainPane.getChildren().addAll(welcome,addReadable,comboBoxAndButton,viewBooks, scrollpane,testButton);
+        mainPane.getChildren().addAll(welcome, addReadable, comboBoxAndButton, viewBooks, scrollpane, testButton);
         return new Scene(mainPane);
     }
-    
+
     public Scene buildAddReableScene(String typeValue) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
-        if (typeValue != "Book"){
+        if (typeValue != "Book") {
             listOfTitles[2] = "Website";
         }
         BorderPane pane = new BorderPane();
@@ -177,7 +176,7 @@ public class AppUi extends Application {
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -187,8 +186,8 @@ public class AppUi extends Application {
         error.setId("error");
         /*
          * Huom: Alla olevia kolmea rivi� ei kait tarvita?
-        */
-        error.setText("Impossible to add "+typeValue);
+         */
+        error.setText("Impossible to add " + typeValue);
         error.setTextFill(Color.RED);
         error.setVisible(false);
 
@@ -233,31 +232,31 @@ public class AppUi extends Application {
             String course = courseTF.getText();
             String comment = commentTF.getText();
             String index = "";
-            switch(typeValue) {
-            	case("Book"):
-            		index="1";
-            		break;
-            	case("Blogpost"):
-            		index="2";
-            		break;
-            	case("Podcast"):
-            		index="3";
-            		break;
+            switch (typeValue) {
+                case ("Book"):
+                    index = "book";
+                    break;
+                case ("Blogpost"):
+                    index = "blogpost";
+                    break;
+                case ("Podcast"):
+                    index = "podcast";
+                    break;
             }
-            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn_website, course)) {
-            	//if (course.length() != 0)
-            	//	service.createCourseObject(course, isbn);
+            if (service.createLibraryObject(index, title, author, isbn_website, course)) {
+                //if (course.length() != 0)
+                //	service.createCourseObject(course, isbn);
                 error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
-         		titleTF.clear();
-             	authorTF.clear();
+                titleTF.clear();
+                authorTF.clear();
                 ISBNTF.clear();
                 tagsTF.clear();
                 courseTF.clear();
                 commentTF.clear();
             } else {
-                error.setText("Something went wrong while adding new "+typeValue);
+                error.setText("Something went wrong while adding new " + typeValue);
                 error.setTextFill(Color.RED);
                 error.setVisible(true);
             }
@@ -276,40 +275,38 @@ public class AppUi extends Application {
 
         pane.setCenter(addPane);
         pane.setRight(returnB);
-        
+
         Scene scene = new Scene(pane);
         return scene;
     }
-    
+
     /*
      *  Auto fit the column width in table view.
      */
-    public void autoResizeColumns(TableView<LibraryObject> table) 
-    {
-        table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach( (column) ->
-        {
+    public void autoResizeColumns(TableView<LibraryObject> table) {
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.getColumns().stream().forEach((column)
+                -> {
             Text t = new Text(column.getText());
             double max = t.getLayoutBounds().getWidth();
-            for (int i = 0; i < table.getItems().size(); i++)
-            {
-                if (column.getCellData(i) != null)
-                {
+            for (int i = 0; i < table.getItems().size(); i++) {
+                if (column.getCellData(i) != null) {
                     t = new Text(column.getCellData(i).toString());
                     double calcwidth = t.getLayoutBounds().getWidth();
-                    if (calcwidth > max)
+                    if (calcwidth > max) {
                         max = calcwidth;
+                    }
                 }
             }
             column.setPrefWidth(max + 10.0d);
-        } );
+        });
     }
-    
+
     /*
      *  I am a test scene for the bookcase.
      */
     public Scene buildTestScene() {
-    	BorderPane pane = new BorderPane();
+        BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
         //pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -318,15 +315,15 @@ public class AppUi extends Application {
         addPane.setAlignment(Pos.CENTER);
         //addPane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
         addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-    	TabPane tabPane = new TabPane();
-    	tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-    	tabPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
+        TabPane tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        tabPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
         Tab tab1 = new Tab("Book", new Label("Show all books"));
         /////////////
         TableView<LibraryObject> table1 = new TableView<LibraryObject>();
-    	table1.setPlaceholder(new Label(""));
-        final ObservableList<LibraryObject> data = 
-        		FXCollections.observableArrayList(service.getAllObjects("1"));
+        table1.setPlaceholder(new Label(""));
+        final ObservableList<LibraryObject> data
+                = FXCollections.observableArrayList(service.getAllObjects("book"));
         //pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane12 = new VBox();
         addPane12.setPadding(new Insets(10, 5, 75, 5));
@@ -365,25 +362,25 @@ public class AppUi extends Application {
         vbox1.getChildren().addAll(sp1);
         Button removeBook = new Button("Remove");
         removeBook.setOnAction(e -> {
-        	if (table1.getSelectionModel().getSelectedItem() != null) {
-        		library.hideEntry(table1.getSelectionModel().getSelectedItem());
-        		//library.removeEntry(table.getSelectionModel().getSelectedItem()); 
-        		table1.getItems().removeAll(table1.getSelectionModel().getSelectedItems());
-        	}
+            if (table1.getSelectionModel().getSelectedItem() != null) {
+                library.hideEntry(table1.getSelectionModel().getSelectedItem());
+                //library.removeEntry(table.getSelectionModel().getSelectedItem()); 
+                table1.getItems().removeAll(table1.getSelectionModel().getSelectedItems());
+            }
         });
         grid1.add(vbox1, 2, 1, 1, 1);
         Hyperlink myHyperlink = new Hyperlink();
         myHyperlink.setText("My Link Text");
 
         myHyperlink.setOnAction(e -> {
-        	HostServices host = getHostServices();
+            HostServices host = getHostServices();
             host.showDocument("http://google.com");
         });
-        addPane12.getChildren().addAll(error1, grid1, removeBook,myHyperlink);
+        addPane12.getChildren().addAll(error1, grid1, removeBook, myHyperlink);
         tab1.setContent(addPane12);
-        Tab tab2 = new Tab("Blog"  , new Label("Show all blogs"));
-        Tab tab3 = new Tab("Podcast" , new Label("Show all podcasts"));
-        Tab tab4 = new Tab("Course" , new Label("Show all courses"));
+        Tab tab2 = new Tab("Blog", new Label("Show all blogs"));
+        Tab tab3 = new Tab("Podcast", new Label("Show all podcasts"));
+        Tab tab4 = new Tab("Course", new Label("Show all courses"));
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
@@ -400,15 +397,15 @@ public class AppUi extends Application {
         Scene scene = new Scene(pane);
         return scene;
     }
-    
+
     /*
      *  Generates a table view of entries in LIBRARY. Currently books (type=1).
      */
     public Scene buildShowBooksScene() {
-    	TableView<LibraryObject> table = new TableView<LibraryObject>();
-    	table.setPlaceholder(new Label(""));
-        final ObservableList<LibraryObject> data = 
-        		FXCollections.observableArrayList(service.getAllObjects());
+        TableView<LibraryObject> table = new TableView<LibraryObject>();
+        table.setPlaceholder(new Label(""));
+        final ObservableList<LibraryObject> data
+                = FXCollections.observableArrayList(service.getAllObjects());
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
@@ -420,7 +417,7 @@ public class AppUi extends Application {
         Label error = new Label();
         error.setId("error");
         Text scenetitle = new Text("Bookcase items:");
-        
+
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setPrefWidth(100);
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
@@ -448,13 +445,13 @@ public class AppUi extends Application {
         vbox.getChildren().addAll(sp);
         Button createBookB = new Button("Remove");
 
-        // WILL REMOVE LIBRARY ITEM!
+        // Hides entry since we don't want to delete it completely
         createBookB.setOnAction(e -> {
-        	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.removeEntry(table.getSelectionModel().getSelectedItem());
-        		//library.removeEntry(table.getSelectionModel().getSelectedItem()); 
-        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
-        	}
+            if (table.getSelectionModel().getSelectedItem() != null) {
+                library.hideEntry(table.getSelectionModel().getSelectedItem());
+                //library.removeEntry(table.getSelectionModel().getSelectedItem()); 
+                table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
+            }
         });
         grid.add(scenetitle, 2, 0, 1, 1);
         grid.add(vbox, 2, 1, 1, 1);
@@ -462,7 +459,7 @@ public class AppUi extends Application {
         Button returnB = new Button("Back");
         returnB.setId("backButton");
         returnB.setOnAction(e -> {
-        	mainScene = buildMainScene();
+            mainScene = buildMainScene();
             mainStage.setScene(mainScene);
             error.setVisible(false);
         });
@@ -472,9 +469,8 @@ public class AppUi extends Application {
         return scene;
     }
 
-
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

@@ -31,7 +31,7 @@ public class StepDefinitions extends TestFXBase {
     }
 
     @When("form is filled with {string} as name and {string} as author and {string} as isbn")
-    public void fillNewBookForm(String title, String author, String isbn){
+    public void fillNewBookForm(String title, String author, String isbn) {
         TextField nameField = find("#title");
         nameField.setText(title);
         TextField authorField = find("#author");
@@ -40,18 +40,15 @@ public class StepDefinitions extends TestFXBase {
         pageCountField.setText(isbn);
     }
 
+    @When("create book is clicked")
+    public void create_book_is_clicked() {
+        clickOn("#createBook");
+    }
 
-@When("create book is clicked")
-public void create_book_is_clicked() {
-    clickOn("#createBook");
-}
+    @Then("error label has text {string}")
+    public void error_label_has_text(String string) {
+        verifyThat("#error", hasText(string));
 
-@Then("error label has text {string}")
-public void error_label_has_text(String string) {
-    verifyThat("#error", hasText(string));
-
-}
-
-
+    }
 
 }
