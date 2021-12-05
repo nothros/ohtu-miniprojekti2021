@@ -21,18 +21,7 @@ jobs:
       run: ./gradlew test
     - name: Run checkstyle
       run: ./gradlew checkstyleMain
-
-
-  checkstyle_job:
-  
-    runs-on: ubuntu-latest
-    name: Checkstyle job
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Run check style
-      uses: nikitasavinov/checkstyle-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: 'github-pr-check'
-        tool_name: 'testtool'
+    - name: Code coverage rapost
+      run: ./gradlew jacocoTestReport
+    - name: Data to codecov
+      run: bash <(curl -s https://codecov.io/bash)
