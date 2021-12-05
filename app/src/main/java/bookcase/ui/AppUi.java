@@ -83,9 +83,16 @@ public class AppUi extends Application {
         showBooks = buildShowBooksScene();
         testScene = buildTestScene();
         addCourse = buildAddCourseScene();
+        LibraryObject l = service.getByIsbn("6767676766");
+            if(l == null){
+                return;
+            }else{
+                service.removeById(l);
+            }
     }
 
     public void start(Stage primaryStage) throws Exception {
+        
         mainStage = primaryStage;
         mainStage.setTitle("Bookcase");
         mainStage.setWidth(800);
@@ -104,7 +111,8 @@ public class AppUi extends Application {
         mainPane.setSpacing(5);
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setAlignment(Pos.CENTER);
-        
+        Label welcome = new Label("Welcome to bookcase");
+        welcome.setId("welcome");
         Text addReadable = new Text("Choose what you want to add");
         HBox comboBoxAndButton = new HBox();
         comboBoxAndButton.setAlignment(Pos.CENTER);
@@ -155,7 +163,7 @@ public class AppUi extends Application {
         mainPane.getChildren().addAll(addBook, viewBooks);
         mainScene = new Scene(mainPane);*/
         
-        mainPane.getChildren().addAll(addReadable,comboBoxAndButton,viewBooks, scrollpane,testButton);
+        mainPane.getChildren().addAll(welcome,addReadable,comboBoxAndButton,viewBooks, scrollpane,testButton);
         return new Scene(mainPane);
     }
     
@@ -176,6 +184,7 @@ public class AppUi extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
+        error.setId("error");
         /*
          * Huom: Alla olevia kolmea rivi� ei kait tarvita?
         */
@@ -213,12 +222,13 @@ public class AppUi extends Application {
         grid.add(tagsTF, 1, 4);
         grid.add(courseTF, 1, 5);
         grid.add(commentTF, 1, 6);
+
         Button createBook = new Button("Add new " + typeValue);
         createBook.setId("createBook");
         createBook.setOnAction(e -> {
             String title = titleTF.getText();
             String author = authorTF.getText();
-            String isbn = ISBNTF.getText();
+            String isbn_website = ISBNTF.getText();
             String tags = tagsTF.getText();
             String course = courseTF.getText();
             String comment = commentTF.getText();
@@ -234,7 +244,7 @@ public class AppUi extends Application {
             		index="3";
             		break;
             }
-            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn, null, course)) {
+            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn_website, null, course)) {
             	//if (course.length() != 0)
             	//	service.createCourseObject(course, isbn);
                 error.setText("New " + typeValue + " added");
@@ -257,6 +267,7 @@ public class AppUi extends Application {
         addPane.getChildren().addAll(error, grid);
 
         Button returnB = new Button("Back");
+        returnB.setId("backButton");
         returnB.setOnAction(e -> {
             mainScene = buildMainScene();
             mainStage.setScene(mainScene);
@@ -265,6 +276,7 @@ public class AppUi extends Application {
 
         pane.setCenter(addPane);
         pane.setRight(returnB);
+        
         Scene scene = new Scene(pane);
         return scene;
     }
@@ -377,6 +389,7 @@ public class AppUi extends Application {
         tabPane.getTabs().add(tab3);
         tabPane.getTabs().add(tab4);
         Button returnB = new Button("Back");
+        returnB.setId("backButton");
         returnB.setOnAction(e -> {
             mainScene = buildMainScene();
             mainStage.setScene(mainScene);
@@ -405,6 +418,7 @@ public class AppUi extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
+        error.setId("error");
         Text scenetitle = new Text("Bookcase items:");
         
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
@@ -446,6 +460,7 @@ public class AppUi extends Application {
         grid.add(vbox, 2, 1, 1, 1);
         addPane.getChildren().addAll(error, grid, createBookB);
         Button returnB = new Button("Back");
+        returnB.setId("backButton");
         returnB.setOnAction(e -> {
         	mainScene = buildMainScene();
             mainStage.setScene(mainScene);

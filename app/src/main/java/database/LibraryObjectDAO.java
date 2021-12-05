@@ -430,6 +430,22 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     }
 
+    public LibraryObject getByIsbn(String isbn){
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sq1 = "SELECT * FROM LIBRARY WHERE ISBN = ? AND DELETED = 0";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sq1);
+            pstmt.setString(1, isbn);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+            LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+            return lib;
+        }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
     /*
      *  Remove databasefile
      */
