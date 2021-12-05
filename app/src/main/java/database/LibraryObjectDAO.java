@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
 public class LibraryObjectDAO implements DAO<LibraryObject> {
 
     private Connection conn;
 
-    public LibraryObjectDAO(String url) throws SQLException{
+    public LibraryObjectDAO(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
     }
 
@@ -25,7 +24,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      *  If database is empty then create all database tables.
      *  DELETE ME ?
      */
-   /*  public void createNewDatabase(String fileName) {
+ /*  public void createNewDatabase(String fileName) {
         String url = "jdbc:sqlite:" + fileName;
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
@@ -42,7 +41,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     } */
 
-    /*
+ /*
      *  Queries for all database tables, if they do not exist.
      */
     public void createNewTable() {
@@ -106,12 +105,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             System.out.println(e.getMessage());
         }
     }
-    
+
     /*
      *  Get Id from COURSE where NAME is name. 
      */
     public int getCourseId(String name) {
-    	int id;
+        int id;
         String sql = "SELECT ID FROM COURSE WHERE NAME = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
@@ -124,12 +123,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return id;
     }
-    
+
     /*
      *  Get current index for table LIBRARY. 
      */
     public int getCurrLibraryId() {
-    	int count = 0;
+        int count = 0;
         String sql = "SELECT COUNT(*) FROM LIBRARY";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
@@ -141,12 +140,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return count;
     }
-    
+
     /*
      *  Get Id from LIBRARY where ISBN is isbn. 
      */
     public int getLibraryId(String isbn) {
-    	int id;
+        int id;
         String sql = "SELECT ID FROM LIBRARY WHERE ISBN = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, isbn);
@@ -159,7 +158,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return id;
     }
-    
+
     /*
      *  I am a placeholder table that links LIBRARY and COURSE content.
      */
@@ -186,12 +185,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setInt(1, libObj.getType());
             pstmt.setString(2, libObj.getTitle());
             pstmt.setString(3, libObj.getAuthor());
-            if (libObj.getType()==1) {
-            	pstmt.setString(4, libObj.getISBN());
-            	pstmt.setString(5, libObj.getURL());
+            if (libObj.getType() == 1) {
+                pstmt.setString(4, libObj.getISBN());
+                pstmt.setString(5, libObj.getURL());
             } else {
-            	pstmt.setString(4, null);
-            	pstmt.setString(5, libObj.getISBN());
+                pstmt.setString(4, null);
+                pstmt.setString(5, libObj.getURL());
             }
             pstmt.setString(6, libObj.getCourse());
             pstmt.setInt(7, 0);
@@ -204,7 +203,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return true;
     }
-    
+
     /*
      *  Check string %s is a unique course name in table COURSE.
      */
@@ -332,19 +331,19 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             e.printStackTrace();
         }
     }
-    
+
     /*
      *  On startup to display all entries in LIBRARY table in database.
      *  This is redundant now that the database is created in AppUi, but
      *  you can define "test.db" there.
      */
     public void helperFunction() {
-    	String sq1 = "UPDATE LIBRARY SET DELETED = 0";
-	    try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
-	        ptmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+        String sq1 = "UPDATE LIBRARY SET DELETED = 0";
+        try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
+            ptmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /*
@@ -352,7 +351,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public void hideEntry(LibraryObject t) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
-        
+
         try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
             ptmt.setInt(1, t.getId());
             ptmt.execute();
@@ -369,8 +368,9 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         String sq1 = "SELECT * FROM LIBRARY WHERE TYPE = ? AND DELETED = 0";
         try {
             Pattern p = Pattern.compile("[123]");
-            if (!p.matcher(s).matches())
+            if (!p.matcher(s).matches()) {
                 return List.of();
+            }
             PreparedStatement pstmt = conn.prepareStatement(sq1);
             pstmt.setString(1, s);
             ResultSet rs = pstmt.executeQuery();
@@ -430,7 +430,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     }
 
-    public LibraryObject getByIsbn(String isbn){
+    public LibraryObject getByIsbn(String isbn) {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
         String sq1 = "SELECT * FROM LIBRARY WHERE ISBN = ? AND DELETED = 0";
         try {
@@ -438,14 +438,15 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(1, isbn);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-            LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
-            return lib;
-        }
+                LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getInt("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                return lib;
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
+
     /*
      *  Remove databasefile
      */

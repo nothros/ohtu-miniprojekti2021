@@ -34,26 +34,26 @@ public class ServiceTest {
     }
     @Test
     public void tooShortISBNisNotAdded() {
-        service.createLibraryObject(1, "","Author", tooShortISBN, null, null);
+        service.createLibraryObject(1, "","Author", tooShortISBN, null);
         assertEquals(0, dao.getAll().size());
     }
     @Test
     public void tooLongISBNisNotAdded() {
-        service.createLibraryObject(1, "","Author", tooLongISBN, null, null);
+        service.createLibraryObject(1, "","Author", tooLongISBN, null);
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void validISBNisAdded() {
-        service.createLibraryObject(1, " ","Author", validISBN, null, null);
+        service.createLibraryObject(1, " ","Author", validISBN, null);
         List<LibraryObject> objs = dao.getAll();
         assertEquals("12345678910", objs.get(0).getISBN() );
     }
 
     @Test
     public void duplicateISBNisRejected() {
-        service.createLibraryObject(1, "A valid ISBN","Author", "12345678910", null, null);
-        assertFalse(service.createLibraryObject(1, "This is a duplicate","Author", "12345678910", null, null));
+        service.createLibraryObject(1, "A valid ISBN","Author", "12345678910", null);
+        assertFalse(service.createLibraryObject(1, "This is a duplicate","Author", "12345678910", null));
     }
 
     @After

@@ -244,7 +244,7 @@ public class AppUi extends Application {
             		index="3";
             		break;
             }
-            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn_website, null, course)) {
+            if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn_website, course)) {
             	//if (course.length() != 0)
             	//	service.createCourseObject(course, isbn);
                 error.setText("New " + typeValue + " added");

@@ -1,7 +1,8 @@
 package database;
 
 public class LibraryObject {
-	private int id;
+
+    private int id;
     private int type;
     private String title;
     private String author;
@@ -12,14 +13,14 @@ public class LibraryObject {
     public LibraryObject(int type, String title, String author, String ISBN, String URL, String course) {
         this.type = type;
         this.title = title;
-        this. author = author;
+        this.author = author;
         this.ISBN = ISBN;
         this.URL = URL;
         this.course = course;
     }
- 
+
     public LibraryObject(int id, int type, String title, String author, String ISBN, String URL, String course) {
-    	this.id = id;
+        this.id = id;
         this.type = type;
         this.title = title;
         this.author = author;
@@ -31,33 +32,32 @@ public class LibraryObject {
     @Override
     public String toString() {
         String type = "";
-        if (getType()==1){
+        if (getType() == 1) {
             type = "Book";
         }
-        if (getType()==2){
+        if (getType() == 2) {
             type = "Blogpost";
         }
-        if (getType()==3){
+        if (getType() == 3) {
             type = "Podcast";
         }
-        return
-            " type: " +type +
-            ", title: " + getTitle() +
-            ", author: " + getAuthor() +
-            ", ISBN: " + getISBN() +
-            ", URL: " + getURL() +
-            ", course: " + getCourse();
+        return " type: " + type
+                + ", title: " + getTitle()
+                + ", author: " + getAuthor()
+                + ", ISBN: " + getISBN()
+                + ", URL: " + getURL()
+                + ", course: " + getCourse();
     }
-    
-    public int getId(){
+
+    public int getId() {
         return this.id;
     }
 
     public void setId(int id) {
         this.id = id;
     }
-    
-    public int getType(){
+
+    public int getType() {
         return this.type;
     }
 
@@ -96,13 +96,13 @@ public class LibraryObject {
     public void setURL(String URL) {
         this.URL = URL;
     }
-    
+
     public String getCourse() {
-    	return this.course;
+        return this.course;
     }
-    
+
     public void setCourse(String course) {
-    	this.course = course;
+        this.course = course;
     }
-    
+
 }
