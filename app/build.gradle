@@ -12,6 +12,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'jacoco'
     id 'checkstyle'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
 repositories {
