@@ -1,12 +1,15 @@
 # ohtu-miniprojekti2021 
 
 ![workflow](https://github.com/nothros/ohtu-miniprojekti2021/actions/workflows/main.yml/badge.svg)
+ [![codecov](https://codecov.io/gh/nothros/ohtu-miniprojekti2021/branch/main/graph/badge.svg?token=T5B64DEFPH)](https://codecov.io/gh/nothros/ohtu-miniprojekti2021)
 
 ## Käyttö
 
 Linux: ```$gradle run``` tai ``` ./gradlew run``` 
 
 Windows: ``` $gradlew.bat run ```
+
+**JAR-tiedoston luonti** ``` ./gradlew shadowJar``` 
 
 ## Testaus 
 
