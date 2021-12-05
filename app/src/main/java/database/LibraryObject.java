@@ -17,7 +17,7 @@ public class LibraryObject {
         this.URL = URL;
         this.course = course;
     }
-    
+ 
     public LibraryObject(int id, int type, String title, String author, String ISBN, String URL, String course) {
     	this.id = id;
         this.type = type;
@@ -30,13 +30,23 @@ public class LibraryObject {
 
     @Override
     public String toString() {
-        return "{" +
-            " type='" + getType() + "'" +
-            ", title='" + getTitle() + "'" +
-            ", author='" + getAuthor() + "'" +
-            ", ISBN='" + getISBN() + "'" +
-            ", URL='" + getURL() + "'" +
-            "}";
+        String type = "";
+        if (getType()==1){
+            type = "Book";
+        }
+        if (getType()==2){
+            type = "Blogpost";
+        }
+        if (getType()==3){
+            type = "Podcast";
+        }
+        return
+            " type: " +type +
+            ", title: " + getTitle() +
+            ", author: " + getAuthor() +
+            ", ISBN: " + getISBN() +
+            ", URL: " + getURL() +
+            ", course: " + getCourse();
     }
     
     public int getId(){

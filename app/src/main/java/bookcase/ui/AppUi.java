@@ -140,7 +140,7 @@ public class AppUi extends Application {
         ListView<String> bookview = new ListView<String>();
         List<LibraryObject> books = service.getAllObjects();
         for (LibraryObject book : books){
-            String bookString = book.getTitle() + " (" + book.getAuthor() + ") ISBN: " + book.getISBN();
+            String bookString = book.toString();
             bookview.getItems().add(bookString);
         }
         
@@ -235,8 +235,8 @@ public class AppUi extends Application {
             		break;
             }
             if (service.createLibraryObject(Integer.parseInt(index), title, author, isbn, null, course)) {
-            	if (course.length() != 0)
-            		service.createCourseObject(course, isbn);
+            	//if (course.length() != 0)
+            	//	service.createCourseObject(course, isbn);
                 error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -395,7 +395,7 @@ public class AppUi extends Application {
     	TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
         final ObservableList<LibraryObject> data = 
-        		FXCollections.observableArrayList(service.getAllObjects("1"));
+        		FXCollections.observableArrayList(service.getAllObjects());
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
@@ -406,6 +406,7 @@ public class AppUi extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
         Text scenetitle = new Text("Bookcase items:");
+        
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setPrefWidth(100);
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
@@ -416,7 +417,13 @@ public class AppUi extends Application {
         colISBN.setPrefWidth(100);
         colISBN.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
         table.setItems(data);
-        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colISBN));
+
+        //ADDED COURSE
+        TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Course");
+        colCourse.setPrefWidth(100);
+        colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
+        table.setItems(data);
+        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colISBN, colCourse));
         ScrollPane sp = new ScrollPane(table);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -426,9 +433,11 @@ public class AppUi extends Application {
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
         Button createBookB = new Button("Remove");
+
+        // WILL REMOVE LIBRARY ITEM!
         createBookB.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.hideEntry(table.getSelectionModel().getSelectedItem());
+        		library.removeEntry(table.getSelectionModel().getSelectedItem());
         		//library.removeEntry(table.getSelectionModel().getSelectedItem()); 
         		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
         	}

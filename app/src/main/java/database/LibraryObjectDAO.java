@@ -196,6 +196,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(6, libObj.getCourse());
             pstmt.setInt(7, 0);
             pstmt.executeUpdate();
+            System.out.println("KURSSI LISÄTTY" + libObj.getCourse());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
