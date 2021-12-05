@@ -6,26 +6,26 @@ public class LibraryObject {
     private int type;
     private String title;
     private String author;
-    private String ISBN;
-    private String URL;
+    private String isbn;
+    private String url;
     private String course;
 
-    public LibraryObject(int type, String title, String author, String ISBN, String URL, String course) {
+    public LibraryObject(int type, String title, String author, String isbn, String url, String course) {
         this.type = type;
         this.title = title;
         this.author = author;
-        this.ISBN = ISBN;
-        this.URL = URL;
+        this.isbn = isbn;
+        this.url = url;
         this.course = course;
     }
 
-    public LibraryObject(int id, int type, String title, String author, String ISBN, String URL, String course) {
+    public LibraryObject(int id, int type, String title, String author, String isbn, String url, String course) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.author = author;
-        this.ISBN = ISBN;
-        this.URL = URL;
+        this.isbn = isbn;
+        this.url = url;
         this.course = course;
     }
 
@@ -82,19 +82,19 @@ public class LibraryObject {
     }
 
     public String getISBN() {
-        return this.ISBN;
+        return this.isbn;
     }
 
-    public void setISBN(String ISBN) {
-        this.ISBN = ISBN;
+    public void setISBN(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getURL() {
-        return this.URL;
+        return this.url;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
+    public void setURL(String url) {
+        this.url = url;
     }
 
     public String getCourse() {

@@ -50,36 +50,38 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "TYPE INTEGER NOT NULL,"
                 + "TITLE TEXT NOT NULL,"
                 + "AUTHOR TEXT,"
-                //+ "ISBN TEXT UNIQUE,"
                 + "ISBN TEXT,"
                 + "URL TEXT,"
                 + "COURSE TEXT,"
                 + "DELETED INTEGER);";
-        String sq2 = "CREATE TABLE IF NOT EXISTS COURSE "
-                + "(ID INTEGER PRIMARY KEY,"
-                + "NAME TEXT NOT NULL)";
-        String sq3 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "LIBRARY_ID INTEGER NOT NULL,"
-                + "COURSE_ID INTEGER NOT NULL, "
-                + "FOREIGN KEY(LIBRARY_ID) REFERENCES LIBRARY(ID) ON DELETE CASCADE,"
-                + "FOREIGN KEY(COURSE_ID) REFERENCES COURSE(ID) ON DELETE CASCADE)";
         try (Statement stmt = conn.createStatement()) {
             if (!existsTable("LIBRARY")) {
                 stmt.execute(sq1);
                 System.out.println("Table LIBRARY created.");
             }
-            if (!existsTable("COURSE")) {
-                stmt.execute(sq2);
-                System.out.println("Table COURSE created.");
-            }
-            if (!existsTable("COURSE_LIBRARY")) {
-                stmt.execute(sq3);
-                System.out.println("Table COURSE_LIBRARY created.");
-            }
+            createCourseTables(stmt);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void createCourseTables(Statement stmt) throws SQLException {
+        String sq1 = "CREATE TABLE IF NOT EXISTS COURSE "
+                + "(ID INTEGER PRIMARY KEY,"
+                + "NAME TEXT NOT NULL)";
+        String sq2 = "CREATE TABLE IF NOT EXISTS COURSE_LIBRARY "
+                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "LIBRARY_ID INTEGER NOT NULL,"
+                + "COURSE_ID INTEGER NOT NULL, "
+                + "FOREIGN KEY(LIBRARY_ID) REFERENCES LIBRARY(ID) ON DELETE CASCADE,"
+                + "FOREIGN KEY(COURSE_ID) REFERENCES COURSE(ID) ON DELETE CASCADE)";
+        if (!existsTable("COURSE")) {
+            stmt.execute(sq1);
+            System.out.println("Table COURSE created.");
+        }
+        if (!existsTable("COURSE_LIBRARY")) {
+            stmt.execute(sq2);
+            System.out.println("Table COURSE_LIBRARY created.");
         }
     }
 
@@ -185,19 +187,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setInt(1, libObj.getType());
             pstmt.setString(2, libObj.getTitle());
             pstmt.setString(3, libObj.getAuthor());
-            if (libObj.getType() == 1) {
-                pstmt.setString(4, libObj.getISBN());
-                pstmt.setString(5, libObj.getURL());
-            } else {
-                pstmt.setString(4, null);
-                pstmt.setString(5, libObj.getURL());
-            }
+            pstmt.setString(4, libObj.getISBN());
+            pstmt.setString(5, libObj.getURL());
             pstmt.setString(6, libObj.getCourse());
             pstmt.setInt(7, 0);
             pstmt.executeUpdate();
-            System.out.println("KURSSI LISÄTTY" + libObj.getCourse());
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
             return false;
         }
