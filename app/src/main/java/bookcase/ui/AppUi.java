@@ -5,6 +5,7 @@ import javafx.scene.control.Hyperlink;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.rowset.serial.SerialArray;
@@ -50,6 +51,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 
@@ -60,6 +62,7 @@ public class AppUi extends Application {
     private Scene listReadbles;
     private Scene showBooks;
     private Scene addCourse;
+    private Scene infoScene;
     /*
      *  I am a TEST SCENE feel free to edit me as you wish.
      */
@@ -89,14 +92,15 @@ public class AppUi extends Application {
         } else {
             service.removeById(l);
         }
+        infoScene = buildInfoScene(0);
     }
 
     public void start(Stage primaryStage) throws Exception {
 
         mainStage = primaryStage;
         mainStage.setTitle("Bookcase");
-        mainStage.setWidth(800);
-        mainStage.setHeight(600);
+        mainStage.setWidth(1200);
+        mainStage.setHeight(800);
         mainScene = buildMainScene();
         mainStage.setScene(mainScene);
         mainStage.show();
@@ -184,9 +188,6 @@ public class AppUi extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Label error = new Label();
         error.setId("error");
-        /*
-         * Huom: Alla olevia kolmea rivi� ei kait tarvita?
-         */
         error.setText("Impossible to add " + typeValue);
         error.setTextFill(Color.RED);
         error.setVisible(false);
@@ -244,8 +245,8 @@ public class AppUi extends Application {
                     break;
             }
             if (service.createLibraryObject(index, title, author, isbn_website, course)) {
-                //if (course.length() != 0)
-                //	service.createCourseObject(course, isbn);
+                if (course.length() != 0)
+                	service.createCourseObject(course, isbn_website);
                 error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -260,7 +261,6 @@ public class AppUi extends Application {
                 error.setTextFill(Color.RED);
                 error.setVisible(true);
             }
-
         });
         grid.add(createBook, 1, 7);
         addPane.getChildren().addAll(error, grid);
@@ -308,90 +308,189 @@ public class AppUi extends Application {
     public Scene buildTestScene() {
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
-        pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
-        //pane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        //addPane.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
-        addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-        TabPane tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-        tabPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
-        Tab tab1 = new Tab("Book", new Label("Show all books"));
-        /////////////
-        TableView<LibraryObject> table1 = new TableView<LibraryObject>();
-        table1.setPlaceholder(new Label(""));
-        final ObservableList<LibraryObject> data
-                = FXCollections.observableArrayList(service.getAllObjects("book"));
-        //pane.setPadding(new Insets(5, 5, 5, 5));
-        VBox addPane12 = new VBox();
-        addPane12.setPadding(new Insets(10, 5, 75, 5));
-        addPane12.setAlignment(Pos.CENTER);
-        //addPane2.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        addPane12.setBorder(new Border(new BorderStroke(Color.PURPLE, BorderStrokeStyle.SOLID, null, null)));
-        GridPane grid1 = new GridPane();
-        grid1.setAlignment(Pos.CENTER);
-        grid1.setPadding(new Insets(25, 25, 25, 25));
-        grid1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
-        Label error1 = new Label();
-        //Text scenetitle = new Text("Bookcase items:");
-        TableColumn<LibraryObject, String> colTitle1 = new TableColumn<>("Title");
-        colTitle1.setPrefWidth(100);
-        colTitle1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
-        TableColumn<LibraryObject, String> colAuthor1 = new TableColumn<>("Author");
-        colAuthor1.setPrefWidth(100);
-        colAuthor1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
-        TableColumn<LibraryObject, String> colISBN1 = new TableColumn<>("ISBN");
-        colISBN1.setPrefWidth(100);
-        colISBN1.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
-        TableColumn<LibraryObject, String> colTags1 = new TableColumn<>("Tags");
-        colTags1.setPrefWidth(100);
-        TableColumn<LibraryObject, String> colCourse1 = new TableColumn<>("Related courses");
-        colCourse1.setPrefWidth(200);
-        table1.setItems(data);
-        table1.getColumns().addAll(Arrays.asList(colTitle1, colAuthor1, colISBN1, colTags1, colCourse1));
-        autoResizeColumns(table1);
-        ScrollPane sp1 = new ScrollPane(table1);
+        //addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        TableView<LibraryObject> table = new TableView<LibraryObject>();
+    	table.setPlaceholder(new Label(""));
+        final ObservableList<LibraryObject> data = 
+        		FXCollections.observableArrayList(service.getsAllObjects());
+        BorderPane pane2 = new BorderPane();
+        //pane2.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        Text header = new Text("Reading tips:");
+        header.setStyle("-fx-font: 20px Arial; -fx-stroke: grey;");
+        pane2.setLeft(header);
+        TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
+        colTitle.setPrefWidth(300);
+        colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
+        TableColumn<LibraryObject, String> colType = new TableColumn<>("Type");
+        colType.setPrefWidth(75);
+        colType.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getType())));
+        TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
+        colTags.setPrefWidth(200);
+        TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Related courses");
+        colCourse.setPrefWidth(250);
+        colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
+        table.setItems(data);
+        table.getColumns().addAll(Arrays.asList(colTitle, colType, colTags, colCourse));
+        //autoResizeColumns(table1);
+        ScrollPane sp1 = new ScrollPane(table);
+        //sp1.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setHmax(3);
-        VBox vbox1 = new VBox();
-        vbox1.setSpacing(5);
-        vbox1.setPadding(new Insets(10, 0, 0, 10));
-        vbox1.getChildren().addAll(sp1);
-        Button removeBook = new Button("Remove");
-        removeBook.setOnAction(e -> {
-            if (table1.getSelectionModel().getSelectedItem() != null) {
-                library.hideEntry(table1.getSelectionModel().getSelectedItem());
-                //library.removeEntry(table.getSelectionModel().getSelectedItem()); 
-                table1.getItems().removeAll(table1.getSelectionModel().getSelectedItems());
-            }
+        sp1.setFitToWidth(true);
+        sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp1.setHmax(addPane.getWidth());
+        sp1.setPrefViewportWidth(addPane.getWidth());
+        HBox hbox = new HBox();
+        Button info = new Button("Info");
+        Button remove = new Button("Remove");
+        hbox.getChildren().addAll(info, remove);
+        info.setOnAction(e -> {
+        	if (table.getSelectionModel().getSelectedItem() != null) {
+        		//System.out.println(table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId());
+        		int id = table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId();
+        		mainScene = buildInfoScene(id);
+                mainStage.setScene(mainScene);
+        	} else {
+        		mainScene = buildTestScene();
+                mainStage.setScene(mainScene);
+        	}
         });
-        grid1.add(vbox1, 2, 1, 1, 1);
-        Hyperlink myHyperlink = new Hyperlink();
-        myHyperlink.setText("My Link Text");
-
-        myHyperlink.setOnAction(e -> {
-            HostServices host = getHostServices();
-            host.showDocument("http://google.com");
+        remove.setOnAction(e -> {
+        	if (table.getSelectionModel().getSelectedItem() != null) {
+        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
+        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
+        	}
         });
-        addPane12.getChildren().addAll(error1, grid1, removeBook, myHyperlink);
-        tab1.setContent(addPane12);
-        Tab tab2 = new Tab("Blog", new Label("Show all blogs"));
-        Tab tab3 = new Tab("Podcast", new Label("Show all podcasts"));
-        Tab tab4 = new Tab("Course", new Label("Show all courses"));
-        tabPane.getTabs().add(tab1);
-        tabPane.getTabs().add(tab2);
-        tabPane.getTabs().add(tab3);
-        tabPane.getTabs().add(tab4);
+        addPane.getChildren().addAll(pane2, sp1, hbox);
         Button returnB = new Button("Back");
         returnB.setId("backButton");
         returnB.setOnAction(e -> {
             mainScene = buildMainScene();
             mainStage.setScene(mainScene);
         });
-        addPane.getChildren().addAll(tabPane);
+        pane.setRight(returnB);
+        pane.setCenter(addPane);
+        Scene scene = new Scene(pane);
+        return scene;
+    }
+    
+    /*
+     *  I am a library item info scene. Fix me into nice JAVAFX. I am bubble gum code.
+     */
+    public Scene buildInfoScene(int id) {
+    	BorderPane pane = new BorderPane();
+        pane.setPadding(new Insets(5, 5, 5, 5));
+        VBox addPane = new VBox();
+        addPane.setPadding(new Insets(10, 5, 5, 5));
+        addPane.setAlignment(Pos.CENTER);
+        //addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        BorderPane pane2 = new BorderPane();
+        //pane2.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        GridPane gPane = new GridPane();
+        Hyperlink hlink = new Hyperlink();
+        //gPane.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, null, null)));
+        if (id != 0) {
+        List<LibraryObject> data = service.getAllObjects(id);
+        String out = 
+        			"Title: " + data.get(0).getTitle() + 
+            		"\nAuthor: " + data.get(0).getAuthor() +
+            		"\nType: " + data.get(0).getType() +
+            		"\nISBN: " + data.get(0).getISBN() +
+            		"\nTags: " +
+            		"\nRelated courses: " + data.get(0).getCourse();
+        //System.out.println(out);
+        Text header = new Text("");
+        header.setStyle("-fx-font: 30px Arial; -fx-stroke: grey;");
+        pane2.setLeft(header);
+        Text txt1 = new Text("Title: ");
+        Text txt2 = new Text("Author: ");
+        Text txt3 = new Text("Type: ");
+        Text txt4, txt44;
+        if (data.get(0).getType() == "Book") {
+        	txt4 = new Text("ISBN: ");
+        	txt44 = new Text(data.get(0).getISBN());
+        	txt44.setStyle("-fx-font: 30px Arial;");
+        } else {
+        	txt4 = new Text("URL: ");
+        	txt44 = new Text("");
+        	hlink.setText(data.get(0).getURL());
+        	hlink.setStyle("-fx-font: 30px Arial;");
+        }
+        Text txt5 = new Text("Tags: ");
+        Text txt6 = new Text("Related courses: ");
+        Text txt11 = new Text(data.get(0).getTitle());
+        Text txt22 = new Text(data.get(0).getAuthor());
+        Text txt33 = new Text(String.valueOf(data.get(0).getType()));
+        Text txt55 = new Text("");
+        Text txt66 = new Text(data.get(0).getCourse());
+        txt1.setStyle("-fx-font: 30px Arial;");
+        txt2.setStyle("-fx-font: 30px Arial;");
+        txt3.setStyle("-fx-font: 30px Arial;");
+        txt4.setStyle("-fx-font: 30px Arial;");
+        txt5.setStyle("-fx-font: 30px Arial;");
+        txt6.setStyle("-fx-font: 30px Arial;");
+        txt11.setStyle("-fx-font: 30px Arial;");
+        txt22.setStyle("-fx-font: 30px Arial;");
+        txt33.setStyle("-fx-font: 30px Arial;");
+        txt55.setStyle("-fx-font: 30px Arial;");
+        txt66.setStyle("-fx-font: 30px Arial;");
+        gPane.add(txt1, 0, 0, 1, 1);
+        gPane.add(txt2, 0, 1, 1, 1);
+        gPane.add(txt3, 0, 2, 1, 1);
+        gPane.add(txt4, 0, 3, 1, 1);
+        gPane.add(txt5, 0, 4, 1, 1);
+        gPane.add(txt6, 0, 5, 1, 1);
+        gPane.add(txt11, 1, 0, 1, 1);
+        gPane.add(txt22, 1, 1, 1, 1);
+        gPane.add(txt33, 1, 2, 1, 1);
+        if (data.get(0).getType() == "Book") {
+        	gPane.add(txt44, 1, 3, 1, 1);
+        } else {
+        	gPane.add(hlink, 1, 3, 1, 1);
+        }
+        gPane.add(txt55, 1, 4, 1, 1);
+        gPane.add(txt66, 1, 5, 1, 1);
+        Line line = new Line(0, 150, 200, 150);   
+        line.setStrokeWidth(20); 
+        line.setStroke(Color.web("000000"));
+        Line line2 = new Line();
+        line2.setStartX(100.0); 
+        line2.setStartY(150.0); 
+        line2.setEndX(500.0); 
+        line2.setEndY(150.0);
+        //autoResizeColumns(table1);
+        HBox hbox = new HBox();
+        Button edit = new Button("Edit");
+        Button remove = new Button("Remove");
+        hbox.getChildren().addAll(edit, remove);
+        hbox.setAlignment(Pos.CENTER);
+        edit.setOnAction(e -> {
+        	mainScene = buildMainScene();
+            mainStage.setScene(mainScene);
+        });
+        remove.setOnAction(e -> {
+        	if (data.get(0) != null) {
+        		library.deleteEntry(data.get(0));
+        	}
+        	mainScene = buildMainScene();
+            mainStage.setScene(mainScene);
+        });
+        hlink.setOnAction(e -> {
+        	HostServices host = getHostServices();
+            host.showDocument("http://" + data.get(0).getURL());
+        });
+        addPane.getChildren().addAll(pane2, gPane, hbox);
+        }
+        Button returnB = new Button("Back");
+        returnB.setOnAction(e -> {
+        	mainScene = buildTestScene();
+            mainStage.setScene(mainScene);
+        });
         pane.setRight(returnB);
         pane.setCenter(addPane);
         Scene scene = new Scene(pane);
@@ -443,19 +542,16 @@ public class AppUi extends Application {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
         vbox.getChildren().addAll(sp);
-        Button createBookB = new Button("Remove");
-
-        // Hides entry since we don't want to delete it completely
-        createBookB.setOnAction(e -> {
-            if (table.getSelectionModel().getSelectedItem() != null) {
-                library.hideEntry(table.getSelectionModel().getSelectedItem());
-                //library.removeEntry(table.getSelectionModel().getSelectedItem()); 
-                table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
-            }
+        Button remove = new Button("Remove");
+        remove.setOnAction(e -> {
+        	if (table.getSelectionModel().getSelectedItem() != null) {
+        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
+        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
+        	}
         });
         grid.add(scenetitle, 2, 0, 1, 1);
         grid.add(vbox, 2, 1, 1, 1);
-        addPane.getChildren().addAll(error, grid, createBookB);
+        addPane.getChildren().addAll(error, grid, remove);
         Button returnB = new Button("Back");
         returnB.setId("backButton");
         returnB.setOnAction(e -> {

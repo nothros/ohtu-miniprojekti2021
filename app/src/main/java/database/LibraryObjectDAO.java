@@ -19,29 +19,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public LibraryObjectDAO(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
     }
-
+    
     /*
-     *  If database is empty then create all database tables.
-     *  DELETE ME ?
-     */
- /*  public void createNewDatabase(String fileName) {
-        String url = "jdbc:sqlite:" + fileName;
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (conn != null) {
-                DatabaseMetaData meta = conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName() + ".");
-                File f = new File(fileName);
-                if (f.length() == 0) {
-                    System.out.println("A new database has been created.");
-                }
-                createNewTable();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    } */
-
- /*
      *  Queries for all database tables, if they do not exist.
      */
     public void createNewTable() {
@@ -189,6 +168,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(3, libObj.getAuthor());
             pstmt.setString(4, libObj.getISBN());
             pstmt.setString(5, libObj.getURL());
+          	/*if (libObj.getType()=="Book") {
+            	pstmt.setString(4, libObj.getISBN());
+            	pstmt.setString(5, libObj.getURL());
+            } else {
+            	pstmt.setString(4, null);
+            	pstmt.setString(5, libObj.getISBN());
+            }*/
             pstmt.setString(6, libObj.getCourse());
             pstmt.setInt(7, 0);
             pstmt.executeUpdate();
@@ -332,7 +318,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     /*
      *  Hides entry instead of completely deleting it from database
      */
-    public void hideEntry(LibraryObject t) {
+    public void deleteEntry(LibraryObject t) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
 
         try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
@@ -341,6 +327,25 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+    /*
+     * Fetch all entries of id %s from LIBRARY.
+     */
+    public List<LibraryObject> getAll(int id) {
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sq1 = "SELECT * FROM LIBRARY WHERE ID = ? AND DELETED = 0";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sq1);
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                list.add(libObj);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     /*
@@ -360,6 +365,25 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return list;
+    }
+    
+    /*
+     *  Placeholder function that is getAll() until code is refactored.
+     */
+    public List<LibraryObject> getsAll() {
+        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
+        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL, COURSE FROM LIBRARY WHERE DELETED = 0";
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sq1)) {
+            while (rs.next()) {
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                list.add(libObj);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
         return list;
     }
 
