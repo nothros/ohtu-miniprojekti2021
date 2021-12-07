@@ -23,8 +23,7 @@ public class App {
 		if (Files.isRegularFile(p)) {
 			try {
 				Files.delete(p);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				System.out.println(e);
 			}
         }

@@ -38,29 +38,43 @@ public class ServiceTest {
 
     @Test
     public void tooShortISBNisNotAdded() {
-        service.createLibraryObject("book", "", "Author", tooShortISBN, null);
+        service.createLibraryObject("book", "", "Author", tooShortISBN, "");
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void tooLongISBNisNotAdded() {
-        service.createLibraryObject("book", "", "Author", tooLongISBN, null);
+        service.createLibraryObject("book", "", "Author", tooLongISBN, "");
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void validISBNisAdded() {
-        service.createLibraryObject("book", " ", "Author", validISBN, null);
+        if(service == null){System.out.println("jjjj");}
+        service.createLibraryObject("book", " ", "Author", validISBN, "");
         List<LibraryObject> objs = dao.getAll();
         assertEquals("12345678910", objs.get(0).getISBN());
     }
 
     @Test
     public void duplicateISBNisRejected() {
-        service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", null);
-        assertFalse(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", null));
+        service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", "");
+        assertFalse(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", ""));
     }
 
+    @Test
+    public void testPodcastAdd(){
+        service.createLibraryObject("podcast", "title", "author", "url", "");
+        assertEquals(1, dao.getAll().size());
+    }
+    
+    
+    @Test
+    public void testBlogpostAdd(){
+        service.createLibraryObject("blogpost", "title", "author", "url", "");
+        assertEquals(1, dao.getAll().size());
+    }
+    
     @After
     public void tearDown() throws SQLException {
         dao.deleteDatabase(testDB);

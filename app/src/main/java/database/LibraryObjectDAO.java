@@ -19,20 +19,16 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     public LibraryObjectDAO(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
     }
-    
+
     /*
      *  Queries for all database tables, if they do not exist.
      */
     public void createNewTable() {
         String sq1 = "CREATE TABLE IF NOT EXISTS LIBRARY "
-                + "(ID INTEGER PRIMARY KEY, "
-                + "TYPE TEXT NOT NULL,"
-                + "TITLE TEXT NOT NULL,"
-                + "AUTHOR TEXT,"
-                + "ISBN TEXT,"
-                + "URL TEXT,"
-                + "COURSE TEXT,"
-                + "DELETED INTEGER);";
+                + "(ID INTEGER PRIMARY KEY, " + "TYPE TEXT NOT NULL,"
+                + "TITLE TEXT NOT NULL," + "AUTHOR TEXT,"
+                + "ISBN TEXT," + "URL TEXT,"
+                + "COURSE TEXT," + "DELETED INTEGER);";
         try (Statement stmt = conn.createStatement()) {
             if (!existsTable("LIBRARY")) {
                 stmt.execute(sq1);
@@ -168,13 +164,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(3, libObj.getAuthor());
             pstmt.setString(4, libObj.getISBN());
             pstmt.setString(5, libObj.getURL());
-          	/*if (libObj.getType()=="Book") {
-            	pstmt.setString(4, libObj.getISBN());
-            	pstmt.setString(5, libObj.getURL());
-            } else {
-            	pstmt.setString(4, null);
-            	pstmt.setString(5, libObj.getISBN());
-            }*/
             pstmt.setString(6, libObj.getCourse());
             pstmt.setInt(7, 0);
             pstmt.executeUpdate();
@@ -328,6 +317,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             System.out.println(e.getMessage());
         }
     }
+
     /*
      * Fetch all entries of id %s from LIBRARY.
      */
@@ -367,7 +357,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return list;
     }
-    
+
     /*
      *  Placeholder function that is getAll() until code is refactored.
      */

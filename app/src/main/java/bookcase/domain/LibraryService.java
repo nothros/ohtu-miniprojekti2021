@@ -13,45 +13,42 @@ public class LibraryService {
         this.libraryDao = libraryDao;
     }
 
-    public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course){
-    	LibraryObject libObj;
-    	switch(type) {
-    		case "book":
-    			if ((title.isEmpty() || author.isEmpty() || isbnWebsite.isEmpty())) {
-    	            return false;
-    	        }
-    	        if (!libraryDao.isUnique(isbnWebsite)) {
-    	        	System.out.println("Not a unique ISBN.");
-    	    		return false;
-    	    	}
-    	        if (!libraryDao.isValidISBN(isbnWebsite)) {
-    	    		System.out.println("Not a valid ISBN.");
-    	    		return false;
-    	    	}
-    	        course = course.trim().replaceAll("\\s{2,}"," ");
-    	        libObj = new LibraryObject(type, title, author, isbnWebsite, null, course);
-    	        return libraryDao.insertLibrary(libObj);
-    		case "blogpost":
-    			if ((title.isEmpty() || isbnWebsite.isEmpty())) {
-    	            return false;
-    	        }
-    			course = course.trim().replaceAll("\\s{2,}"," ");
-    	        libObj = new LibraryObject(type, title, author, null, isbnWebsite, course);
-    	        System.out.println(libObj);
-    	        return libraryDao.insertLibrary(libObj);
-    		case "podcast":
-    			if ((title.isEmpty() || isbnWebsite.isEmpty())) {
-    	            return false;
-    	        }
-    			course = course.trim().replaceAll("\\s{2,}"," ");
-    	        libObj = new LibraryObject(type, title, author, null, isbnWebsite, course);
-    	        return libraryDao.insertLibrary(libObj);
-    	}
+    public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course) {
+        if (course != null) {
+            course = course.trim().replaceAll("\\s{2,}", " ");
+        }
+
+        switch (type) {
+            case "book":
+                return createBook(title, author, isbnWebsite, course);
+            case "blogpost":
+                return createBlogpost(title, author, isbnWebsite, course);
+            case "podcast":
+                return createPodcast(title, author, isbnWebsite, course);
+        }
         return false;
     }
 
+    private boolean createBlogpost(String title, String author, String url, String course) {
+        if ((title.isEmpty() || url.isEmpty())) {
+            return false;
+        }
+        LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, course);
+        return libraryDao.insertLibrary(libObj);
+    }
+
+    private boolean createPodcast(String title, String author, String url, String course) {
+        if ((title.isEmpty() || url.isEmpty())) {
+            return false;
+        }
+        LibraryObject libObj = new LibraryObject("podcast", title, author, null, url, course);
+        return libraryDao.insertLibrary(libObj);
+    }
+
     private boolean createBook(String title, String author, String isbn, String course) {
-        LibraryObject libObj;
+        if ((title.isEmpty() || author.isEmpty() || isbn.isEmpty())) {
+            return false;
+        }
         if (!libraryDao.isUnique(isbn)) {
             System.out.println("Not a unique ISBN.");
             return false;
@@ -60,7 +57,7 @@ public class LibraryService {
             System.out.println("Not a valid ISBN.");
             return false;
         }
-        libObj = new LibraryObject("book", title, author, isbn, null, course);
+        LibraryObject libObj = new LibraryObject("book", title, author, isbn, null, course);
         return libraryDao.insertLibrary(libObj);
     }
 
@@ -76,20 +73,20 @@ public class LibraryService {
         }
         return true;
     }
-    
-    public List<LibraryObject> getsAllObjects(){
+
+    public List<LibraryObject> getsAllObjects() {
         return libraryDao.getsAll();
     }
 
     public List<LibraryObject> getAllObjects() {
         return libraryDao.getAll();
     }
-    
-    public List<LibraryObject> getAllObjects(int id){
+
+    public List<LibraryObject> getAllObjects(int id) {
         return libraryDao.getAll(id);
     }
-    
-    public List<LibraryObject> getAllObjects(String s){
+
+    public List<LibraryObject> getAllObjects(String s) {
         return libraryDao.getAll(s);
     }
 
