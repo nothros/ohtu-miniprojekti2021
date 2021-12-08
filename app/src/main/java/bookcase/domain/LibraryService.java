@@ -29,6 +29,18 @@ public class LibraryService {
         return false;
     }
 
+    public void removeRobotTrash(){
+        LibraryObject book = libraryDao.getByIsbn("6767676766");
+        LibraryObject blog = libraryDao.getByUrl("wwwtestcom");
+        if (book != null) {
+            libraryDao.removeEntry(book);
+        }
+        if (blog != null) {
+            libraryDao.removeEntry(blog);
+        }
+        return;
+    }
+
     private boolean createBlogpost(String title, String author, String url, String course) {
         if ((title.isEmpty() || url.isEmpty())) {
             return false;
@@ -57,6 +69,7 @@ public class LibraryService {
             System.out.println("Not a valid ISBN.");
             return false;
         }
+        System.out.println("OKOK");
         LibraryObject libObj = new LibraryObject("book", title, author, isbn, null, course);
         return libraryDao.insertLibrary(libObj);
     }
@@ -92,10 +105,6 @@ public class LibraryService {
 
     public LibraryObject getByIsbn(String isbn) {
         return libraryDao.getByIsbn(isbn);
-    }
-
-    public void removeById(LibraryObject t) {
-        libraryDao.removeEntry(t);
     }
 
     public void createNewTablesIfNotExists() {
