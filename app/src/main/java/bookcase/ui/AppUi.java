@@ -121,6 +121,7 @@ public class AppUi extends Application {
         HBox comboBoxAndButton = new HBox();
         comboBoxAndButton.setAlignment(Pos.CENTER);
         ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.setId("combobox");
         typeComboBox.getItems().addAll(
                 "Book",
                 "Blogpost",
