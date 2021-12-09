@@ -29,9 +29,8 @@ public class TestFXBase extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         AppUi sovellus = new AppUi();
         Application app = Application.class.cast(sovellus);
-        app.init();
         app.start(stage);
-        this.stage = stage;
+     
     }
 
     @Test
