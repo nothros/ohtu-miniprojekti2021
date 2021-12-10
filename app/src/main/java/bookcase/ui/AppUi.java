@@ -93,12 +93,15 @@ public class AppUi extends Application {
         showBooks = buildShowBooksScene();
         testScene = buildTestScene();
         addCourse = buildAddCourseScene();
+<<<<<<< HEAD
         LibraryObject l = service.getByIsbn("6767676766");
         if (l == null) {
             return;
         } else {
             service.removeById(l);
         }
+=======
+>>>>>>> 524738f (1)
         infoScene = buildInfoScene(0);
     }
 
@@ -139,7 +142,6 @@ public class AppUi extends Application {
         addBook.setId("addBook");
         addBook.setOnAction(e -> {
             String typeValue = (String) typeComboBox.getValue();
-            //System.out.println(typeValue);
             mainStage.setScene(buildAddReableScene(typeValue));
         });
         comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
