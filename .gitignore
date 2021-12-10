@@ -4,4 +4,4 @@ gradle.properties
 # Ignore Gradle build output directory
 build
 app/bin/
-
+app/cucumbertest.db

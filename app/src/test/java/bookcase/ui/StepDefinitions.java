@@ -18,10 +18,15 @@ import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class StepDefinitions extends TestFXBase {
-
+    
+    final String testdb = "cucumbertest.db";
+    
     @Given("application has opened")
     public void applicationHasOpened() throws Exception {
-        ApplicationTest.launch(AppUi.class);
+        try {
+            new java.io.File(testdb).delete();
+        }catch(Exception e){}
+        ApplicationTest.launch(AppUi.class, testdb);
         WaitForAsyncUtils.waitForFxEvents();
     }
 

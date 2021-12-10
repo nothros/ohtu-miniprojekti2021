@@ -79,6 +79,13 @@ public class AppUi extends Application {
 
     @Override
     public void init() throws SQLException {
+        if(getParameters() != null){
+            List<String> args = getParameters().getRaw();
+            if(args.size() == 1){
+                database = args.get(0);
+                System.out.println("APPUI: Database:"+database);
+            }
+        }
         library = new LibraryObjectDAO(database);
         service = new LibraryService(library);
         service.createNewTablesIfNotExists();

@@ -64,10 +64,10 @@ public class TagDAO {
         }
         return list;
     }
-    
+
     /**
-    Returns a list of all tags connected to any library object 
-    */
+     * Returns a list of all tags connected to any library object.
+     */
     public ArrayList<String> getAllTags() {
         ArrayList<String> list = new ArrayList();
         String sq1 = "SELECT DISTINCT b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID";
@@ -82,7 +82,6 @@ public class TagDAO {
         }
         return list;
     }
-    
 
     /**
      * Add a tag to a library object
@@ -125,7 +124,7 @@ public class TagDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.isClosed()){
+            if (rs.isClosed()) {
                 return -1;
             }
             return rs.getInt("ID");
