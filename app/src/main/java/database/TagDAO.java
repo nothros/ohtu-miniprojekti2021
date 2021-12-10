@@ -38,7 +38,7 @@ public class TagDAO {
     private void tryCreateTable(Statement stmt, String sql, String name) {
         try {
             stmt.execute(sql);
-            System.out.println("Table" + name + "created.");
+            System.out.println("Table " + name + " created.");
         } catch (SQLException e) {
             System.out.println("Did not create " + name + " table.");
         }
@@ -53,8 +53,7 @@ public class TagDAO {
     public ArrayList<String> getTags(int libraryObjectId) {
         ArrayList<String> list = new ArrayList();
         String sq1 = "SELECT b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID AND a.LIBRARY_ID = ?";
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(sq1);
+        try (PreparedStatement pstmt = conn.prepareStatement(sq1)) {
             pstmt.setInt(1, libraryObjectId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -65,6 +64,25 @@ public class TagDAO {
         }
         return list;
     }
+    
+    /**
+    Returns a list of all tags connected to any library object 
+    */
+    public ArrayList<String> getAllTags() {
+        ArrayList<String> list = new ArrayList();
+        String sq1 = "SELECT DISTINCT b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID";
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sq1);
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                list.add(rs.getString("NAME"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
 
     /**
      * Add a tag to a library object
@@ -103,11 +121,13 @@ public class TagDAO {
 
     /* Returns id of tag, -1 if not found*/
     private int getTagId(String name) {
-        int id;
         String sql = "SELECT ID FROM TAGS WHERE NAME = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
+            if(rs.isClosed()){
+                return -1;
+            }
             return rs.getInt("ID");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -122,7 +142,7 @@ public class TagDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, tag);
             pstmt.executeUpdate();
-            System.out.println("TAG ADDED");
+            System.out.println("insertTag: TAG ADDED");
             return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
