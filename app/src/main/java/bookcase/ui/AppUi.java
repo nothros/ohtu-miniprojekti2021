@@ -46,6 +46,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.ResizeFeatures;
@@ -66,7 +67,7 @@ public class AppUi extends Application {
     /*
      *  I am a TEST SCENE feel free to edit me as you wish.
      */
-    private Scene testScene;
+    //private Scene testScene;
     private Stage mainStage;
     private LibraryObjectDAO library;
     private LibraryService service;
@@ -91,17 +92,16 @@ public class AppUi extends Application {
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
-        testScene = buildTestScene();
+        //testScene = buildTestScene();
         addCourse = buildAddCourseScene();
-<<<<<<< HEAD
+
         LibraryObject l = service.getByIsbn("6767676766");
         if (l == null) {
             return;
         } else {
             service.removeById(l);
         }
-=======
->>>>>>> 524738f (1)
+
         infoScene = buildInfoScene(0);
     }
 
@@ -109,7 +109,7 @@ public class AppUi extends Application {
 
         mainStage = primaryStage;
         mainStage.setTitle("Bookcase");
-        mainStage.setWidth(1200);
+        mainStage.setWidth(923);
         mainStage.setHeight(800);
         mainScene = buildMainScene();
         mainStage.setScene(mainScene);
@@ -119,13 +119,15 @@ public class AppUi extends Application {
     public Scene buildAddCourseScene() {
         return null;
     }
-
+    
+    /*
     public Scene buildMainScene() {
         VBox mainPane = new VBox();
         mainPane.setSpacing(5);
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setAlignment(Pos.CENTER);
         Label welcome = new Label("Welcome to bookcase");
+        welcome.setStyle("-fx-font: 20px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
         welcome.setId("welcome");
         Text addReadable = new Text("Choose what you want to add");
         HBox comboBoxAndButton = new HBox();
@@ -154,8 +156,8 @@ public class AppUi extends Application {
         Button testButton = new Button("Test");
         testButton.setStyle("-fx-text-fill: #ff0000; ");
         testButton.setOnAction(e -> {
-            testScene = buildTestScene();
-            mainStage.setScene(testScene);
+            mainScene = buildMainScene();
+            mainStage.setScene(mainScene);
         });
 
         ListView<String> bookview = new ListView<String>();
@@ -168,16 +170,10 @@ public class AppUi extends Application {
         ScrollPane scrollpane = new ScrollPane(bookview);
         scrollpane.setFitToWidth(true);
 
-        /*  FlowPane mainPane = new FlowPane();
-        mainPane.setPadding(new Insets(10));
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
-        mainPane.setAlignment(Pos.CENTER);
-        mainPane.getChildren().addAll(addBook, viewBooks);
-        mainScene = new Scene(mainPane);*/
         mainPane.getChildren().addAll(welcome, addReadable, comboBoxAndButton, viewBooks, scrollpane, testButton);
         return new Scene(mainPane);
     }
+	*/
 
     public Scene buildAddReableScene(String typeValue) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
@@ -314,38 +310,131 @@ public class AppUi extends Application {
     /*
      *  I am a test scene for the bookcase.
      */
-    public Scene buildTestScene() {
+    //public Scene buildTestScene() {
+    public Scene buildMainScene() {
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        //addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        Label welcome = new Label("Welcome to bookcase");
+        welcome.setStyle("-fx-font: 30px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
+        welcome.setId("welcome");
         TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
         final ObservableList<LibraryObject> data = 
         		FXCollections.observableArrayList(service.getsAllObjects());
         BorderPane pane2 = new BorderPane();
-        //pane2.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-        Text header = new Text("Reading tips:");
-        header.setStyle("-fx-font: 20px Arial; -fx-stroke: grey;");
+        pane2.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
+        //  Add library items button.
+        HBox comboBoxAndButton = new HBox();
+        comboBoxAndButton.setAlignment(Pos.CENTER_LEFT);
+        ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll(
+                "Book",
+                "Blogpost",
+                "Podcast"
+        );
+        typeComboBox.getSelectionModel().selectFirst();
+        Button addBook = new Button("Add");
+        addBook.setMinWidth(100);
+        addBook.setId("addBook");
+        addBook.setOnAction(e -> {
+            String typeValue = (String) typeComboBox.getValue();
+            mainStage.setScene(buildAddReableScene(typeValue));
+        });
+        comboBoxAndButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        comboBoxAndButton.getChildren().addAll(addBook, typeComboBox);
+
+        //  Remove library item button.
+        HBox removeButton = new HBox();
+        removeButton.setAlignment(Pos.CENTER_LEFT);
+        Button removeBook = new Button("Remove");
+        removeBook.setMinWidth(100);
+        removeBook.setId("removeBook");
+        removeBook.setOnAction(e -> {
+        	if (table.getSelectionModel().getSelectedItem() != null) {
+        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
+        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
+        	}
+        });
+        removeButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        removeButton.getChildren().addAll(removeBook);
+        //  Search library items button.        
+        /*
+         *  I need to be implemented!
+         */
+        HBox searchButton = new HBox();
+        searchButton.setAlignment(Pos.CENTER_LEFT);
+        ComboBox<String> searchComboBox = new ComboBox<>();
+        searchComboBox.getItems().addAll(
+                "Book",
+                "Blogpost",
+                "Podcast"
+        );
+        searchComboBox.getSelectionModel().selectFirst();
+        Button searchBook = new Button("Search");
+        searchBook.setMinWidth(100);
+        searchBook.setId("searchBook");
+        searchBook.setOnAction(e -> {
+            String typeValue = (String) searchComboBox.getValue();
+            mainStage.setScene(buildAddReableScene(typeValue));
+        });
+        searchButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        searchButton.getChildren().addAll(searchBook, searchComboBox);
+        Label header = new Label("Reading tips:");
+        header.setStyle("-fx-font: 20px Arial; -fx-stroke: grey;-fx-font-weight: bold;");
         pane2.setLeft(header);
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
-        colTitle.setPrefWidth(300);
+        colTitle.setPrefWidth(200);
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
+        TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
+        colAuthor.setPrefWidth(150);
+        colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
         TableColumn<LibraryObject, String> colType = new TableColumn<>("Type");
-        colType.setPrefWidth(75);
+        colType.setPrefWidth(60);
         colType.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getType())));
         TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
         colTags.setPrefWidth(200);
-        TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Related courses");
-        colCourse.setPrefWidth(250);
+        TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
+        colCourse.setPrefWidth(200);
         colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
         table.setItems(data);
-        table.getColumns().addAll(Arrays.asList(colTitle, colType, colTags, colCourse));
+        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
+        // Add extra column for a show detailed info button
+        TableColumn<LibraryObject, Void> colButton = new TableColumn<LibraryObject, Void>("Detais");
+        Callback<TableColumn<LibraryObject, Void>, TableCell<LibraryObject, Void>> cellFactory = new Callback<TableColumn<LibraryObject, Void>, TableCell<LibraryObject, Void>>() {
+            @Override
+            public TableCell<LibraryObject, Void> call(final TableColumn<LibraryObject, Void> param) {
+                final TableCell<LibraryObject, Void> cell = new TableCell<LibraryObject, Void>() {
+                    Button infoButton = new Button("Show");
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                        	infoButton.setMinWidth(50);
+                            setGraphic(infoButton);
+                            infoButton.setOnAction(e -> {
+                                LibraryObject data = getTableView().getItems().get(getIndex());
+                                System.out.println("Data: " + data);
+                        		mainScene = buildInfoScene(data.getId());
+                                mainStage.setScene(mainScene);
+                            });
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        colButton.setCellFactory(cellFactory);
+        colButton.setStyle( "-fx-alignment: CENTER;");
+        table.getColumns().add(colButton);
         //autoResizeColumns(table1);
         ScrollPane sp1 = new ScrollPane(table);
-        //sp1.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        sp1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setHmax(3);
@@ -357,7 +446,10 @@ public class AppUi extends Application {
         HBox hbox = new HBox();
         Button info = new Button("Info");
         Button remove = new Button("Remove");
-        hbox.getChildren().addAll(info, remove);
+        Button viewBooks = new Button("Show Books");
+        Label temp = new Label("These buttons will be removed.");
+        temp.setStyle("-fx-font: 15px Arial;-fx-font-weight: bold;");
+        hbox.getChildren().addAll(temp, info, remove, viewBooks);
         info.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
         		//System.out.println(table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId());
@@ -365,7 +457,7 @@ public class AppUi extends Application {
         		mainScene = buildInfoScene(id);
                 mainStage.setScene(mainScene);
         	} else {
-        		mainScene = buildTestScene();
+        		mainScene = buildMainScene();
                 mainStage.setScene(mainScene);
         	}
         });
@@ -375,7 +467,12 @@ public class AppUi extends Application {
         		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
         	}
         });
-        addPane.getChildren().addAll(pane2, sp1, hbox);
+        viewBooks.setOnAction(e -> {
+            showBooks = buildShowBooksScene();
+            mainStage.setScene(showBooks);
+        });
+        
+        /*
         Button returnB = new Button("Back");
         returnB.setId("backButton");
         returnB.setOnAction(e -> {
@@ -383,9 +480,9 @@ public class AppUi extends Application {
             mainStage.setScene(mainScene);
         });
         pane.setRight(returnB);
-        pane.setCenter(addPane);
-        Scene scene = new Scene(pane);
-        return scene;
+        */
+        addPane.getChildren().addAll(welcome, comboBoxAndButton, removeButton, searchButton, pane2, sp1, hbox);
+        return new Scene(addPane);
     }
     
     /*
@@ -497,7 +594,7 @@ public class AppUi extends Application {
         }
         Button returnB = new Button("Back");
         returnB.setOnAction(e -> {
-        	mainScene = buildTestScene();
+        	mainScene = buildMainScene();
             mainStage.setScene(mainScene);
         });
         pane.setRight(returnB);
