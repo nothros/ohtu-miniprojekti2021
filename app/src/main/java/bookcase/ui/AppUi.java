@@ -20,6 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -296,7 +297,10 @@ public class AppUi extends Application {
     public Scene buildMainScene() {
     	final ObservableList<LibraryObject> data = FXCollections.observableArrayList(service.getsAllObjects());
         FilteredList<LibraryObject> flLibObj = new FilteredList<LibraryObject>(data, p -> true);
-
+        SortedList<LibraryObject> sortedData = new SortedList<LibraryObject>(flLibObj);
+        TableView<LibraryObject> table = new TableView<LibraryObject>();
+		sortedData.comparatorProperty().bind(table.comparatorProperty());
+		
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
@@ -306,7 +310,6 @@ public class AppUi extends Application {
         Label welcome = new Label("Welcome to bookcase");
         welcome.setStyle("-fx-font: 30px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
         welcome.setId("welcome");
-        TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
         BorderPane pane2 = new BorderPane();
         pane2.setPadding(new Insets(20, 0, 0, 0));
@@ -353,6 +356,7 @@ public class AppUi extends Application {
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setMinWidth(250);
         colTitle.setMaxWidth(250);
+        colTitle.setSortable(true);
         colTitle.setStyle("-fx-alignment: CENTER_LEFT;");
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
         TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
@@ -363,16 +367,17 @@ public class AppUi extends Application {
         TableColumn<LibraryObject, String> colType = new TableColumn<>("Type");
         colType.setMinWidth(60);
         colType.setMaxWidth(60);
+        colType.setSortable(false);
         colType.setStyle("-fx-alignment: CENTER_LEFT;");
         colType.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getType())));
         TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
         colTags.setStyle("-fx-alignment: CENTER_LEFT;");
+        colTags.setSortable(false);
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
         colCourse.setStyle("-fx-alignment: CENTER_LEFT;");
+        colCourse.setSortable(false);
         colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setItems(flLibObj);
-        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
         // Add extra column for a show detailed info button
         TableColumn<LibraryObject, Void> colButton = new TableColumn<LibraryObject, Void>("Detais");
         Callback<TableColumn<LibraryObject, Void>, TableCell<LibraryObject, Void>> cellFactory = new Callback<TableColumn<LibraryObject, Void>, TableCell<LibraryObject, Void>>() {
@@ -404,7 +409,7 @@ public class AppUi extends Application {
         colButton.setStyle( "-fx-alignment: CENTER;");
         colButton.setMinWidth(80);
         colButton.setMaxWidth(80);
-        table.getColumns().add(colButton);
+        colButton.setSortable(false);
         // Search box listener that automatically updates on textfield entry.
         textField.textProperty().addListener((obs, oldVal, newVal) -> {
             switch (searchComboBox.getValue())
@@ -424,6 +429,10 @@ public class AppUi extends Application {
             if (newVal != null)
                 textField.setText("");
         });
+        table.setItems(sortedData);
+        //table.setItems(flLibObj);
+        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
+        table.getColumns().add(colButton);
         HBox searchBox = new HBox(searchComboBox, textField);
         searchBox.setAlignment(Pos.CENTER_LEFT);
         ScrollPane sp1 = new ScrollPane(table);
@@ -603,7 +612,6 @@ public class AppUi extends Application {
         Label error = new Label();
         error.setId("error");
         Text scenetitle = new Text("Bookcase items:");
-
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setPrefWidth(100);
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
@@ -620,9 +628,9 @@ public class AppUi extends Application {
         table.setItems(data);
         table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colISBN, colCourse));
         ScrollPane sp = new ScrollPane(table);
-        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        sp.setHmax(3);
+        //sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        //sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        //sp.setHmax(3);
         VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
