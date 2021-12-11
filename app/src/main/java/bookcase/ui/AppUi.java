@@ -3,7 +3,6 @@ package bookcase.ui;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,37 +19,26 @@ import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.ResizeFeatures;
-import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -64,10 +52,6 @@ public class AppUi extends Application {
     private Scene showBooks;
     private Scene addCourse;
     private Scene infoScene;
-    /*
-     *  I am a TEST SCENE feel free to edit me as you wish.
-     */
-    //private Scene testScene;
     private Stage mainStage;
     private LibraryObjectDAO library;
     private LibraryService service;
@@ -92,7 +76,6 @@ public class AppUi extends Application {
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
         showBooks = buildShowBooksScene();
-        //testScene = buildTestScene();
         addCourse = buildAddCourseScene();
 
         LibraryObject l = service.getByIsbn("6767676766");
@@ -109,7 +92,7 @@ public class AppUi extends Application {
 
         mainStage = primaryStage;
         mainStage.setTitle("Bookcase");
-        mainStage.setWidth(923);
+        mainStage.setWidth(937);
         mainStage.setHeight(800);
         mainScene = buildMainScene();
         mainStage.setScene(mainScene);
@@ -308,71 +291,49 @@ public class AppUi extends Application {
     }
 
     /*
-     *  I am a test scene for the bookcase.
+     *  NEW mainScene
      */
-    //public Scene buildTestScene() {
     public Scene buildMainScene() {
+    	final ObservableList<LibraryObject> data = FXCollections.observableArrayList(service.getsAllObjects());
+        FilteredList<LibraryObject> flLibObj = new FilteredList<LibraryObject>(data, p -> true);
+
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
-        addPane.setPadding(new Insets(10, 5, 5, 5));
+        addPane.setPadding(new Insets(5, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        //addPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
         Label welcome = new Label("Welcome to bookcase");
         welcome.setStyle("-fx-font: 30px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
         welcome.setId("welcome");
         TableView<LibraryObject> table = new TableView<LibraryObject>();
     	table.setPlaceholder(new Label(""));
-        final ObservableList<LibraryObject> data = 
-        		FXCollections.observableArrayList(service.getsAllObjects());
         BorderPane pane2 = new BorderPane();
-        pane2.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
+        pane2.setPadding(new Insets(20, 0, 0, 0));
+        //pane2.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, null, null)));
         //  Add library items button.
         HBox comboBoxAndButton = new HBox();
+        comboBoxAndButton.setPadding(new Insets(40, 0, 0, 0));
         comboBoxAndButton.setAlignment(Pos.CENTER_LEFT);
         ComboBox<String> typeComboBox = new ComboBox<>();
-        typeComboBox.getItems().addAll(
-                "Book",
-                "Blogpost",
-                "Podcast"
-        );
+        typeComboBox.setMinWidth(100);
+        typeComboBox.getItems().addAll("Book", "Blogpost", "Podcast");
         typeComboBox.getSelectionModel().selectFirst();
         Button addBook = new Button("Add");
-        addBook.setMinWidth(100);
+        addBook.setMinWidth(50);
         addBook.setId("addBook");
         addBook.setOnAction(e -> {
             String typeValue = (String) typeComboBox.getValue();
             mainStage.setScene(buildAddReableScene(typeValue));
         });
-        comboBoxAndButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-        comboBoxAndButton.getChildren().addAll(addBook, typeComboBox);
-
-        //  Remove library item button.
-        HBox removeButton = new HBox();
-        removeButton.setAlignment(Pos.CENTER_LEFT);
-        Button removeBook = new Button("Remove");
-        removeBook.setMinWidth(100);
-        removeBook.setId("removeBook");
-        removeBook.setOnAction(e -> {
-        	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
-        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
-        	}
-        });
-        removeButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-        removeButton.getChildren().addAll(removeBook);
-        //  Search library items button.        
-        /*
-         *  I need to be implemented!
-         */
+        //comboBoxAndButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
+        // Search library items.
         HBox searchButton = new HBox();
         searchButton.setAlignment(Pos.CENTER_LEFT);
-        ComboBox<String> searchComboBox = new ComboBox<>();
-        searchComboBox.getItems().addAll(
-                "Book",
-                "Blogpost",
-                "Podcast"
-        );
+        ComboBox<String> searchComboBox = new ComboBox<String>();
+        searchComboBox.setMinWidth(100);
+        searchComboBox.getItems().addAll("Title", "Author", "Type");
         searchComboBox.getSelectionModel().selectFirst();
         Button searchBook = new Button("Search");
         searchBook.setMinWidth(100);
@@ -381,26 +342,36 @@ public class AppUi extends Application {
             String typeValue = (String) searchComboBox.getValue();
             mainStage.setScene(buildAddReableScene(typeValue));
         });
-        searchButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
-        searchButton.getChildren().addAll(searchBook, searchComboBox);
+        TextField textField = new TextField();
+        textField.setMinWidth(250);
+        textField.setPromptText("Enter search here!");
+        searchButton.getChildren().addAll(searchBook);
+        // Table view.
         Label header = new Label("Reading tips:");
         header.setStyle("-fx-font: 20px Arial; -fx-stroke: grey;-fx-font-weight: bold;");
         pane2.setLeft(header);
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
-        colTitle.setPrefWidth(200);
+        colTitle.setMinWidth(250);
+        colTitle.setMaxWidth(250);
+        colTitle.setStyle("-fx-alignment: CENTER_LEFT;");
         colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
         TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
-        colAuthor.setPrefWidth(150);
+        colAuthor.setMinWidth(150);
+        colAuthor.setMaxWidth(150);
+        colAuthor.setStyle("-fx-alignment: CENTER_LEFT;");
         colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
         TableColumn<LibraryObject, String> colType = new TableColumn<>("Type");
-        colType.setPrefWidth(60);
+        colType.setMinWidth(60);
+        colType.setMaxWidth(60);
+        colType.setStyle("-fx-alignment: CENTER_LEFT;");
         colType.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getType())));
         TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
-        colTags.setPrefWidth(200);
+        colTags.setStyle("-fx-alignment: CENTER_LEFT;");
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
-        colCourse.setPrefWidth(200);
+        colCourse.setStyle("-fx-alignment: CENTER_LEFT;");
         colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
-        table.setItems(data);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setItems(flLibObj);
         table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
         // Add extra column for a show detailed info button
         TableColumn<LibraryObject, Void> colButton = new TableColumn<LibraryObject, Void>("Detais");
@@ -408,7 +379,7 @@ public class AppUi extends Application {
             @Override
             public TableCell<LibraryObject, Void> call(final TableColumn<LibraryObject, Void> param) {
                 final TableCell<LibraryObject, Void> cell = new TableCell<LibraryObject, Void>() {
-                    Button infoButton = new Button("Show");
+                    Button infoButton = new Button("show");
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -431,10 +402,32 @@ public class AppUi extends Application {
         };
         colButton.setCellFactory(cellFactory);
         colButton.setStyle( "-fx-alignment: CENTER;");
+        colButton.setMinWidth(80);
+        colButton.setMaxWidth(80);
         table.getColumns().add(colButton);
-        //autoResizeColumns(table1);
+        // Search box listener that automatically updates on textfield entry.
+        textField.textProperty().addListener((obs, oldVal, newVal) -> {
+            switch (searchComboBox.getValue())
+            {
+                case "Title":
+                    flLibObj.setPredicate(p -> p.getTitle().toLowerCase().contains(newVal.toLowerCase().trim()));
+                    break;
+                case "Author":
+                    flLibObj.setPredicate(p -> p.getAuthor().toLowerCase().contains(newVal.toLowerCase().trim()));
+                    break;
+                case "Type":
+                    flLibObj.setPredicate(p -> p.getType().toLowerCase().contains(newVal.toLowerCase().trim()));
+                    break;
+            }
+        });
+        searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null)
+                textField.setText("");
+        });
+        HBox searchBox = new HBox(searchComboBox, textField);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
         ScrollPane sp1 = new ScrollPane(table);
-        sp1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
+        //sp1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setHmax(3);
@@ -449,10 +442,9 @@ public class AppUi extends Application {
         Button viewBooks = new Button("Show Books");
         Label temp = new Label("These buttons will be removed.");
         temp.setStyle("-fx-font: 15px Arial;-fx-font-weight: bold;");
-        hbox.getChildren().addAll(temp, info, remove, viewBooks);
+        hbox.getChildren().addAll(temp, viewBooks);
         info.setOnAction(e -> {
         	if (table.getSelectionModel().getSelectedItem() != null) {
-        		//System.out.println(table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId());
         		int id = table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId();
         		mainScene = buildInfoScene(id);
                 mainStage.setScene(mainScene);
@@ -471,17 +463,7 @@ public class AppUi extends Application {
             showBooks = buildShowBooksScene();
             mainStage.setScene(showBooks);
         });
-        
-        /*
-        Button returnB = new Button("Back");
-        returnB.setId("backButton");
-        returnB.setOnAction(e -> {
-            mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
-        });
-        pane.setRight(returnB);
-        */
-        addPane.getChildren().addAll(welcome, comboBoxAndButton, removeButton, searchButton, pane2, sp1, hbox);
+        addPane.getChildren().addAll(welcome, comboBoxAndButton, searchBox, pane2, sp1, hbox);
         return new Scene(addPane);
     }
     
@@ -569,7 +551,6 @@ public class AppUi extends Application {
         line2.setStartY(150.0); 
         line2.setEndX(500.0); 
         line2.setEndY(150.0);
-        //autoResizeColumns(table1);
         HBox hbox = new HBox();
         Button edit = new Button("Edit");
         Button remove = new Button("Remove");
@@ -633,8 +614,6 @@ public class AppUi extends Application {
         colISBN.setPrefWidth(100);
         colISBN.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
         table.setItems(data);
-
-        //ADDED COURSE
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Course");
         colCourse.setPrefWidth(100);
         colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
