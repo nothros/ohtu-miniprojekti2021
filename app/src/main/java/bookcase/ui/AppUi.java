@@ -27,10 +27,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -50,8 +54,6 @@ public class AppUi extends Application {
     private Scene mainScene;
     private Scene addReadble;
     private Scene listReadbles;
-    private Scene showBooks;
-    private Scene addCourse;
     private Scene infoScene;
     private Stage mainStage;
     private LibraryObjectDAO library;
@@ -69,15 +71,12 @@ public class AppUi extends Application {
             List<String> args = getParameters().getRaw();
             if(args.size() == 1){
                 database = args.get(0);
-                System.out.println("APPUI: Database:"+database);
             }
         }
         library = new LibraryObjectDAO(database);
         service = new LibraryService(library);
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
-        showBooks = buildShowBooksScene();
-        addCourse = buildAddCourseScene();
 
         LibraryObject l = service.getByIsbn("6767676766");
         if (l == null) {
@@ -86,7 +85,7 @@ public class AppUi extends Application {
             service.removeById(l);
         }
 
-        infoScene = buildInfoScene(0);
+        //infoScene = buildInfoScene(0);
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -100,65 +99,6 @@ public class AppUi extends Application {
         mainStage.show();
     }
 
-    public Scene buildAddCourseScene() {
-        return null;
-    }
-    
-    /*
-    public Scene buildMainScene() {
-        VBox mainPane = new VBox();
-        mainPane.setSpacing(5);
-        mainPane.setPadding(new Insets(5, 5, 5, 5));
-        mainPane.setAlignment(Pos.CENTER);
-        Label welcome = new Label("Welcome to bookcase");
-        welcome.setStyle("-fx-font: 20px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
-        welcome.setId("welcome");
-        Text addReadable = new Text("Choose what you want to add");
-        HBox comboBoxAndButton = new HBox();
-        comboBoxAndButton.setAlignment(Pos.CENTER);
-        ComboBox<String> typeComboBox = new ComboBox<>();
-        typeComboBox.getItems().addAll(
-                "Book",
-                "Blogpost",
-                "Podcast"
-        );
-
-        typeComboBox.getSelectionModel().selectFirst();
-        Button addBook = new Button("Add new LibraryItem");
-        addBook.setId("addBook");
-        addBook.setOnAction(e -> {
-            String typeValue = (String) typeComboBox.getValue();
-            mainStage.setScene(buildAddReableScene(typeValue));
-        });
-        comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
-
-        Button viewBooks = new Button("Show books");
-        viewBooks.setOnAction(e -> {
-            showBooks = buildShowBooksScene();
-            mainStage.setScene(showBooks);
-        });
-        Button testButton = new Button("Test");
-        testButton.setStyle("-fx-text-fill: #ff0000; ");
-        testButton.setOnAction(e -> {
-            mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
-        });
-
-        ListView<String> bookview = new ListView<String>();
-        List<LibraryObject> books = service.getAllObjects();
-        for (LibraryObject book : books) {
-            String bookString = book.toString();
-            bookview.getItems().add(bookString);
-        }
-
-        ScrollPane scrollpane = new ScrollPane(bookview);
-        scrollpane.setFitToWidth(true);
-
-        mainPane.getChildren().addAll(welcome, addReadable, comboBoxAndButton, viewBooks, scrollpane, testButton);
-        return new Scene(mainPane);
-    }
-	*/
-
     public Scene buildAddReableScene(String typeValue) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
         if (typeValue != "Book") {
@@ -169,7 +109,6 @@ public class AppUi extends Application {
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -180,16 +119,15 @@ public class AppUi extends Application {
         error.setText("Impossible to add " + typeValue);
         error.setTextFill(Color.RED);
         error.setVisible(false);
-
         Text scenetitle = new Text("Add new " + typeValue);
+        scenetitle.setStyle("-fx-font: 15px Arial; -fx-font-weight: bold;");
         grid.add(scenetitle, 0, 0, 2, 1);
         for (int i = 0; i < listOfTitles.length; i++) {
             Label s = new Label(listOfTitles[i]);
             grid.add(s, 0, i + 1);
         }
         Label commentTitle = new Label("Comments:");
-        grid.add(commentTitle, 0, 0, 2, 13);
-
+        grid.add(commentTitle, 0, 6);
         TextField titleTF = new TextField();
         titleTF.setId("title");
         TextField authorTF = new TextField();
@@ -210,7 +148,7 @@ public class AppUi extends Application {
         grid.add(ISBNTF, 1, 3);
         grid.add(tagsTF, 1, 4);
         grid.add(courseTF, 1, 5);
-        grid.add(commentTF, 1, 6);
+        grid.add(commentTF,1, 6);
 
         Button createBook = new Button("Add new " + typeValue);
         createBook.setId("createBook");
@@ -233,7 +171,7 @@ public class AppUi extends Application {
                     index = "podcast";
                     break;
             }
-            if (service.createLibraryObject(index, title, author, isbn_website, course)) {
+            if (service.createLibraryObject(index, title, author, isbn_website, course, comment)) {
                 if (course.length() != 0)
                 	service.createCourseObject(course, isbn_website);
                 error.setText("New " + typeValue + " added");
@@ -292,10 +230,10 @@ public class AppUi extends Application {
     }
 
     /*
-     *  NEW mainScene
+     *  Main scene for bookcase app.
      */
     public Scene buildMainScene() {
-    	final ObservableList<LibraryObject> data = FXCollections.observableArrayList(service.getsAllObjects());
+    	final ObservableList<LibraryObject> data = FXCollections.observableArrayList(service.getAllObjects());
         FilteredList<LibraryObject> flLibObj = new FilteredList<LibraryObject>(data, p -> true);
         SortedList<LibraryObject> sortedData = new SortedList<LibraryObject>(flLibObj);
         TableView<LibraryObject> table = new TableView<LibraryObject>();
@@ -306,14 +244,12 @@ public class AppUi extends Application {
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(5, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        //addPane.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, null)));
         Label welcome = new Label("Welcome to bookcase");
         welcome.setStyle("-fx-font: 30px Arial; -fx-stroke: grey; -fx-font-weight: bold;");
         welcome.setId("welcome");
     	table.setPlaceholder(new Label(""));
         BorderPane pane2 = new BorderPane();
         pane2.setPadding(new Insets(20, 0, 0, 0));
-        //pane2.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, null, null)));
         //  Add library items button.
         HBox comboBoxAndButton = new HBox();
         comboBoxAndButton.setPadding(new Insets(40, 0, 0, 0));
@@ -329,7 +265,6 @@ public class AppUi extends Application {
             String typeValue = (String) typeComboBox.getValue();
             mainStage.setScene(buildAddReableScene(typeValue));
         });
-        //comboBoxAndButton.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
         comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
         // Search library items.
         HBox searchButton = new HBox();
@@ -349,9 +284,8 @@ public class AppUi extends Application {
         textField.setMinWidth(250);
         textField.setPromptText("Enter search here!");
         searchButton.getChildren().addAll(searchBook);
-        // Table view.
         Label header = new Label("Reading tips:");
-        header.setStyle("-fx-font: 20px Arial; -fx-stroke: grey;-fx-font-weight: bold;");
+        header.setStyle("-fx-font: 20px Arial; -fx-font-weight: bold;");
         pane2.setLeft(header);
         TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
         colTitle.setMinWidth(250);
@@ -395,7 +329,6 @@ public class AppUi extends Application {
                             setGraphic(infoButton);
                             infoButton.setOnAction(e -> {
                                 LibraryObject data = getTableView().getItems().get(getIndex());
-                                System.out.println("Data: " + data);
                         		mainScene = buildInfoScene(data.getId());
                                 mainStage.setScene(mainScene);
                             });
@@ -430,54 +363,22 @@ public class AppUi extends Application {
                 textField.setText("");
         });
         table.setItems(sortedData);
-        //table.setItems(flLibObj);
         table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
         table.getColumns().add(colButton);
         HBox searchBox = new HBox(searchComboBox, textField);
         searchBox.setAlignment(Pos.CENTER_LEFT);
         ScrollPane sp1 = new ScrollPane(table);
-        //sp1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID, null, null)));
-        sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        sp1.setHmax(3);
-        sp1.setFitToWidth(true);
-        sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp1.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        sp1.setFitToWidth(true);
         sp1.setHmax(addPane.getWidth());
-        sp1.setPrefViewportWidth(addPane.getWidth());
-        HBox hbox = new HBox();
-        Button info = new Button("Info");
-        Button remove = new Button("Remove");
-        Button viewBooks = new Button("Show Books");
-        Label temp = new Label("These buttons will be removed.");
-        temp.setStyle("-fx-font: 15px Arial;-fx-font-weight: bold;");
-        hbox.getChildren().addAll(temp, viewBooks);
-        info.setOnAction(e -> {
-        	if (table.getSelectionModel().getSelectedItem() != null) {
-        		int id = table.getItems().get(table.getSelectionModel().getSelectedIndex()).getId();
-        		mainScene = buildInfoScene(id);
-                mainStage.setScene(mainScene);
-        	} else {
-        		mainScene = buildMainScene();
-                mainStage.setScene(mainScene);
-        	}
-        });
-        remove.setOnAction(e -> {
-        	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
-        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
-        	}
-        });
-        viewBooks.setOnAction(e -> {
-            showBooks = buildShowBooksScene();
-            mainStage.setScene(showBooks);
-        });
-        addPane.getChildren().addAll(welcome, comboBoxAndButton, searchBox, pane2, sp1, hbox);
+        sp1.setPrefViewportWidth(addPane.getWidth());  
+        addPane.getChildren().addAll(welcome, comboBoxAndButton, searchBox, pane2, sp1);
         return new Scene(addPane);
     }
     
     /*
-     *  I am a library item info scene. Fix me into nice JAVAFX. I am bubble gum code.
+     *  Detailed library item info scene.
      */
     public Scene buildInfoScene(int id) {
     	BorderPane pane = new BorderPane();
@@ -485,84 +386,81 @@ public class AppUi extends Application {
         VBox addPane = new VBox();
         addPane.setPadding(new Insets(10, 5, 5, 5));
         addPane.setAlignment(Pos.CENTER);
-        //addPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
         BorderPane pane2 = new BorderPane();
-        //pane2.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, null, null)));
         GridPane gPane = new GridPane();
         Hyperlink hlink = new Hyperlink();
-        //gPane.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, null, null)));
         if (id != 0) {
         List<LibraryObject> data = service.getAllObjects(id);
-        String out = 
-        			"Title: " + data.get(0).getTitle() + 
-            		"\nAuthor: " + data.get(0).getAuthor() +
-            		"\nType: " + data.get(0).getType() +
-            		"\nISBN: " + data.get(0).getISBN() +
-            		"\nTags: " +
-            		"\nRelated courses: " + data.get(0).getCourse();
-        //System.out.println(out);
-        Text header = new Text("");
-        header.setStyle("-fx-font: 30px Arial; -fx-stroke: grey;");
+        Text header = new Text("Detailed information:");
+        header.setStyle("-fx-font: 20px Arial; -fx-font-weight: bold;");
         pane2.setLeft(header);
         Text txt1 = new Text("Title: ");
         Text txt2 = new Text("Author: ");
         Text txt3 = new Text("Type: ");
         Text txt4, txt44;
-        if (data.get(0).getType() == "Book") {
+        if (data.get(0).getType().equals("book")) {
         	txt4 = new Text("ISBN: ");
         	txt44 = new Text(data.get(0).getISBN());
-        	txt44.setStyle("-fx-font: 30px Arial;");
+        	txt44.setStyle("-fx-font: 20px Arial;");
         } else {
         	txt4 = new Text("URL: ");
         	txt44 = new Text("");
         	hlink.setText(data.get(0).getURL());
-        	hlink.setStyle("-fx-font: 30px Arial;");
+        	hlink.setStyle("-fx-font: 20px Arial;");
         }
         Text txt5 = new Text("Tags: ");
         Text txt6 = new Text("Related courses: ");
+        Text txt7 = new Text("Comments: ");
         Text txt11 = new Text(data.get(0).getTitle());
         Text txt22 = new Text(data.get(0).getAuthor());
         Text txt33 = new Text(String.valueOf(data.get(0).getType()));
         Text txt55 = new Text("");
         Text txt66 = new Text(data.get(0).getCourse());
-        txt1.setStyle("-fx-font: 30px Arial;");
-        txt2.setStyle("-fx-font: 30px Arial;");
-        txt3.setStyle("-fx-font: 30px Arial;");
-        txt4.setStyle("-fx-font: 30px Arial;");
-        txt5.setStyle("-fx-font: 30px Arial;");
-        txt6.setStyle("-fx-font: 30px Arial;");
-        txt11.setStyle("-fx-font: 30px Arial;");
-        txt22.setStyle("-fx-font: 30px Arial;");
-        txt33.setStyle("-fx-font: 30px Arial;");
-        txt55.setStyle("-fx-font: 30px Arial;");
-        txt66.setStyle("-fx-font: 30px Arial;");
+        TextArea txt77 = new TextArea(data.get(0).getComment());
+        txt77.setEditable(false);
+        txt77.prefWidthProperty().bind(gPane.widthProperty());
+        txt77.setWrapText(true);     
+        txt77.setPrefRowCount(4);
+        txt1.setStyle("-fx-font: 20px Arial;");
+        txt2.setStyle("-fx-font: 20px Arial;");
+        txt3.setStyle("-fx-font: 20px Arial;");
+        txt4.setStyle("-fx-font: 20px Arial;");
+        txt5.setStyle("-fx-font: 20px Arial;");
+        txt6.setStyle("-fx-font: 20px Arial;");
+        txt7.setStyle("-fx-font: 20px Arial;");
+        txt11.setStyle("-fx-font: 20px Arial;");
+        txt22.setStyle("-fx-font: 20px Arial;");
+        txt33.setStyle("-fx-font: 20px Arial;");
+        txt55.setStyle("-fx-font: 20px Arial;");
+        txt66.setStyle("-fx-font: 20px Arial;");
+        txt77.setFocusTraversable(false);
+        txt77.setStyle("-fx-font: 20px Arial; -fx-control-inner-background: #F5F5F5; -fx-focus-color: #F5F5F5;"
+        		+ "-fx-faint-focus-color: #F5F5F5; -fx-faint-color: #F5F5F5; -fx-background-color: #F5F5F5");
         gPane.add(txt1, 0, 0, 1, 1);
         gPane.add(txt2, 0, 1, 1, 1);
         gPane.add(txt3, 0, 2, 1, 1);
         gPane.add(txt4, 0, 3, 1, 1);
         gPane.add(txt5, 0, 4, 1, 1);
         gPane.add(txt6, 0, 5, 1, 1);
+        gPane.add(txt7, 0, 6, 1, 1);
         gPane.add(txt11, 1, 0, 1, 1);
         gPane.add(txt22, 1, 1, 1, 1);
         gPane.add(txt33, 1, 2, 1, 1);
-        if (data.get(0).getType() == "Book") {
+        if (data.get(0).getType().equals("book")) {
         	gPane.add(txt44, 1, 3, 1, 1);
         } else {
         	gPane.add(hlink, 1, 3, 1, 1);
         }
         gPane.add(txt55, 1, 4, 1, 1);
         gPane.add(txt66, 1, 5, 1, 1);
-        Line line = new Line(0, 150, 200, 150);   
-        line.setStrokeWidth(20); 
-        line.setStroke(Color.web("000000"));
-        Line line2 = new Line();
-        line2.setStartX(100.0); 
-        line2.setStartY(150.0); 
-        line2.setEndX(500.0); 
-        line2.setEndY(150.0);
+        gPane.add(txt77, 0, 7, 2, 2);
         HBox hbox = new HBox();
+        hbox.setSpacing(10);
+        hbox.setPadding(new Insets(20, 0, 0, 0));
         Button edit = new Button("Edit");
+        edit.setPrefWidth(100);
         Button remove = new Button("Remove");
+        remove.setPrefWidth(100);
         hbox.getChildren().addAll(edit, remove);
         hbox.setAlignment(Pos.CENTER);
         edit.setOnAction(e -> {
@@ -589,71 +487,6 @@ public class AppUi extends Application {
         });
         pane.setRight(returnB);
         pane.setCenter(addPane);
-        Scene scene = new Scene(pane);
-        return scene;
-    }
-
-    /*
-     *  Generates a table view of entries in LIBRARY. Currently books (type=1).
-     */
-    public Scene buildShowBooksScene() {
-        TableView<LibraryObject> table = new TableView<LibraryObject>();
-        table.setPlaceholder(new Label(""));
-        final ObservableList<LibraryObject> data
-                = FXCollections.observableArrayList(service.getAllObjects());
-        BorderPane pane = new BorderPane();
-        pane.setPadding(new Insets(5, 5, 5, 5));
-        VBox addPane = new VBox();
-        addPane.setPadding(new Insets(10, 5, 75, 5));
-        addPane.setAlignment(Pos.CENTER);
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        Label error = new Label();
-        error.setId("error");
-        Text scenetitle = new Text("Bookcase items:");
-        TableColumn<LibraryObject, String> colTitle = new TableColumn<>("Title");
-        colTitle.setPrefWidth(100);
-        colTitle.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTitle()));
-        TableColumn<LibraryObject, String> colAuthor = new TableColumn<>("Author");
-        colAuthor.setPrefWidth(100);
-        colAuthor.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
-        TableColumn<LibraryObject, String> colISBN = new TableColumn<>("ISBN");
-        colISBN.setPrefWidth(100);
-        colISBN.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getISBN()));
-        table.setItems(data);
-        TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Course");
-        colCourse.setPrefWidth(100);
-        colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
-        table.setItems(data);
-        table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colISBN, colCourse));
-        ScrollPane sp = new ScrollPane(table);
-        //sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        //sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        //sp.setHmax(3);
-        VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(sp);
-        Button remove = new Button("Remove");
-        remove.setOnAction(e -> {
-        	if (table.getSelectionModel().getSelectedItem() != null) {
-        		library.deleteEntry(table.getSelectionModel().getSelectedItem());
-        		table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
-        	}
-        });
-        grid.add(scenetitle, 2, 0, 1, 1);
-        grid.add(vbox, 2, 1, 1, 1);
-        addPane.getChildren().addAll(error, grid, remove);
-        Button returnB = new Button("Back");
-        returnB.setId("backButton");
-        returnB.setOnAction(e -> {
-            mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
-            error.setVisible(false);
-        });
-        pane.setCenter(addPane);
-        pane.setRight(returnB);
         Scene scene = new Scene(pane);
         return scene;
     }

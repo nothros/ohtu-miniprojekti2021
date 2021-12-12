@@ -9,17 +9,19 @@ public class LibraryObject {
     private String isbn;
     private String url;
     private String course;
+    private String comment;
 
-    public LibraryObject(String type, String title, String author, String isbn, String url, String course) {
+    public LibraryObject(String type, String title, String author, String isbn, String url, String course, String comment) {
         this.type = type;
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.url = url;
         this.course = course;
+        this.comment = comment;
     }
 
-    public LibraryObject(int id, String type, String title, String author, String isbn, String url, String course) {
+    public LibraryObject(int id, String type, String title, String author, String isbn, String url, String course, String comment) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -27,26 +29,18 @@ public class LibraryObject {
         this.isbn = isbn;
         this.url = url;
         this.course = course;
+        this.comment = comment;
     }
 
     @Override
     public String toString() {
-//        String type = "";
-//        if (getType() == 1) {
-//            type = "Book";
-//        }
-//        if (getType() == 2) {
-//            type = "Blogpost";
-//        }
-//        if (getType() == 3) {
-//            type = "Podcast";
-//        }
         return "type: " + getType()
                 + ", title: " + getTitle()
                 + ", author: " + getAuthor()
                 + ", ISBN: " + getISBN()
                 + ", URL: " + getURL()
-                + ", course: " + getCourse();
+                + ", course: " + getCourse()
+        		+ ", comment: " + getComment();
     }
 
     public int getId() {
@@ -103,6 +97,14 @@ public class LibraryObject {
 
     public void setCourse(String course) {
         this.course = course;
+    }
+    
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 }

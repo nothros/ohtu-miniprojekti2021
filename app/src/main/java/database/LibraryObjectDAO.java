@@ -28,7 +28,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "(ID INTEGER PRIMARY KEY, " + "TYPE TEXT NOT NULL,"
                 + "TITLE TEXT NOT NULL," + "AUTHOR TEXT,"
                 + "ISBN TEXT," + "URL TEXT,"
-                + "COURSE TEXT," + "DELETED INTEGER);";
+                + "COURSE TEXT," + "COMMENT TEXT," + "DELETED INTEGER);";
         try (Statement stmt = conn.createStatement()) {
             if (!existsTable("LIBRARY")) {
                 stmt.execute(sq1);
@@ -157,7 +157,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      *  Insert entries into table LIBRARY.
      */
     public boolean insertLibrary(LibraryObject libObj) {
-        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, COURSE, DELETED) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, COURSE, COMMENT, DELETED) VALUES(?,?,?,?,?,?,?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, libObj.getType());
             pstmt.setString(2, libObj.getTitle());
@@ -165,7 +165,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(4, libObj.getISBN());
             pstmt.setString(5, libObj.getURL());
             pstmt.setString(6, libObj.getCourse());
-            pstmt.setInt(7, 0);
+            pstmt.setString(7, libObj.getComment());            
+            pstmt.setInt(8, 0);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -291,21 +292,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  On startup to display all entries in LIBRARY table in database.
-     *  This is redundant now that the database is created in AppUi, but
-     *  you can define "test.db" there.
-     */
-    public void helperFunction() {
-        String sq1 = "UPDATE LIBRARY SET DELETED = 0";
-        try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
-            ptmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /*
-     *  Hides entry instead of completely deleting it from database
+     *  Hides the entry instead of completely deleting it from database
      */
     public void deleteEntry(LibraryObject t) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
@@ -319,7 +306,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     * Fetch all entries of id %s from LIBRARY.
+     * Fetch entry with ID %id from LIBRARY.
      */
     public List<LibraryObject> getAll(int id) {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
@@ -329,7 +316,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"), rs.getString("COMMENT"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -339,7 +326,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     * Fetch all entries of type %s from LIBRARY.
+     * Fetch all entries of TYPE %s from LIBRARY.
      */
     public List<LibraryObject> getAll(String s) {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
@@ -349,7 +336,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(1, s);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"), rs.getString("COMMENT"));
                 list.add(libObj);
             }
         } catch (SQLException e) {
@@ -359,37 +346,17 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     }
 
     /*
-     *  Placeholder function that is getAll() until code is refactored.
-     */
-    public List<LibraryObject> getsAll() {
-        ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
-        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL, COURSE FROM LIBRARY WHERE DELETED = 0";
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sq1)) {
-            while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
-                list.add(libObj);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return list;
-    }
-
-    /*
-     *  Fetch entries from LIBRARY, not including ID field.
+     *  Fetch all entries from LIBRARY.
      */
     @Override
     public List<LibraryObject> getAll() {
         ArrayList<LibraryObject> list = new ArrayList<LibraryObject>();
-        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL, COURSE FROM LIBRARY WHERE DELETED = 0";
+        String sq1 = "SELECT ID, TYPE, TITLE, AUTHOR, ISBN, URL, COURSE, COMMENT FROM LIBRARY WHERE DELETED = 0";
         try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sq1)) {
             while (rs.next()) {
-                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject libObj = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"), rs.getString("COMMENT"));
                 list.add(libObj);
-                System.out.println("GET: \n" + libObj.toString());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -431,7 +398,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(1, isbn);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"));
+                LibraryObject lib = new LibraryObject(rs.getInt("ID"), rs.getString("TYPE"), rs.getString("TITLE"), rs.getString("AUTHOR"), rs.getString("ISBN"), rs.getString("URL"), rs.getString("COURSE"), rs.getString("COMMENT"));
                 return lib;
             }
         } catch (SQLException e) {

@@ -1,4 +1,4 @@
-package bookcase;
+	package bookcase;
 
 import bookcase.ui.AppUi;
 

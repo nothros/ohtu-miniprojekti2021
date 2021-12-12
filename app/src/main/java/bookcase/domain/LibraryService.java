@@ -13,39 +13,39 @@ public class LibraryService {
         this.libraryDao = libraryDao;
     }
 
-    public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course) {
+    public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course, String comment) {
         if (course != null) {
             course = course.trim().replaceAll("\\s{2,}", " ");
         }
 
         switch (type) {
             case "book":
-                return createBook(title, author, isbnWebsite, course);
+                return createBook(title, author, isbnWebsite, course, comment);
             case "blogpost":
-                return createBlogpost(title, author, isbnWebsite, course);
+                return createBlogpost(title, author, isbnWebsite, course, comment);
             case "podcast":
-                return createPodcast(title, author, isbnWebsite, course);
+                return createPodcast(title, author, isbnWebsite, course, comment);
         }
         return false;
     }
 
-    private boolean createBlogpost(String title, String author, String url, String course) {
+    private boolean createBlogpost(String title, String author, String url, String course, String comment) {
         if ((title.isEmpty() || url.isEmpty())) {
             return false;
         }
-        LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, course);
+        LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, course, comment);
         return libraryDao.insertLibrary(libObj);
     }
 
-    private boolean createPodcast(String title, String author, String url, String course) {
+    private boolean createPodcast(String title, String author, String url, String course, String comment) {
         if ((title.isEmpty() || url.isEmpty())) {
             return false;
         }
-        LibraryObject libObj = new LibraryObject("podcast", title, author, null, url, course);
+        LibraryObject libObj = new LibraryObject("podcast", title, author, null, url, course, comment);
         return libraryDao.insertLibrary(libObj);
     }
 
-    private boolean createBook(String title, String author, String isbn, String course) {
+    private boolean createBook(String title, String author, String isbn, String course, String comment) {
         if ((title.isEmpty() || author.isEmpty() || isbn.isEmpty())) {
             return false;
         }
@@ -57,7 +57,7 @@ public class LibraryService {
             System.out.println("Not a valid ISBN.");
             return false;
         }
-        LibraryObject libObj = new LibraryObject("book", title, author, isbn, null, course);
+        LibraryObject libObj = new LibraryObject("book", title, author, isbn, null, course, comment);
         return libraryDao.insertLibrary(libObj);
     }
 
@@ -72,10 +72,6 @@ public class LibraryService {
             libraryDao.insertCL(libraryDao.getCurrLibraryId(), libraryDao.getCourseId(name));
         }
         return true;
-    }
-
-    public List<LibraryObject> getsAllObjects() {
-        return libraryDao.getsAll();
     }
 
     public List<LibraryObject> getAllObjects() {
