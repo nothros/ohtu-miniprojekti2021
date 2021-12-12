@@ -14,6 +14,7 @@ import bookcase.domain.LibraryService;
 import database.DAO;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
+import database.TagDAO;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
@@ -165,6 +166,7 @@ public class AppUi extends Application {
             if (service.createLibraryObject(index, title, author, isbn_website, course, comment)) {
                 if (course.length() != 0)
                 	service.createCourseObject(course, isbn_website);
+                service.addTagsToLatestLibraryObject(tags);
                 error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -299,6 +301,7 @@ public class AppUi extends Application {
         TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
         colTags.setStyle("-fx-alignment: CENTER_LEFT;");
         colTags.setSortable(false);
+        colTags.setCellValueFactory(d -> new SimpleStringProperty(service.getTagString(d.getValue())));
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
         colCourse.setStyle("-fx-alignment: CENTER_LEFT;");
         colCourse.setSortable(false);
@@ -406,7 +409,7 @@ public class AppUi extends Application {
         Text txt11 = new Text(data.get(0).getTitle());
         Text txt22 = new Text(data.get(0).getAuthor());
         Text txt33 = new Text(String.valueOf(data.get(0).getType()));
-        Text txt55 = new Text("");
+        Text txt55 = new Text(service.getTagString(data.get(0)));
         Text txt66 = new Text(data.get(0).getCourse());
         TextArea txt77 = new TextArea(data.get(0).getComment());
         txt77.setEditable(false);

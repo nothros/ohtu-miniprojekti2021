@@ -4,13 +4,17 @@ import java.util.List;
 import database.CourseObject;
 import database.LibraryObject;
 import database.LibraryObjectDAO;
+import database.TagDAO;
+import java.util.ArrayList;
 
 public class LibraryService {
 
     private LibraryObjectDAO libraryDao;
+    private TagDAO tagDao;
 
     public LibraryService(LibraryObjectDAO libraryDao) {
         this.libraryDao = libraryDao;
+        this.tagDao = libraryDao.getTagDao();
     }
 
     public boolean createLibraryObject(String type, String title, String author, String isbnWebsite, String course, String comment) {
@@ -95,5 +99,26 @@ public class LibraryService {
 
     public void createNewTablesIfNotExists() {
         libraryDao.createNewTable();
+    }
+
+    public void addTagsToLatestLibraryObject(String tags) {
+        String[] taglist = tags.split(",");
+        int latestId = libraryDao.getCurrLibraryId();
+
+        for (String s : taglist) {
+            tagDao.addTag(latestId, s.trim());
+        }
+    }
+
+    public String getTagString(LibraryObject obj) {
+        ArrayList<String> tags = tagDao.getTags(obj.getId());
+        String result = "";
+        for (int i = 0; i < tags.size(); i++) {
+            result += tags.get(i);
+            if (i != tags.size() - 1) {
+                result += ", ";
+            }
+        }
+        return result;
     }
 }

@@ -14,9 +14,18 @@ import java.util.List;
 public class TagDAO {
 
     private Connection conn;
+    private String url;
 
-    public TagDAO(String url) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+    public TagDAO(String dbname) throws SQLException {
+        this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbname);
+    }
+
+    public TagDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return conn;    //DriverManager.getConnection(url);
     }
 
     /* Creates tag tables in database*/
@@ -27,7 +36,7 @@ public class TagDAO {
                 + "TAG_ID INTEGER NOT NULL, "
                 + "FOREIGN KEY(LIBRARY_ID) REFERENCES LIBRARY(ID) ON DELETE CASCADE,"
                 + "FOREIGN KEY(TAG_ID) REFERENCES TAGS(ID) ON DELETE CASCADE)";
-        try (Statement stmt = conn.createStatement()) {
+        try (Statement stmt = getConnection().createStatement()) {
             tryCreateTable(stmt, sq1, "TAGS");
             tryCreateTable(stmt, sq2, "TAG_LIBRARY");
         } catch (SQLException e) {
@@ -38,9 +47,9 @@ public class TagDAO {
     private void tryCreateTable(Statement stmt, String sql, String name) {
         try {
             stmt.execute(sql);
-            System.out.println("Table " + name + " created.");
+            //System.out.println("Table " + name + " created.");
         } catch (SQLException e) {
-            System.out.println("Did not create " + name + " table.");
+            System.out.println("Failed to create " + name + " table.");
         }
     }
 
@@ -53,7 +62,7 @@ public class TagDAO {
     public ArrayList<String> getTags(int libraryObjectId) {
         ArrayList<String> list = new ArrayList();
         String sq1 = "SELECT b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID AND a.LIBRARY_ID = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sq1)) {
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sq1)) {
             pstmt.setInt(1, libraryObjectId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -71,7 +80,7 @@ public class TagDAO {
     public ArrayList<String> getAllTags() {
         ArrayList<String> list = new ArrayList();
         String sq1 = "SELECT DISTINCT b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID";
-        try (Statement stmt = conn.createStatement()) {
+        try (Statement stmt = getConnection().createStatement()) {
             stmt.execute(sq1);
             ResultSet rs = stmt.getResultSet();
             while (rs.next()) {
@@ -107,7 +116,7 @@ public class TagDAO {
 
     private boolean connectTagToLibrary(int libraryId, int tagId) {
         String sql = "INSERT INTO TAG_LIBRARY(LIBRARY_ID, TAG_ID) VALUES(?,?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
             pstmt.setInt(1, libraryId);
             pstmt.setInt(2, tagId);
             pstmt.executeUpdate();
@@ -121,7 +130,7 @@ public class TagDAO {
     /* Returns id of tag, -1 if not found*/
     private int getTagId(String name) {
         String sql = "SELECT ID FROM TAGS WHERE NAME = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
             if (rs.isClosed()) {
@@ -138,10 +147,10 @@ public class TagDAO {
     /* Insert tag to table TAGS*/
     private boolean insertTag(String tag) {
         String sql = "INSERT INTO TAGS(NAME) VALUES(?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
             pstmt.setString(1, tag);
             pstmt.executeUpdate();
-            System.out.println("insertTag: TAG ADDED");
+            //System.out.println("insertTag: TAG ADDED");
             return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -15,9 +15,11 @@ import java.util.regex.Pattern;
 public class LibraryObjectDAO implements DAO<LibraryObject> {
 
     private Connection conn;
-
+    private TagDAO tagdao;
+    
     public LibraryObjectDAO(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+        tagdao = new TagDAO(conn);
     }
 
     /*
@@ -38,6 +40,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
+        tagdao.createNewTable();
     }
 
     private void createCourseTables(Statement stmt) throws SQLException {
@@ -407,6 +411,10 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         return null;
     }
 
+    public TagDAO getTagDao() {
+        return tagdao;
+    }
+    
     /*
      *  Remove databasefile
      */

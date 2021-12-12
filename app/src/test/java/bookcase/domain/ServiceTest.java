@@ -92,8 +92,21 @@ public class ServiceTest {
         service.createCourseObject("kurssi, kurssi2", "0606060606");
         assertTrue(service.createCourseObject("kurssi, kurssi2", "0606060606"));
     }
+    
+    @Test
+    public void addingTagWorks(){
+        service.createLibraryObject("blogpost", "title", "author", "url", "", "");
+        service.addTagsToLatestLibraryObject("tag");
+        assertEquals(1, dao.getTagDao().getAllTags().size());
+    }
 
 
+    @Test
+    public void addingMultipleTagsWorks(){
+        service.createLibraryObject("blogpost", "title", "author", "url", "", "");
+        service.addTagsToLatestLibraryObject("tag1, tag2, tag3");
+        assertEquals(3, dao.getTagDao().getAllTags().size());
+    }
 
 
 
