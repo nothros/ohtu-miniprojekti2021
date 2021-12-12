@@ -16,7 +16,7 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
-
+import javafx.scene.control.ComboBox;
 public class StepDefinitions extends TestFXBase {
     
     final String testdb = "cucumbertest.db";
@@ -30,8 +30,8 @@ public class StepDefinitions extends TestFXBase {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    @When("add book button is clicked")
-    public void clickAddBookButton() {
+    @When("add item button is clicked")
+    public void clickAddItemButton() {
         clickOn("#addBook");
     }
 
@@ -45,9 +45,30 @@ public class StepDefinitions extends TestFXBase {
         pageCountField.setText(isbn);
     }
 
-    @When("create book is clicked")
-    public void create_book_is_clicked() {
+    @When("create item is clicked")
+    public void create_item_is_clicked() {
         clickOn("#createBook");
+    }
+
+    @When("choose {string} from droplist")
+    public void choose_item(String item) {
+        if(item.equals("Blogpost")){
+            ComboBox<String> comboBox = find("#combobox");
+            interact(() -> {
+                comboBox.getSelectionModel().select(1);
+              });
+        }
+        else if(item.equals("Podcast")){
+            ComboBox<String> comboBox = find("#combobox");
+            interact(() -> {
+                comboBox.getSelectionModel().select(2);
+              });
+        }else{
+            ComboBox<String> comboBox = find("#combobox");
+            interact(() -> {
+                comboBox.getSelectionModel().select(0);
+              });
+        }
     }
 
     @Then("error label has text {string}")

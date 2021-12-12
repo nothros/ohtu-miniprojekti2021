@@ -255,6 +255,7 @@ public class AppUi extends Application {
         comboBoxAndButton.setPadding(new Insets(40, 0, 0, 0));
         comboBoxAndButton.setAlignment(Pos.CENTER_LEFT);
         ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.setId("combobox");
         typeComboBox.setMinWidth(100);
         typeComboBox.getItems().addAll("Book", "Blogpost", "Podcast");
         typeComboBox.getSelectionModel().selectFirst();
