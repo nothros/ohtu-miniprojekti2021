@@ -37,7 +37,7 @@ public class TestFXBase extends ApplicationTest {
     @Test
     public void thereIsAButtonForAddingBooks() {
         WaitForAsyncUtils.waitForFxEvents();
-        FxAssert.verifyThat(".button", LabeledMatchers.hasText("Add new LibraryItem"));
+        FxAssert.verifyThat(".button", LabeledMatchers.hasText("Add"));
     }
 
     public <T extends Node> T find(final String query) {

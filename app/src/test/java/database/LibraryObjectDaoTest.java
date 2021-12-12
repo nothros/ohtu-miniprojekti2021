@@ -36,8 +36,8 @@ public class LibraryObjectDaoTest {
 
     @Test
     public void testDatabaseInsertion() {
-        LibraryObject book1 = new LibraryObject("book", "Weapons of Math Destruction", "Cathy O'Neil", "12345678910", null, null);
-        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "11122233344", null, null);
+        LibraryObject book1 = new LibraryObject("book", "Weapons of Math Destruction", "Cathy O'Neil", "12345678910", null, null, null);
+        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "11122233344", null, null, null);
         dao.insertLibrary(book1);
         dao.insertLibrary(book2);
         assertEquals(2, dao.getAll().size());
@@ -45,7 +45,7 @@ public class LibraryObjectDaoTest {
 
     @Test
     public void testReadAfterInsertion() {
-        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "111222", null, null);
+        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "111222", null, null, null);
 
         dao.insertLibrary(book2);
         List<LibraryObject> objs = dao.getAll();
@@ -57,7 +57,7 @@ public class LibraryObjectDaoTest {
 
     @Test
     public void testIdReturnWithIsbn() {
-        LibraryObject book = new LibraryObject("book", "Test Book", "Test Writer", "44433322211", null, null);
+        LibraryObject book = new LibraryObject("book", "Test Book", "Test Writer", "44433322211", null, null, null);
         dao.insertLibrary(book);
 
         assertEquals(1, dao.getLibraryId("44433322211"));
@@ -85,7 +85,7 @@ public class LibraryObjectDaoTest {
 
     @Test
     public void testDeleteTable() {
-        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "111222", null, null);
+        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "111222", null, null, null);
         dao.insertLibrary(book2);
         dao.deleteTable();
         assertEquals(0, dao.getAll().size());

@@ -85,16 +85,12 @@ public class TagDaoTest {
     }
     
     @Test
-    public void testWithLibraryDao() {
-        try {
-            LibraryObjectDAO ld = new LibraryObjectDAO(testDB);
-            ld.createNewTable();
-            ld.insertLibrary(new LibraryObject("book", "namE", "author", "1111222233", "url", "course"));
-            dao.addTag(ld.getLibraryId("1111222233"), "tagi");
-            assertEquals(1, dao.getTags(ld.getLibraryId("1111222233")).size());
-        } catch (Exception e) {
-            assertFalse(true);
-        }
+    public void testWithLibraryDao() throws SQLException {
+        LibraryObjectDAO ld = new LibraryObjectDAO(testDB);
+        ld.createNewTable();
+        ld.insertLibrary(new LibraryObject(1, "book", "namE", "author", "1111222233", "url", "course", ""));
+        dao.addTag(ld.getLibraryId("1111222233"), "tagi");
+        assertEquals(1, dao.getTags(ld.getLibraryId("1111222233")).size());
     }
 
     @After
