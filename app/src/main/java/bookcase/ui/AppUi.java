@@ -77,15 +77,6 @@ public class AppUi extends Application {
         service = new LibraryService(library);
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("");
-
-        LibraryObject l = service.getByIsbn("6767676766");
-        if (l == null) {
-            return;
-        } else {
-            service.removeById(l);
-        }
-
-        //infoScene = buildInfoScene(0);
     }
 
     public void start(Stage primaryStage) throws Exception {

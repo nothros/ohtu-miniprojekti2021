@@ -17,7 +17,6 @@ public class LibraryService {
         if (course != null) {
             course = course.trim().replaceAll("\\s{2,}", " ");
         }
-
         switch (type) {
             case "book":
                 return createBook(title, author, isbnWebsite, course, comment);

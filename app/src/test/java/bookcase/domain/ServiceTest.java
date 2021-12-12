@@ -67,13 +67,37 @@ public class ServiceTest {
         assertEquals(1, dao.getAll().size());
     }
     
-    
     @Test
     public void testBlogpostAdd(){
         service.createLibraryObject("blogpost", "title", "author", "url", "", "");
         assertEquals(1, dao.getAll().size());
     }
-    
+
+    @Test 
+    public void nullCourseAdded(){
+        assertTrue(service.createLibraryObject("book", "A valid ISBN2", "Author2", "123456789102", null, ""));
+    }
+
+    @Test 
+    public void typeIsWrongAndItIsNotACase(){
+        assertFalse(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "", ""));
+    }
+    @Test
+    public void createCourseObjectReturnTrueWhenAllIsGood(){
+        assertTrue(service.createCourseObject("kurssi, kurssi2", "1234123412"));
+    }
+
+    @Test
+    public void createCourseObjectReturnTrueWhenCourseNotUnique(){
+        service.createCourseObject("kurssi, kurssi2", "0606060606");
+        assertTrue(service.createCourseObject("kurssi, kurssi2", "0606060606"));
+    }
+
+
+
+
+
+
     @After
     public void tearDown() throws SQLException {
         dao.deleteDatabase(testDB);
