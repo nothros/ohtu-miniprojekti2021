@@ -108,7 +108,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        System.out.println(id);
         return id;
     }
 
