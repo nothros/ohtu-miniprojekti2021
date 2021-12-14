@@ -7,7 +7,7 @@ Feature: As a user I want to be able to add a book to the application
       When  add item button is clicked
       When  form is filled with "Title" as name and "Author" as author and "6767676766" as isbn
       When  create item is clicked
-      Then  error label has text "New Book added"
+      Then  error label has text "New book added"
     
     Scenario Outline: Book cant be added when ISBN is not unique
       Given application has opened
@@ -17,7 +17,7 @@ Feature: As a user I want to be able to add a book to the application
       When  create item is clicked
       When  form is filled with "Title" as name and "Author" as author and "6767676766" as isbn
       When  create item is clicked
-      Then  error label has text "Something went wrong while adding new Book"
+      Then  error label has text "A unique ISBN value must be given."
 
     Scenario Outline: Book cant be added when ISBN is too short
       Given application has opened
@@ -25,4 +25,4 @@ Feature: As a user I want to be able to add a book to the application
       When  add item button is clicked
       When  form is filled with "Title" as name and "Author" as author and "3" as isbn
       When  create item is clicked
-      Then  error label has text "Something went wrong while adding new Book"
+      Then  error label has text "ISBN must be a 10-13 digit numeric value."

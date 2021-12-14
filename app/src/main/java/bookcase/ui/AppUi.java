@@ -420,7 +420,7 @@ public class AppUi extends Application {
         });
         remove.setOnAction(e -> {
         	if (data.get(0) != null) {
-        		library.deleteEntry(data.get(0));
+        		service.deleteEntry(data.get(0));
         	}
             mainStage.setScene(buildMainScene());
         });

@@ -7,7 +7,7 @@ Feature: As a user I want to be able to add a blogpost to the application
       When  add item button is clicked
       When  form is filled with "Title" as name and "Author" as author and "wwwtestblogcom" as isbn
       When  create item is clicked
-      Then  error label has text "New Blogpost added"
+      Then  error label has text "New blogpost added"
     
     Scenario Outline: Blogpost cant be added when Title is empty
       Given application has opened
@@ -15,4 +15,4 @@ Feature: As a user I want to be able to add a blogpost to the application
       When  add item button is clicked
       When  form is filled with "" as name and "Author" as author and "wwwtestblogcom" as isbn
       When  create item is clicked
-      Then  error label has text "Something went wrong while adding new Blogpost"
+      Then  error label has text "Title field can not be empty."

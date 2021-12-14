@@ -31,6 +31,10 @@ public class LibraryService {
         return "";
     }
 
+    public void deleteEntry(LibraryObject item){
+        libraryDao.deleteEntry(item);
+    }
+
     private String createBlogpost(String title, String author, String url, String comment) {
     	if (title.trim().isEmpty())
     		return "Title field can not be empty.";
