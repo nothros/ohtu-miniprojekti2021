@@ -151,8 +151,10 @@ public class LibraryService {
         }
         LibraryObject libObj = new LibraryObject(id, "book", title, author, isbn, null, comment);
         libraryDao.updateLibrary(libObj);
+
         return "";
     }
+
 
     public List<LibraryObject> getAllObjects() {
         return libraryDao.getAll();
@@ -175,6 +177,25 @@ public class LibraryService {
         for (String s : taglist) {
             tagDao.addTag(latestId, s.trim());
         }
+    }
+
+    public void updateTags(int id, String tags){
+        ArrayList<String> tagsByItem = getTagsById(id);
+        for(int i = 0; i < tagsByItem.size(); i++){
+            tagDao.deleteFromTagLibrary(id);
+        }
+        addTagsByLibraryObjectId(id, tags);
+    }
+
+    public void addTagsByLibraryObjectId(int id, String tags) {
+        String[] taglist = tags.split(",");
+        for (String s : taglist) {
+            tagDao.addTag(id, s.trim());
+        }
+    }
+
+    public ArrayList<String> getTagsById(int id) {
+        return tagDao.getTags(id);
     }
 
     public String getTagString(LibraryObject obj) {
