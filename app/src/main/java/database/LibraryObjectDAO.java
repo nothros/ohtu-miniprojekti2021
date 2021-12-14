@@ -17,10 +17,11 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     private TagDAO tagdao;
     private CourseDAO coursedao;
     
-    public LibraryObjectDAO(String url) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:sqlite:" + url);
-        tagdao = new TagDAO(conn);
-        coursedao = new CourseDAO(conn);
+    public LibraryObjectDAO(Connection conn) throws SQLException {
+        this.conn = conn;
+        this.tagdao = new TagDAO(conn);
+        this.coursedao = new CourseDAO(conn);
+
     }
 
     /*

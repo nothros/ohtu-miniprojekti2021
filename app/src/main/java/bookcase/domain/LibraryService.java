@@ -6,17 +6,26 @@ import database.LibraryObjectDAO;
 import database.TagDAO;
 import database.CourseDAO;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+
 
 public class LibraryService {
 
+    private Connection conn;
     private LibraryObjectDAO libraryDao;
     private TagDAO tagDao;
     private CourseDAO courseDao;
 
-    public LibraryService(LibraryObjectDAO libraryDao) {
-        this.libraryDao = libraryDao;
+    public LibraryService(String url) throws SQLException{
+        conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+        this.libraryDao = new LibraryObjectDAO(conn);
         this.tagDao = libraryDao.getTagDao();
         this.courseDao = libraryDao.getCourseDao();
+        createNewTablesIfNotExists();
+
     }
 
     public String createLibraryObject(String type, String title, String author, String isbnWebsite, String comment) {

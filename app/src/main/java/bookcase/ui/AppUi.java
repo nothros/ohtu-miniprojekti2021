@@ -67,8 +67,7 @@ public class AppUi extends Application {
                 database = args.get(0);
             }
         }
-        library = new LibraryObjectDAO(database);
-        service = new LibraryService(library);
+        service = new LibraryService(database);
         service.createNewTablesIfNotExists();
         addReadble = buildAddReableScene("", 0);
     }

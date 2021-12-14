@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 import java.sql.SQLException;
 
@@ -12,7 +14,7 @@ public class CourseDaoTest {
 
     private CourseDAO dao;
     private String testDB;
-
+    private Connection conn;
     /**
      * This method is performed before every test. It creates an empty db into
      * memory.
@@ -20,7 +22,8 @@ public class CourseDaoTest {
     @Before
     public void init() throws SQLException {
         testDB = "daotest.db";
-        dao = new CourseDAO(testDB);
+        conn = DriverManager.getConnection("jdbc:sqlite:" + testDB);
+        dao = new CourseDAO(conn);
         dao.createNewTable();
     }
 
@@ -82,7 +85,7 @@ public class CourseDaoTest {
     
     @Test
     public void testWithLibraryDao() throws SQLException {
-        LibraryObjectDAO ld = new LibraryObjectDAO(testDB);
+        LibraryObjectDAO ld = new LibraryObjectDAO(conn);
         ld.createNewTable();
         ld.insertLibrary(new LibraryObject(1, "book", "name", "author", "1111222233", "url", ""));
         dao.addCourse(ld.getLibraryId("1111222233"), "kurssi");

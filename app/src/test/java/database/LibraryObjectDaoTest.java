@@ -8,6 +8,8 @@ import database.LibraryObjectDAO;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 public class LibraryObjectDaoTest {
 
     private LibraryObjectDAO dao;
-
+    private Connection conn;
     private String testDB;
 
     /**
@@ -25,7 +27,8 @@ public class LibraryObjectDaoTest {
     @Before
     public void init() throws SQLException {
         testDB = "daotest.db";
-        dao = new LibraryObjectDAO(testDB);
+        conn = DriverManager.getConnection("jdbc:sqlite:" + testDB);
+        dao = new LibraryObjectDAO(conn);
         dao.createNewTable();
     }
 

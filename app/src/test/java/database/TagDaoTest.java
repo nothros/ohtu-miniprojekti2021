@@ -9,11 +9,14 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class TagDaoTest {
 
     private TagDAO dao;
     private String testDB;
+    private Connection conn;
 
     /**
      * This method is performed before every test. It creates an empty db into
@@ -22,7 +25,8 @@ public class TagDaoTest {
     @Before
     public void init() throws SQLException {
         testDB = "daotest.db";
-        dao = new TagDAO(testDB);
+        conn = DriverManager.getConnection("jdbc:sqlite:" + testDB);
+        dao = new TagDAO(conn);
         dao.createNewTable();
     }
 
@@ -84,7 +88,7 @@ public class TagDaoTest {
     
     @Test
     public void testWithLibraryDao() throws SQLException {
-        LibraryObjectDAO ld = new LibraryObjectDAO(testDB);
+        LibraryObjectDAO ld = new LibraryObjectDAO(conn);
         ld.createNewTable();
         ld.insertLibrary(new LibraryObject(1, "book", "name", "author", "1111222233", "url", ""));
         dao.addTag(ld.getLibraryId("1111222233"), "tagi");
