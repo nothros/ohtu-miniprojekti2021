@@ -33,47 +33,13 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 + "ISBN TEXT," + "URL TEXT,"
                 + "COMMENT TEXT," + "DELETED INTEGER);";
         try (Statement stmt = conn.createStatement()) {
-            if (!existsTable("LIBRARY")) {
-                stmt.execute(sq1);
-                //System.out.println("Table LIBRARY created.");
-            }
+        	stmt.execute(sq1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
         tagdao.createNewTable();
         coursedao.createNewTable();
-    }
-
-    /*
-     *  Remove all database tables from conn objects location.
-     */
-    public void deleteTables() {
-        try {
-            Statement s = conn.createStatement();
-            if (existsTable("LIBRARY")) {
-                s.execute("DROP TABLE LIBRARY");
-                //System.out.println("Table LIBRARY deleted.");
-            }
-            if (existsTable("COURSES")) {
-                s.execute("DROP TABLE COURSES");
-                //System.out.println("Table COURSES deleted.");
-            }
-            if (existsTable("COURSE_LIBRARY")) {
-                s.execute("DROP TABLE COURSE_LIBRARY");
-                //System.out.println("Table COURSE_LIBRARY deleted.");
-            }
-            if (existsTable("TAGS")) {
-                s.execute("DROP TABLE TAGS");
-                //System.out.println("Table TAGS deleted.");
-            }
-            if (existsTable("TAG_LIBRARY")) {
-                s.execute("DROP TABLE TAG_LIBRARY");
-                //System.out.println("Table TAG_LIBRARY deleted.");
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     /*
@@ -151,25 +117,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
         return true;
     	
-    }
-
-    /* 
-     * Check if table %name exists in database.
-     */
-    public boolean existsTable(String name) {
-        boolean t = false;
-        try (ResultSet rs = conn.getMetaData().getTables(null, null, name, null)) {
-            while (rs.next()) {
-                String tableName = rs.getString("TABLE_NAME");
-                if (tableName != null && tableName.equals(name)) {
-                    t = true;
-                    break;
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return t;
     }
 
     /*

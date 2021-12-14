@@ -68,14 +68,6 @@ public class LibraryObjectDaoTest {
         assertEquals(false, dao.isValidISBN(null));
     }
 
-    @Test
-    public void testDeleteTables() {
-        LibraryObject book2 = new LibraryObject("book", "Clean code", "Joku Muu", "111222", null, null);
-        dao.insertLibrary(book2);
-        dao.deleteTables();
-        assertEquals(0, dao.getAll().size());
-    }
-
     @After
     public void tearDown() throws SQLException {
         dao.deleteDatabase(testDB);
