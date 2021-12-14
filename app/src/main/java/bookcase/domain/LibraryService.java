@@ -22,8 +22,8 @@ public class LibraryService {
     public LibraryService(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
         this.libraryDao = new LibraryObjectDAO(conn);
-        this.tagDao = libraryDao.getTagDao();
-        this.courseDao = libraryDao.getCourseDao();
+        this.tagDao = new TagDAO(conn);
+        this.courseDao = new CourseDAO(conn);
         createNewTablesIfNotExists();
 
     }
@@ -164,6 +164,8 @@ public class LibraryService {
 
     public void createNewTablesIfNotExists() {
         libraryDao.createNewTable();
+        tagDao.createNewTable();
+        courseDao.createNewTable();
     }
 
     public void addTagsToLatestLibraryObject(String tags) {

@@ -14,14 +14,9 @@ import java.util.regex.Pattern;
 public class LibraryObjectDAO implements DAO<LibraryObject> {
 
     private Connection conn;
-    private TagDAO tagdao;
-    private CourseDAO coursedao;
     
     public LibraryObjectDAO(Connection conn) throws SQLException {
         this.conn = conn;
-        this.tagdao = new TagDAO(conn);
-        this.coursedao = new CourseDAO(conn);
-
     }
 
     /*
@@ -39,8 +34,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             e.printStackTrace();
         }
         
-        tagdao.createNewTable();
-        coursedao.createNewTable();
+
     }
 
     /*
@@ -233,14 +227,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         }
     }
 
-    public TagDAO getTagDao() {
-        return tagdao;
-    }
-    
-    public CourseDAO getCourseDao() {
-        return coursedao;
-    }
-    
     /*
      *  Remove databasefile
      */
