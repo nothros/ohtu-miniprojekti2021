@@ -208,5 +208,9 @@ public class LibraryService {
         }
         return result;
     }
-    
+
+    public void tearDown(String db)  throws SQLException{
+ 
+            libraryDao.deleteDatabase(db);
+    }
 }
