@@ -427,6 +427,7 @@ public class AppUi extends Application {
         	HostServices host = getHostServices();
             host.showDocument("www." + data.get(0).getURL());
         });
+        gPane.setAlignment(Pos.CENTER);
         addPane.getChildren().addAll(pane2, gPane, hbox);
         }
         Button returnB = new Button("Back");

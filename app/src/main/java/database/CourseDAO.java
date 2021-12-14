@@ -2,19 +2,16 @@ package database;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourseDAO {
 
     private Connection conn;
-    private String url;
 
     public CourseDAO(String dbname) throws SQLException {
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbname);
@@ -25,7 +22,7 @@ public class CourseDAO {
     }
 
     private Connection getConnection() throws SQLException {
-        return conn;    //DriverManager.getConnection(url);
+        return conn;
     }
 
     /* Creates course tables in database*/
@@ -110,7 +107,6 @@ public class CourseDAO {
                 return false;
             }
         }
-
         return connectCourseToLibrary(libraryObjectId, courseId);
     }
 
