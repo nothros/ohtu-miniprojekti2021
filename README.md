@@ -34,7 +34,7 @@ Windows: ``` $gradlew.bat run ```
 
 ## User Manual
 
-[User Manual]()
+[User Manual](https://github.com/nothros/ohtu-miniprojekti2021/blob/main/documents/User%20Manual.md)
 
 # Gradle
 
