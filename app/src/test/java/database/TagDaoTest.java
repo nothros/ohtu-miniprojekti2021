@@ -4,11 +4,9 @@ import org.junit.Test;
 
 import database.LibraryObject;
 import database.TagDAO;
-
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -88,7 +86,7 @@ public class TagDaoTest {
     public void testWithLibraryDao() throws SQLException {
         LibraryObjectDAO ld = new LibraryObjectDAO(testDB);
         ld.createNewTable();
-        ld.insertLibrary(new LibraryObject(1, "book", "namE", "author", "1111222233", "url", "course", ""));
+        ld.insertLibrary(new LibraryObject(1, "book", "name", "author", "1111222233", "url", ""));
         dao.addTag(ld.getLibraryId("1111222233"), "tagi");
         assertEquals(1, dao.getTags(ld.getLibraryId("1111222233")).size());
     }

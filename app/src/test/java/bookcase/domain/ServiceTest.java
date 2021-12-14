@@ -38,78 +38,59 @@ public class ServiceTest {
 
     @Test
     public void tooShortISBNisNotAdded() {
-        service.createLibraryObject("book", "", "Author", tooShortISBN, "", "");
+        service.createLibraryObject("book", "Title", "Author", tooShortISBN, "");
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void tooLongISBNisNotAdded() {
-        service.createLibraryObject("book", "", "Author", tooLongISBN, "", "");
+        service.createLibraryObject("book", "Title", "Author", tooLongISBN, "");
         assertEquals(0, dao.getAll().size());
     }
 
     @Test
     public void validISBNisAdded() {
-        service.createLibraryObject("book", " ", "Author", validISBN, "", "");
+        service.createLibraryObject("book", "Title", "Author", validISBN, "");
         List<LibraryObject> objs = dao.getAll();
         assertEquals("12345678910", objs.get(0).getISBN());
     }
 
     @Test
     public void duplicateISBNisRejected() {
-        service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", "", "");
-        assertFalse(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", "", ""));
+        service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", "");
+        assertTrue(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", "").equals("A unique ISBN value must be given."));
     }
 
     @Test
     public void testPodcastAdd(){
-        service.createLibraryObject("podcast", "title", "author", "url", "", "");
+        service.createLibraryObject("podcast", "title", "author", "url", "");
         assertEquals(1, dao.getAll().size());
     }
     
     @Test
     public void testBlogpostAdd(){
-        service.createLibraryObject("blogpost", "title", "author", "url", "", "");
+        service.createLibraryObject("blogpost", "title", "author", "url", "");
         assertEquals(1, dao.getAll().size());
     }
 
     @Test 
-    public void nullCourseAdded(){
-        assertTrue(service.createLibraryObject("book", "A valid ISBN2", "Author2", "123456789102", null, ""));
-    }
-
-    @Test 
     public void typeIsWrongAndItIsNotACase(){
-        assertFalse(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "", ""));
-    }
-    @Test
-    public void createCourseObjectReturnTrueWhenAllIsGood(){
-        assertTrue(service.createCourseObject("kurssi, kurssi2", "1234123412"));
-    }
-
-    @Test
-    public void createCourseObjectReturnTrueWhenCourseNotUnique(){
-        service.createCourseObject("kurssi, kurssi2", "0606060606");
-        assertTrue(service.createCourseObject("kurssi, kurssi2", "0606060606"));
+        assertTrue(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "").equals(""));
     }
     
     @Test
     public void addingTagWorks(){
-        service.createLibraryObject("blogpost", "title", "author", "url", "", "");
+        service.createLibraryObject("blogpost", "title", "author", "url", "");
         service.addTagsToLatestLibraryObject("tag");
         assertEquals(1, dao.getTagDao().getAllTags().size());
     }
 
-
     @Test
     public void addingMultipleTagsWorks(){
-        service.createLibraryObject("blogpost", "title", "author", "url", "", "");
+        service.createLibraryObject("blogpost", "title", "author", "url", "");
         service.addTagsToLatestLibraryObject("tag1, tag2, tag3");
         assertEquals(3, dao.getTagDao().getAllTags().size());
     }
-
-
-
 
     @After
     public void tearDown() throws SQLException {

@@ -8,27 +8,24 @@ public class LibraryObject {
     private String author;
     private String isbn;
     private String url;
-    private String course;
     private String comment;
 
-    public LibraryObject(String type, String title, String author, String isbn, String url, String course, String comment) {
+    public LibraryObject(String type, String title, String author, String isbn, String url, String comment) {
         this.type = type;
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.url = url;
-        this.course = course;
         this.comment = comment;
     }
 
-    public LibraryObject(int id, String type, String title, String author, String isbn, String url, String course, String comment) {
+    public LibraryObject(int id, String type, String title, String author, String isbn, String url, String comment) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.url = url;
-        this.course = course;
         this.comment = comment;
     }
 
@@ -39,7 +36,6 @@ public class LibraryObject {
                 + ", author: " + getAuthor()
                 + ", ISBN: " + getISBN()
                 + ", URL: " + getURL()
-                + ", course: " + getCourse()
         		+ ", comment: " + getComment();
     }
 
@@ -91,14 +87,6 @@ public class LibraryObject {
         this.url = url;
     }
 
-    public String getCourse() {
-        return this.course;
-    }
-
-    public void setCourse(String course) {
-        this.course = course;
-    }
-    
     public String getComment() {
         return this.comment;
     }

@@ -28,14 +28,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,7 +40,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextArea;
 
@@ -77,7 +70,7 @@ public class AppUi extends Application {
         library = new LibraryObjectDAO(database);
         service = new LibraryService(library);
         service.createNewTablesIfNotExists();
-        addReadble = buildAddReableScene("");
+        addReadble = buildAddReableScene("", 0);
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -90,12 +83,15 @@ public class AppUi extends Application {
         mainStage.setScene(mainScene);
         mainStage.show();
     }
-
-    public Scene buildAddReableScene(String typeValue) {
+    /*
+     *  Add item to bookcase scene.
+     */
+    public Scene buildAddReableScene(String typeValue, int id) {
         String[] listOfTitles = {"Title:", "Author:", "ISBN:", "Tags:", "Course:"};
-        if (typeValue != "Book") {
+        if (!typeValue.equals("book")) {
             listOfTitles[2] = "Website";
         }
+        final List<LibraryObject> data = service.getAllObjects(id);
         BorderPane pane = new BorderPane();
         pane.setPadding(new Insets(5, 5, 5, 5));
         VBox addPane = new VBox();
@@ -112,6 +108,8 @@ public class AppUi extends Application {
         error.setTextFill(Color.RED);
         error.setVisible(false);
         Text scenetitle = new Text("Add new " + typeValue);
+        if (id != 0)
+        	scenetitle.setText("Update "+ typeValue + " info");
         scenetitle.setStyle("-fx-font: 15px Arial; -fx-font-weight: bold;");
         grid.add(scenetitle, 0, 0, 2, 1);
         for (int i = 0; i < listOfTitles.length; i++) {
@@ -134,15 +132,26 @@ public class AppUi extends Application {
         commentTF.setId("comment");
         commentTF.setPrefSize(50, 200);
         commentTF.setWrapText(true);
-
+        if (id != 0) {
+        	titleTF.setText(data.get(0).getTitle());
+        	authorTF.setText(data.get(0).getAuthor());
+        	if (data.get(0).getType().equals("book"))
+        		ISBNTF.setText(data.get(0).getISBN());
+        	else
+        		ISBNTF.setText(data.get(0).getURL());
+        	tagsTF.setText(service.getTagString(data.get(0)));
+        	courseTF.setText(service.getCourseString(data.get(0)));
+        	commentTF.setText(data.get(0).getComment());
+        }
         grid.add(titleTF, 1, 1);
         grid.add(authorTF, 1, 2);
         grid.add(ISBNTF, 1, 3);
         grid.add(tagsTF, 1, 4);
         grid.add(courseTF, 1, 5);
         grid.add(commentTF,1, 6);
-
         Button createBook = new Button("Add new " + typeValue);
+        if (id != 0)
+        	createBook.setText("Update " + typeValue);
         createBook.setId("createBook");
         createBook.setOnAction(e -> {
             String title = titleTF.getText();
@@ -151,22 +160,10 @@ public class AppUi extends Application {
             String tags = tagsTF.getText();
             String course = courseTF.getText();
             String comment = commentTF.getText();
-            String index = "";
-            switch (typeValue) {
-                case ("Book"):
-                    index = "book";
-                    break;
-                case ("Blogpost"):
-                    index = "blogpost";
-                    break;
-                case ("Podcast"):
-                    index = "podcast";
-                    break;
-            }
-            if (service.createLibraryObject(index, title, author, isbn_website, course, comment)) {
-                if (course.length() != 0)
-                	service.createCourseObject(course, isbn_website);
+            String errMsg = "Something went wrong adding " + typeValue;
+            if (id == 0 && (errMsg = service.createLibraryObject(typeValue, title, author, isbn_website, comment)).equals("")) {
                 service.addTagsToLatestLibraryObject(tags);
+                service.addCoursesToLatestLibraryObject(course);
                 error.setText("New " + typeValue + " added");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);
@@ -176,8 +173,12 @@ public class AppUi extends Application {
                 tagsTF.clear();
                 courseTF.clear();
                 commentTF.clear();
+            } else if (id !=0 && (errMsg = service.updateLibraryObject(id, typeValue, title, author, isbn_website, comment)).equals("")) {
+                error.setText(typeValue + " updated");
+                error.setTextFill(Color.GREEN);
+                error.setVisible(true);
             } else {
-                error.setText("Something went wrong while adding new " + typeValue);
+                error.setText(errMsg);
                 error.setTextFill(Color.RED);
                 error.setVisible(true);
             }
@@ -188,38 +189,16 @@ public class AppUi extends Application {
         Button returnB = new Button("Back");
         returnB.setId("backButton");
         returnB.setOnAction(e -> {
-            mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
+        	if (id != 0)
+        		mainStage.setScene(buildInfoScene(id));
+        	else
+        		mainStage.setScene(buildMainScene());
             error.setVisible(false);
         });
-
         pane.setCenter(addPane);
         pane.setRight(returnB);
-
         Scene scene = new Scene(pane);
         return scene;
-    }
-
-    /*
-     *  Auto fit the column width in table view.
-     */
-    public void autoResizeColumns(TableView<LibraryObject> table) {
-        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach((column)
-                -> {
-            Text t = new Text(column.getText());
-            double max = t.getLayoutBounds().getWidth();
-            for (int i = 0; i < table.getItems().size(); i++) {
-                if (column.getCellData(i) != null) {
-                    t = new Text(column.getCellData(i).toString());
-                    double calcwidth = t.getLayoutBounds().getWidth();
-                    if (calcwidth > max) {
-                        max = calcwidth;
-                    }
-                }
-            }
-            column.setPrefWidth(max + 10.0d);
-        });
     }
 
     /*
@@ -250,34 +229,24 @@ public class AppUi extends Application {
         ComboBox<String> typeComboBox = new ComboBox<>();
         typeComboBox.setId("combobox");
         typeComboBox.setMinWidth(100);
-        typeComboBox.getItems().addAll("Book", "Blogpost", "Podcast");
+        typeComboBox.getItems().addAll("book", "blogpost", "podcast");
         typeComboBox.getSelectionModel().selectFirst();
         Button addBook = new Button("Add");
         addBook.setMinWidth(50);
         addBook.setId("addBook");
         addBook.setOnAction(e -> {
             String typeValue = (String) typeComboBox.getValue();
-            mainStage.setScene(buildAddReableScene(typeValue));
+            mainStage.setScene(buildAddReableScene(typeValue, 0));
         });
         comboBoxAndButton.getChildren().addAll(typeComboBox, addBook);
         // Search library items.
-        HBox searchButton = new HBox();
-        searchButton.setAlignment(Pos.CENTER_LEFT);
         ComboBox<String> searchComboBox = new ComboBox<String>();
         searchComboBox.setMinWidth(100);
         searchComboBox.getItems().addAll("Title", "Author", "Type");
         searchComboBox.getSelectionModel().selectFirst();
-        Button searchBook = new Button("Search");
-        searchBook.setMinWidth(100);
-        searchBook.setId("searchBook");
-        searchBook.setOnAction(e -> {
-            String typeValue = (String) searchComboBox.getValue();
-            mainStage.setScene(buildAddReableScene(typeValue));
-        });
-        TextField textField = new TextField();
-        textField.setMinWidth(250);
-        textField.setPromptText("Enter search here!");
-        searchButton.getChildren().addAll(searchBook);
+        TextField searchField = new TextField();
+        searchField.setMinWidth(250);
+        searchField.setPromptText("Enter search here!");
         Label header = new Label("Reading tips:");
         header.setStyle("-fx-font: 20px Arial; -fx-font-weight: bold;");
         pane2.setLeft(header);
@@ -305,7 +274,7 @@ public class AppUi extends Application {
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
         colCourse.setStyle("-fx-alignment: CENTER_LEFT;");
         colCourse.setSortable(false);
-        colCourse.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCourse()));
+        colCourse.setCellValueFactory(d -> new SimpleStringProperty(service.getCourseString(d.getValue())));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // Add extra column for a show detailed info button
         TableColumn<LibraryObject, Void> colButton = new TableColumn<LibraryObject, Void>("Detais");
@@ -338,8 +307,8 @@ public class AppUi extends Application {
         colButton.setMinWidth(80);
         colButton.setMaxWidth(80);
         colButton.setSortable(false);
-        // Search box listener that automatically updates on textfield entry.
-        textField.textProperty().addListener((obs, oldVal, newVal) -> {
+        // Search box listener that automatically updates on searchField entry.
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             switch (searchComboBox.getValue())
             {
                 case "Title":
@@ -355,12 +324,12 @@ public class AppUi extends Application {
         });
         searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null)
-                textField.setText("");
+                searchField.setText("");
         });
         table.setItems(sortedData);
         table.getColumns().addAll(Arrays.asList(colTitle, colAuthor, colType, colTags, colCourse));
         table.getColumns().add(colButton);
-        HBox searchBox = new HBox(searchComboBox, textField);
+        HBox searchBox = new HBox(searchComboBox, searchField);
         searchBox.setAlignment(Pos.CENTER_LEFT);
         ScrollPane sp1 = new ScrollPane(table);
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -384,6 +353,8 @@ public class AppUi extends Application {
         BorderPane pane2 = new BorderPane();
         GridPane gPane = new GridPane();
         Hyperlink hlink = new Hyperlink();
+        hlink.setBorder(Border.EMPTY);
+        hlink.setStyle("-fx-border-color: transparent; -fx-padding: 4 0 4 0;");
         if (id != 0) {
         List<LibraryObject> data = service.getAllObjects(id);
         Text header = new Text("Detailed information:");
@@ -396,12 +367,10 @@ public class AppUi extends Application {
         if (data.get(0).getType().equals("book")) {
         	txt4 = new Text("ISBN: ");
         	txt44 = new Text(data.get(0).getISBN());
-        	txt44.setStyle("-fx-font: 20px Arial;");
         } else {
         	txt4 = new Text("URL: ");
         	txt44 = new Text("");
         	hlink.setText(data.get(0).getURL());
-        	hlink.setStyle("-fx-font: 20px Arial;");
         }
         Text txt5 = new Text("Tags: ");
         Text txt6 = new Text("Related courses: ");
@@ -410,26 +379,14 @@ public class AppUi extends Application {
         Text txt22 = new Text(data.get(0).getAuthor());
         Text txt33 = new Text(String.valueOf(data.get(0).getType()));
         Text txt55 = new Text(service.getTagString(data.get(0)));
-        Text txt66 = new Text(data.get(0).getCourse());
+        Text txt66 = new Text(service.getCourseString(data.get(0)));
         TextArea txt77 = new TextArea(data.get(0).getComment());
         txt77.setEditable(false);
         txt77.prefWidthProperty().bind(gPane.widthProperty());
         txt77.setWrapText(true);     
         txt77.setPrefRowCount(4);
-        txt1.setStyle("-fx-font: 20px Arial;");
-        txt2.setStyle("-fx-font: 20px Arial;");
-        txt3.setStyle("-fx-font: 20px Arial;");
-        txt4.setStyle("-fx-font: 20px Arial;");
-        txt5.setStyle("-fx-font: 20px Arial;");
-        txt6.setStyle("-fx-font: 20px Arial;");
-        txt7.setStyle("-fx-font: 20px Arial;");
-        txt11.setStyle("-fx-font: 20px Arial;");
-        txt22.setStyle("-fx-font: 20px Arial;");
-        txt33.setStyle("-fx-font: 20px Arial;");
-        txt55.setStyle("-fx-font: 20px Arial;");
-        txt66.setStyle("-fx-font: 20px Arial;");
         txt77.setFocusTraversable(false);
-        txt77.setStyle("-fx-font: 20px Arial; -fx-control-inner-background: #F5F5F5; -fx-focus-color: #F5F5F5;"
+        txt77.setStyle("-fx-control-inner-background: #F5F5F5; -fx-focus-color: #F5F5F5;"
         		+ "-fx-faint-focus-color: #F5F5F5; -fx-faint-color: #F5F5F5; -fx-background-color: #F5F5F5");
         gPane.add(txt1, 0, 0, 1, 1);
         gPane.add(txt2, 0, 1, 1, 1);
@@ -459,19 +416,17 @@ public class AppUi extends Application {
         hbox.getChildren().addAll(edit, remove);
         hbox.setAlignment(Pos.CENTER);
         edit.setOnAction(e -> {
-        	mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
+            mainStage.setScene(buildAddReableScene(data.get(0).getType(), data.get(0).getId()));
         });
         remove.setOnAction(e -> {
         	if (data.get(0) != null) {
         		library.deleteEntry(data.get(0));
         	}
-        	mainScene = buildMainScene();
-            mainStage.setScene(mainScene);
+            mainStage.setScene(buildMainScene());
         });
         hlink.setOnAction(e -> {
         	HostServices host = getHostServices();
-            host.showDocument("http://" + data.get(0).getURL());
+            host.showDocument("www." + data.get(0).getURL());
         });
         addPane.getChildren().addAll(pane2, gPane, hbox);
         }
