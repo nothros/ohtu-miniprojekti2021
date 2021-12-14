@@ -32,6 +32,10 @@ Windows: ``` $gradlew.bat run ```
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Mqu61MkBKXb47hqxVo3GOnbK3Os7-lqfA4JLydHTWgk/edit?usp=sharing)
 
+## User Manual
+
+[User Manual]()
+
 # Gradle
 
 ## Riippuvuuksia
