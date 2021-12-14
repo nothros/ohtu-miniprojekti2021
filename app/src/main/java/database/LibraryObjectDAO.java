@@ -69,8 +69,9 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, isbn);
             ResultSet rs = pstmt.executeQuery();
-            while(rs.next())
+            while (rs.next()) {
             	id = rs.getInt("ID");
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

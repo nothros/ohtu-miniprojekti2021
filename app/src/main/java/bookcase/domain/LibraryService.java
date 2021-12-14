@@ -19,7 +19,7 @@ public class LibraryService {
     private TagDAO tagDao;
     private CourseDAO courseDao;
 
-    public LibraryService(String url) throws SQLException{
+    public LibraryService(String url) throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:" + url);
         this.libraryDao = new LibraryObjectDAO(conn);
         this.tagDao = libraryDao.getTagDao();
@@ -40,15 +40,17 @@ public class LibraryService {
         return "";
     }
 
-    public void deleteEntry(LibraryObject item){
+    public void deleteEntry(LibraryObject item) {
         libraryDao.deleteEntry(item);
     }
 
     private String createBlogpost(String title, String author, String url, String comment) {
-    	if (title.trim().isEmpty())
-    		return "Title field can not be empty.";
-    	if (url.trim().isEmpty())
-        		return "Website field can not be empty.";
+    	if (title.trim().isEmpty()) {
+            return "Title field can not be empty.";
+        }
+    	if (url.trim().isEmpty()) {
+            return "Website field can not be empty.";
+        }
     	String urls[] = url.split("www.");
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, comment);
@@ -57,10 +59,12 @@ public class LibraryService {
     }
 
     private String createPodcast(String title, String author, String url, String comment) {
-    	if (title.trim().isEmpty())
+    	if (title.trim().isEmpty()) {
     		return "Title field can not be empty.";
-    	if (url.trim().isEmpty())
-        		return "Website field can not be empty.";
+        }
+    	if (url.trim().isEmpty()) {
+            return "Website field can not be empty.";
+        }
     	String urls[] = url.split("www.");
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject("podcast", title, author, null, url, comment);
@@ -69,12 +73,15 @@ public class LibraryService {
     }
 
     private String createBook(String title, String author, String isbn, String comment) {
-    	if (title.trim().isEmpty())
+    	if (title.trim().isEmpty()) {
     		return "Title field can not be empty.";
-    	if (author.trim().isEmpty())
+        }
+    	if (author.trim().isEmpty()) {
     		return "Author field can not be empty.";
-    	if (isbn.trim().isEmpty())
+        }
+    	if (isbn.trim().isEmpty()) {
         	return "ISBN field can not be empty.";
+        }
         if (!libraryDao.isUnique(isbn)) {
             return "A unique ISBN value must be given.";
         }
@@ -99,10 +106,12 @@ public class LibraryService {
     }
     
     private String updateBlogpost(int id, String title, String author, String url, String comment) {
-    	if (title.trim().isEmpty())
+    	if (title.trim().isEmpty()) {
     		return "Title field can not be empty.";
-    	if (url.trim().isEmpty())
-        		return "Website field can not be empty.";
+        }
+    	if (url.trim().isEmpty()) {
+        	return "Website field can not be empty.";
+        }
     	String urls[] = url.split("www.");
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject(id, "blogpost", title, author, null, url, comment);
@@ -111,10 +120,12 @@ public class LibraryService {
     }
 
     private String updatePodcast(int id, String title, String author, String url, String comment) {
-    	if (title.trim().isEmpty())
+    	if (title.trim().isEmpty()) {
     		return "Title field can not be empty.";
-    	if (url.trim().isEmpty())
-        		return "Website field can not be empty.";
+        }
+    	if (url.trim().isEmpty()) {
+        	return "Website field can not be empty.";
+        }
     	String urls[] = url.split("www.");
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject(id, "podcast", title, author, null, url, comment);
@@ -123,17 +134,21 @@ public class LibraryService {
     }
 
     private String updateBook(int id, String title, String author, String isbn, String comment) {
-    	if (title.trim().isEmpty())
+    	if (title.trim().isEmpty()) {
     		return "Title field can not be empty.";
-    	if (author.trim().isEmpty())
+        }
+    	if (author.trim().isEmpty()) {
     		return "Author field can not be empty.";
-    	if (isbn.trim().isEmpty())
+        }
+    	if (isbn.trim().isEmpty()) {
         	return "ISBN field can not be empty.";
+        }
         if (!libraryDao.isValidISBN(isbn)) {
             return "ISBN must be a 10-13 digit numeric value.";
         }
-        if (libraryDao.getLibraryId(isbn) != id && libraryDao.getLibraryId(isbn) != 0)
+        if (libraryDao.getLibraryId(isbn) != id && libraryDao.getLibraryId(isbn) != 0) {
         	return "Another book already has that ISBN.";
+        }
         LibraryObject libObj = new LibraryObject(id, "book", title, author, isbn, null, comment);
         libraryDao.updateLibrary(libObj);
         return "";
@@ -175,8 +190,9 @@ public class LibraryService {
     public void addCoursesToLatestLibraryObject(String courses) {
         String[] courselist = courses.split(",");
         int latestId = libraryDao.getCurrLibraryId();
-        for (String s : courselist)
+        for (String s : courselist) {
             courseDao.addCourse(latestId, s.trim());
+        }
     }
 
     public String getCourseString(LibraryObject obj) {
