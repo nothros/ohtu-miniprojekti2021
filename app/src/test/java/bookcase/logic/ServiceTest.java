@@ -1,10 +1,10 @@
-package bookcase.domain;
+package bookcase.logic;
 
 import org.junit.Test;
 
-import bookcase.domain.LibraryService;
-import database.LibraryObject;
-import database.LibraryObjectDAO;
+import bookcase.logic.LibraryService;
+import bookcase.domain.LibraryObject;
+import bookcase.dao.LibraryObjectDAO;
 
 import org.junit.After;
 import org.junit.Before;

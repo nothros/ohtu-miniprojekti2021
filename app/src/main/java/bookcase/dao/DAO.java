@@ -1,4 +1,4 @@
-package database;
+package bookcase.dao;
 
 import java.util.List;
 

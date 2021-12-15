@@ -10,11 +10,12 @@ import java.util.List;
 import javax.sql.rowset.serial.SerialArray;
 import com.google.common.util.concurrent.Service;
 
-import bookcase.domain.LibraryService;
-import database.DAO;
-import database.LibraryObject;
-import database.LibraryObjectDAO;
-import database.TagDAO;
+import bookcase.logic.LibraryService;
+import bookcase.dao.DAO;
+import bookcase.dao.CourseDAO;
+import bookcase.dao.TagDAO;
+import bookcase.dao.LibraryObjectDAO;
+import bookcase.domain.LibraryObject;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
@@ -209,6 +210,7 @@ public class AppUi extends Application {
         FilteredList<LibraryObject> flLibObj = new FilteredList<LibraryObject>(data, p -> true);
         SortedList<LibraryObject> sortedData = new SortedList<LibraryObject>(flLibObj);
         TableView<LibraryObject> table = new TableView<LibraryObject>();
+        table.setId("table");
 		sortedData.comparatorProperty().bind(table.comparatorProperty());
 		
         BorderPane pane = new BorderPane();

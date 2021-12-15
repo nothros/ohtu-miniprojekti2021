@@ -1,10 +1,10 @@
-package bookcase.domain;
+package bookcase.logic;
 
 import java.util.List;
-import database.LibraryObject;
-import database.LibraryObjectDAO;
-import database.TagDAO;
-import database.CourseDAO;
+import bookcase.domain.LibraryObject;
+import bookcase.dao.LibraryObjectDAO;
+import bookcase.dao.TagDAO;
+import bookcase.dao.CourseDAO;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;

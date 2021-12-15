@@ -1,9 +1,9 @@
-package database;
+package bookcase.dao;
 
 import org.junit.Test;
 
-import database.LibraryObject;
-import database.LibraryObjectDAO;
+import bookcase.domain.LibraryObject;
+import bookcase.dao.LibraryObjectDAO;
 
 import org.junit.After;
 import org.junit.Before;

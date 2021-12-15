@@ -1,5 +1,6 @@
-package database;
+package bookcase.dao;
 
+import bookcase.domain.LibraryObject;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;

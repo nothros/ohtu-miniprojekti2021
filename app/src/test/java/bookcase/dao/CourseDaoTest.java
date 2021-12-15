@@ -1,7 +1,7 @@
-package database;
+package bookcase.dao;
 
 import org.junit.Test;
-
+import bookcase.domain.LibraryObject;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;

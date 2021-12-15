@@ -1,4 +1,4 @@
-package database;
+package bookcase.domain;
 
 public class LibraryObject {
 
