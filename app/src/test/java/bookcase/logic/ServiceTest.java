@@ -6,6 +6,9 @@ import bookcase.logic.LibraryService;
 import bookcase.domain.LibraryObject;
 import bookcase.dao.LibraryObjectDAO;
 
+import java.util.List;
+
+import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
