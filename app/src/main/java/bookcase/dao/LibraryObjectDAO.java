@@ -153,10 +153,10 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     /*
      *  Hides the entry instead of completely deleting it from database
      */
-    public void deleteEntry(LibraryObject t) {
+    public void deleteEntry(int id) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
         try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
-            ptmt.setInt(1, t.getId());
+            ptmt.setInt(1, id);
             ptmt.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

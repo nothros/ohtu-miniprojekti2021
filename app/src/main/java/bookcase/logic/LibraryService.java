@@ -40,8 +40,8 @@ public class LibraryService {
         return "";
     }
 
-    public void deleteEntry(LibraryObject item) {
-        libraryDao.deleteEntry(item);
+    public void deleteEntry(int id) {
+        libraryDao.deleteEntry(id);
     }
 
     private String createBlogpost(String title, String author, String url, String comment) {
@@ -198,8 +198,8 @@ public class LibraryService {
         return tagDao.getTags(id);
     }
 
-    public String getTagString(LibraryObject obj) {
-        ArrayList<String> tags = tagDao.getTags(obj.getId());
+    public String getTagString(int id) {
+        ArrayList<String> tags = tagDao.getTags(id);
         String result = "";
         for (int i = 0; i < tags.size(); i++) {
             result += tags.get(i);
@@ -218,8 +218,8 @@ public class LibraryService {
         }
     }
 
-    public String getCourseString(LibraryObject obj) {
-        ArrayList<String> courses = courseDao.getCourses(obj.getId());
+    public String getCourseString(int id) {
+        ArrayList<String> courses = courseDao.getCourses(id);
         String result = "";
         for (int i = 0; i < courses.size(); i++) {
             result += courses.get(i);

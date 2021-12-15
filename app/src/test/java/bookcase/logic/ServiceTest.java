@@ -36,6 +36,20 @@ public class ServiceTest {
     }
     
     @Test
+    public void testGetAllObjectWithId() {
+    	service.createLibraryObject("book", "Title", "Author", validISBN, "");
+    	assertEquals(1, service.getAllObjects(1).size());
+    }
+    
+    @Test
+    public void testDeleteEntry() {
+    	service.createLibraryObject("book", "Title", "Author", validISBN, "");
+    	assertEquals(1, service.getAllObjects(1).size());
+    	service.deleteEntry(1);
+    	assertEquals(0, service.getAllObjects(1).size());
+    }
+    
+    @Test
     public void testValidISBNisAdded() {
         service.createLibraryObject("book", "Title", "Author", validISBN, "");
         List<LibraryObject> objs = service.getAllObjects();
@@ -116,7 +130,7 @@ public class ServiceTest {
     
     @Test
     public void testBlogpostCantBeAddedWithoutTitle() {
-        String emptyTitle = service.createLibraryObject("blogpost", "", "Author", "www.google.com", "");
+        String emptyTitle = service.createLibraryObject("blogpost", "", "author", "www.google.com", "");
         assertEquals("Title field can not be empty.", emptyTitle);
     }
     
@@ -126,8 +140,9 @@ public class ServiceTest {
         assertEquals("Website field can not be empty.", emptyWebsite);
     }
     
+    @Test
     public void testPodcastCantBeAddedWithoutTitle() {
-        String emptyTitle = service.createLibraryObject("podcast", "   ", "author", "www.google.com", "");
+        String emptyTitle = service.createLibraryObject("podcast", "", "author", "www.google.com", "");
         assertEquals("Title field can not be empty.", emptyTitle);
     }
     
@@ -154,14 +169,14 @@ public class ServiceTest {
     @Test
     public void testUpdatePodcastCantBeAddedWithoutTitle() {
     	service.createLibraryObject("podcast", "title", "author", "www.google.com", "");
-    	String emptyTitle = service.updateLibraryObject(1, "blogpost", "", "Author", "www.google.com", "");
+    	String emptyTitle = service.updateLibraryObject(1, "podcast", "", "Author", "www.google.com", "");
         assertEquals("Title field can not be empty.", emptyTitle);
     }
     
     @Test
     public void testUpdatePodcastCantBeMadeWithEmptyWebsite() {
     	service.createLibraryObject("podcast", "title", "author", "www.google.com", "");
-    	String emptyWebsite = service.updateLibraryObject(1, "blogpost", "title", "Author", "", "");
+    	String emptyWebsite = service.updateLibraryObject(1, "podcast", "title", "Author", "", "");
         assertEquals("Website field can not be empty.", emptyWebsite);
     }
     
@@ -220,10 +235,32 @@ public class ServiceTest {
     }
     
     @Test
-    public void addingTagWorks() {
+    public void testAddingTagsWorks() {
         service.createLibraryObject("blogpost", "title", "author", "url", "");
         service.addTagsToLatestLibraryObject("tag");
-        assertEquals(1, service.getAllObjects().size());
+        String[] tagString = service.getTagString(1).split(", ");
+        assertEquals(1, tagString.length);
+    }
+    
+    @Test
+    public void testEditingTagsWorks() {
+    	service.createLibraryObject("podcast", "title", "author", "url", "");
+        service.addTagsToLatestLibraryObject("tag");
+        String[] tagString = service.getTagString(1).split(", ");
+        assertEquals(1, tagString.length);
+        String updateTags = "tag1, tag2";
+        service.updateTags(1, updateTags);
+        tagString = service.getTagString(1).split(", ");
+        assertEquals(2, tagString.length);
+    }
+    
+    @Test
+    public void testAddingCoursesWorks() {
+        service.createLibraryObject("blogpost", "title", "author", "url", "");
+        String courses = "TKT2021ABC, TKT2021DEF";
+        service.addCoursesToLatestLibraryObject(courses);
+        String[] courseString = service.getCourseString(1).split(", ");
+        assertEquals(2, courseString.length);
     }
 
     @After

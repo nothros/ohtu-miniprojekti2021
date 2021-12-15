@@ -139,8 +139,8 @@ public class AppUi extends Application {
         		ISBNTF.setText(data.get(0).getISBN());
         	else
         		ISBNTF.setText(data.get(0).getURL());
-        	tagsTF.setText(service.getTagString(data.get(0)));
-        	courseTF.setText(service.getCourseString(data.get(0)));
+        	tagsTF.setText(service.getTagString(data.get(0).getId()));
+        	courseTF.setText(service.getCourseString(data.get(0).getId()));
         	commentTF.setText(data.get(0).getComment());
         }
         grid.add(titleTF, 1, 1);
@@ -272,11 +272,11 @@ public class AppUi extends Application {
         TableColumn<LibraryObject, String> colTags = new TableColumn<>("Tags");
         colTags.setStyle("-fx-alignment: CENTER_LEFT;");
         colTags.setSortable(false);
-        colTags.setCellValueFactory(d -> new SimpleStringProperty(service.getTagString(d.getValue())));
+        colTags.setCellValueFactory(d -> new SimpleStringProperty(service.getTagString(d.getValue().getId())));
         TableColumn<LibraryObject, String> colCourse = new TableColumn<>("Courses");
         colCourse.setStyle("-fx-alignment: CENTER_LEFT;");
         colCourse.setSortable(false);
-        colCourse.setCellValueFactory(d -> new SimpleStringProperty(service.getCourseString(d.getValue())));
+        colCourse.setCellValueFactory(d -> new SimpleStringProperty(service.getCourseString(d.getValue().getId())));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // Add extra column for a show detailed info button
         TableColumn<LibraryObject, Void> colButton = new TableColumn<LibraryObject, Void>("Detais");
@@ -380,8 +380,8 @@ public class AppUi extends Application {
         Text txt11 = new Text(data.get(0).getTitle());
         Text txt22 = new Text(data.get(0).getAuthor());
         Text txt33 = new Text(String.valueOf(data.get(0).getType()));
-        Text txt55 = new Text(service.getTagString(data.get(0)));
-        Text txt66 = new Text(service.getCourseString(data.get(0)));
+        Text txt55 = new Text(service.getTagString(data.get(0).getId()));
+        Text txt66 = new Text(service.getCourseString(data.get(0).getId()));
         TextArea txt77 = new TextArea(data.get(0).getComment());
         txt77.setEditable(false);
         txt77.prefWidthProperty().bind(gPane.widthProperty());
@@ -422,7 +422,7 @@ public class AppUi extends Application {
         });
         remove.setOnAction(e -> {
         	if (data.get(0) != null) {
-        		service.deleteEntry(data.get(0));
+        		service.deleteEntry(data.get(0).getId());
         	}
             mainStage.setScene(buildMainScene());
         });
