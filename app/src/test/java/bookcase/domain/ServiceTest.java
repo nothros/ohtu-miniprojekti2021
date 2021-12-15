@@ -1,17 +1,12 @@
 package bookcase.domain;
 
-import org.junit.Test;
-
-import bookcase.domain.LibraryService;
 import database.LibraryObject;
-import database.LibraryObjectDAO;
-
+import java.sql.SQLException;
+import java.util.List;
+import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class ServiceTest {
 
@@ -32,8 +27,7 @@ public class ServiceTest {
     public void testEmptyDatabaseSize() {
         assertEquals(0, service.getAllObjects().size());
     }
-
-
+    
     @Test
     public void validISBNisAdded() {
         service.createLibraryObject("book", "Title", "Author", validISBN, "");
@@ -74,7 +68,6 @@ public class ServiceTest {
     @Test
     public void testUpdateBookWorks(){
         service.createLibraryObject("book", "Wrong", "Author", "0101010101", "");
-        List<LibraryObject> objs = service.getAllObjects();
         int id = service.getLibId("0101010101");
         String s = service.updateLibraryObject(id, "book", "TITTLE", "Author", "0101010101", "");
         assertEquals("", s);
@@ -83,7 +76,6 @@ public class ServiceTest {
     @Test
     public void testUpdateBlogpost(){
         service.createLibraryObject("blogpost", "Wrong", "Author", "0101010101", "");
-        List<LibraryObject> objs = service.getAllObjects();
         int id = service.getLibId("0101010101");
         String s = service.updateLibraryObject(id, "blogpost", "TITTLE", "Author", "0101010101", "");
         assertEquals("", s);
@@ -92,7 +84,6 @@ public class ServiceTest {
     @Test
     public void testUpdatePodcast(){
         service.createLibraryObject("podcast", "Wrong", "Author", "0101010101", "");
-        List<LibraryObject> objs = service.getAllObjects();
         int id = service.getLibId("0101010101");
         String s = service.updateLibraryObject(id, "podcast", "TITTLE", "Author", "0101010101", "");
         assertEquals("", s);
@@ -115,13 +106,24 @@ public class ServiceTest {
         service.createLibraryObject("blogpost", "title", "author", "url", "");
         assertEquals(1, service.getAllObjects().size());
     }
-
+    
+    @Test
+    public void testBlogpostCantBeAddedWithoutTitle() {
+        String emptyTitle = service.createLibraryObject("blogpost", "", "Author", "www.google.com", "");
+        assertEquals("Title field can not be empty.", emptyTitle);
+    }
+    
     @Test
     public void testBlogpostCantBeMadeWithEmptyWebsite() {
         String emptyWebsite = service.createLibraryObject("blogpost", "title", "author", "", "");
         assertEquals("Website field can not be empty.", emptyWebsite);
     }
-
+    
+    public void testPodpostCantBeAddedWithoutTitle() {
+        String emptyTitle = service.createLibraryObject("podpost", "", "author", "www.google.com", "");
+        assertEquals("Title field can not be empty.", emptyTitle);
+    }
+    
     @Test
     public void testPodcastCantBeMadeWithEmptyWebsite() {
         String emptyWebsite = service.createLibraryObject("podcast", "title", "author", "", "");
