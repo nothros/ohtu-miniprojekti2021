@@ -181,7 +181,7 @@ public class TagDAO {
         return false;
     }
 
-    public boolean deleteFromTagLibrary(int libId){
+    public boolean deleteFromTagLibrary(int libId) {
         String sql = "DELETE FROM TAG_LIBRARY WHERE LIBRARY_ID=?";
         try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
             pstmt.setInt(1, libId);

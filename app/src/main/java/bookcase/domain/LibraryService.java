@@ -55,6 +55,7 @@ public class LibraryService {
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, comment);
         libraryDao.insertLibrary(libObj);
+        System.out.println(libObj.getId()+"LIBD");
         return "";
     }
 
@@ -179,9 +180,9 @@ public class LibraryService {
         }
     }
 
-    public void updateTags(int id, String tags){
+    public void updateTags(int id, String tags) {
         ArrayList<String> tagsByItem = getTagsById(id);
-        for(int i = 0; i < tagsByItem.size(); i++){
+        for (int i = 0; i < tagsByItem.size(); i++) {
             tagDao.deleteFromTagLibrary(id);
         }
         addTagsByLibraryObjectId(id, tags);
@@ -230,8 +231,11 @@ public class LibraryService {
         return result;
     }
 
-    public void tearDown(String db)  throws SQLException{
- 
-            libraryDao.deleteDatabase(db);
+    public int getLibId(String isbn) {
+        return libraryDao.getLibraryId(isbn);
+    }
+
+    public void tearDown(String db) throws SQLException {
+        libraryDao.deleteDatabase(db);
     }
 }
