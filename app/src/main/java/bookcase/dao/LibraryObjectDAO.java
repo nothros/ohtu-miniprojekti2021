@@ -155,7 +155,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     public void deleteEntry(LibraryObject t) {
         String sq1 = "UPDATE LIBRARY SET DELETED = 1 WHERE ID = ?";
-
         try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
             ptmt.setInt(1, t.getId());
             ptmt.execute();

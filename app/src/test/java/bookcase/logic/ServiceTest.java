@@ -22,7 +22,6 @@ public class ServiceTest {
     public void init() throws SQLException {
         testDB = "servicetest.db";
         service = new LibraryService(testDB);
-
     }
 
     @Test
@@ -62,6 +61,12 @@ public class ServiceTest {
     }
 
     @Test
+    public void testBookCantBeAddedWithoutAuthor() {
+        String emptyAuthor = service.createLibraryObject("book", "title", "", "12345678910", "");
+        assertEquals("Author field can not be empty.", emptyAuthor);
+    }
+    
+    @Test
     public void testBookCantBeAddedWithoutISBN() {
         String emptyIsbn = service.createLibraryObject("book", "Title", "Author", "", "");
         assertEquals("ISBN field can not be empty.", emptyIsbn);
@@ -89,12 +94,6 @@ public class ServiceTest {
         int id = service.getLibId("0101010101");
         String s = service.updateLibraryObject(id, "podcast", "TITTLE", "Author", "0101010101", "");
         assertEquals("", s);
-    }
-
-    @Test
-    public void testBookCantBeAddedWithoutAuthor() {
-        String emptyAuthor = service.createLibraryObject("book", "title", "", "12345678910", "");
-        assertEquals("Author field can not be empty.", emptyAuthor);
     }
 
     @Test
@@ -132,8 +131,26 @@ public class ServiceTest {
         assertEquals("Website field can not be empty.", emptyWebsite);
     }
 
+    @Test
+    public void testUpdateBlogpostCantBeAddedWithoutTitle() {
+    	service.createLibraryObject("blogpost", "title", "author", "www.google.com", "");
+    	String emptyTitle = service.updateLibraryObject(1, "blogpost", "", "Author", "www.google.com", "");
+        assertEquals("Title field can not be empty.", emptyTitle);
+    }
+    
+    @Test
+    public void testUpdateBlogpostCantBeMadeWithEmptyWebsite() {
+        String emptyWebsite = service.createLibraryObject("blogpost", "title", "author", "", "");
+        assertEquals("Website field can not be empty.", emptyWebsite);
+    }
+    
     @Test 
-    public void typeIsWrongAndItIsNotACase() {
+    public void testCreateLibraryObjectTypeIsWrong() {
+        assertTrue(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "").equals(""));
+    }
+    
+    @Test 
+    public void testUpdateLibraryObjectTypeIsWrong() {
         assertTrue(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "").equals(""));
     }
     
