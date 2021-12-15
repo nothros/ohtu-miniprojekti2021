@@ -126,8 +126,8 @@ public class ServiceTest {
         assertEquals("Website field can not be empty.", emptyWebsite);
     }
     
-    public void testPodpostCantBeAddedWithoutTitle() {
-        String emptyTitle = service.createLibraryObject("podpost", "", "author", "www.google.com", "");
+    public void testPodcastCantBeAddedWithoutTitle() {
+        String emptyTitle = service.createLibraryObject("podcast", "   ", "author", "www.google.com", "");
         assertEquals("Title field can not be empty.", emptyTitle);
     }
     
@@ -215,7 +215,8 @@ public class ServiceTest {
     
     @Test 
     public void testUpdateLibraryObjectTypeIsWrong() {
-        assertTrue(service.createLibraryObject("wrong", "A valid ISBN2", "Author2", "123456789102", "").equals(""));
+    	service.createLibraryObject("book", "A valid ISBN2", "Author2", "123456789102", "");
+        assertTrue(service.updateLibraryObject(1, "wrong", "A valid ISBN2", "Author2", "123456789102", "").equals(""));
     }
     
     @Test

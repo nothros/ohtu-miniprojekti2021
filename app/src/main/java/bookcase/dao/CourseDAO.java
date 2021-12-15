@@ -37,7 +37,8 @@ public class CourseDAO {
             tryCreateTable(stmt, sq1, "COURSES");
             tryCreateTable(stmt, sq2, "COURSE_LIBRARY");
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.out.println(e.getMessage());
+            System.out.println("Tables already exists.");
         }
     }
 
