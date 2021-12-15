@@ -74,28 +74,6 @@ public class TagDAO {
         return list;
     }
 
-     /**
-     * Returns a list of tags for a specific library object
-     *
-     * @param libraryObjectId id of object in library table, get this from
-     * libraryObjectDao
-     */
-    public ArrayList<String> getTagAndId(int libraryObjectId) {
-        ArrayList<String> list = new ArrayList<String>();
-        String sq1 = "SELECT b.id, b.NAME FROM TAG_LIBRARY a, TAGS b WHERE b.ID = a.TAG_ID AND a.LIBRARY_ID = ?";
-        try (PreparedStatement pstmt = getConnection().prepareStatement(sq1)) {
-            pstmt.setInt(1, libraryObjectId);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getString("NAME"));
-
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return list;
-    }
-
     /**
      * Returns a list of all tags connected to any library object.
      */

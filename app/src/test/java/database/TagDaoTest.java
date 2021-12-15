@@ -42,6 +42,14 @@ public class TagDaoTest {
     }
 
     @Test
+    public void testRemoveTag() {
+        dao.addTag(10, "Tag2");
+        dao.deleteFromTagLibrary(10);
+        assertEquals(0, dao.getTags(2).size());
+    }
+
+
+    @Test
     public void testGetTag() {
         dao.addTag(1, "Tag");
         assertEquals("Tag", dao.getTags(1).get(0));
