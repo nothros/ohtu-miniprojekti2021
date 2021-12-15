@@ -217,6 +217,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      */
     @Override
     public void delete(LibraryObject t) {
+    	deleteEntry(t.getId());
+    	/*
         String sq1 = "DELETE FROM LIBRARY WHERE ID = ?";
         try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
             ptmt.setInt(1, t.getId());
@@ -224,7 +226,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        }
+        }*/
     }
 
     /*
