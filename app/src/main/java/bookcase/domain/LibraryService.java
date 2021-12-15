@@ -55,7 +55,6 @@ public class LibraryService {
     	url = urls[urls.length - 1];
         LibraryObject libObj = new LibraryObject("blogpost", title, author, null, url, comment);
         libraryDao.insertLibrary(libObj);
-        System.out.println(libObj.getId()+"LIBD");
         return "";
     }
 
