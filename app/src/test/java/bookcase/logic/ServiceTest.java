@@ -13,6 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+import java.util.List;
+
 public class ServiceTest {
 
     private LibraryService service;
@@ -33,26 +36,26 @@ public class ServiceTest {
     }
     
     @Test
-    public void validISBNisAdded() {
+    public void testValidISBNisAdded() {
         service.createLibraryObject("book", "Title", "Author", validISBN, "");
         List<LibraryObject> objs = service.getAllObjects();
         assertEquals("12345678910", objs.get(0).getISBN());
     }
 
     @Test
-    public void tooShortISBNisNotAdded() {
+    public void testTooShortISBNisNotAdded() {
         service.createLibraryObject("book", "Title", "Author", tooShortISBN, "");
         assertEquals(0, service.getAllObjects().size());
     }
 
     @Test
-    public void tooLongISBNisNotAdded() {
+    public void testTooLongISBNisNotAdded() {
         service.createLibraryObject("book", "Title", "Author", tooLongISBN, "");
         assertEquals(0, service.getAllObjects().size());
     }
 
     @Test
-    public void duplicateISBNisRejected() {
+    public void testDuplicateISBNisRejected() {
         service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", "");
         assertTrue(service.createLibraryObject("book", "This is a duplicate", "Author", "12345678910", "").equals("A unique ISBN value must be given."));
     }
@@ -143,8 +146,66 @@ public class ServiceTest {
     
     @Test
     public void testUpdateBlogpostCantBeMadeWithEmptyWebsite() {
-        String emptyWebsite = service.createLibraryObject("blogpost", "title", "author", "", "");
+    	service.createLibraryObject("blogpost", "title", "author", "www.google.com", "");
+    	String emptyWebsite = service.updateLibraryObject(1, "blogpost", "title", "Author", "", "");
         assertEquals("Website field can not be empty.", emptyWebsite);
+    }
+    
+    @Test
+    public void testUpdatePodcastCantBeAddedWithoutTitle() {
+    	service.createLibraryObject("podcast", "title", "author", "www.google.com", "");
+    	String emptyTitle = service.updateLibraryObject(1, "blogpost", "", "Author", "www.google.com", "");
+        assertEquals("Title field can not be empty.", emptyTitle);
+    }
+    
+    @Test
+    public void testUpdatePodcastCantBeMadeWithEmptyWebsite() {
+    	service.createLibraryObject("podcast", "title", "author", "www.google.com", "");
+    	String emptyWebsite = service.updateLibraryObject(1, "blogpost", "title", "Author", "", "");
+        assertEquals("Website field can not be empty.", emptyWebsite);
+    }
+    
+    @Test
+    public void testUpdatedBookCantBeAddedWithoutTitle() {
+    	service.createLibraryObject("book", "Title", "Author", "0101010101", "");
+        String emptyTitle = service.updateLibraryObject(1, "book", "", "Author", "12345678910", "");
+        assertEquals("Title field can not be empty.", emptyTitle);
+    }
+
+    @Test
+    public void testUpdateBookCantBeAddedWithoutAuthor() {
+    	service.createLibraryObject("book", "Title", "Author", "0101010101", "");
+        String emptyAuthor = service.updateLibraryObject(1, "book", "title", "", "12345678910", "");
+        assertEquals("Author field can not be empty.", emptyAuthor);
+    }
+    
+    @Test
+    public void testUpdateBookCantBeAddedWithoutISBN() {
+    	service.createLibraryObject("book", "Title", "Author", "0101010101", "");
+        String emptyIsbn = service.updateLibraryObject(1, "book", "Title", "Author", "", "");
+        assertEquals("ISBN field can not be empty.", emptyIsbn);
+    }
+    
+    @Test
+    public void testUpdateTooShortISBNisNotAdded() {
+    	service.createLibraryObject("book", "Title", "Author", "0101010101", "");
+    	String shortISBN = service.updateLibraryObject(1, "book", "Title", "Author", tooShortISBN, "");
+        assertEquals("ISBN must be a 10-13 digit numeric value.", shortISBN);
+    }
+
+    @Test
+    public void testUpdatetooLongISBNisNotAdded() {
+    	service.createLibraryObject("book", "Title", "Author", "0101010101", "");
+    	String longISBN = service.updateLibraryObject(1, "book", "Title", "Author", tooLongISBN, "");
+        assertEquals("ISBN must be a 10-13 digit numeric value.", longISBN);
+    }
+
+    @Test
+    public void testUpdateduplicateISBNisRejected() {
+    	service.createLibraryObject("book", "A valid ISBN", "Author", "12345678910", "");
+        service.createLibraryObject("book", "A valid ISBN", "Author", "11111111111", "");
+        assertTrue(service.updateLibraryObject(2, "book", "This is a duplicate", "Author", "12345678910", "").equals("Another book already has that ISBN."));
+        assertTrue(service.updateLibraryObject(2, "book", "This is same ISBN and valid", "Author", "11111111111", "").equals(""));
     }
     
     @Test 
