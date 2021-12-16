@@ -1,0 +1,11 @@
+codecov:
+  notify:
+    require_ci_to_pass: yes
+
+coverage:
+  precision: 2  # 2 = xx.xx%, 0 = xx%
+  round: nearest # how coverage is rounded: down/up/nearest
+  range: 10...90 # custom range of coverage colors from red -> yellow -> green
+  
+ignore:
+  ohtu-miniprojekti2021/app/src/main/java/bookcase/domain/LibraryObject.java
