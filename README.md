@@ -52,47 +52,57 @@ Mukana:
 ```
 .
 ├── app
-│   ├── bookcase.db
 │   ├── build.gradle
-│   └── src
-│       ├── main
-│       │   └── java
-│       │       ├── bookcase
-│       │       │   ├── App.java
-│       │       │   ├── domain
-│       │       │   │   └── LibraryService.java
-│       │       │   └── ui
-│       │       │       └── AppUi.java
-│       │       └── database
-│       │           ├── CourseObject.java
-│       │           ├── DAO.java
-│       │           ├── LibraryObjectDAO.java
-│       │           └── LibraryObject.java
-│       └── test
-│           ├── java
-│           │   ├── bookcase
-│           │   │   ├── AppTest.java
-│           │   │   ├── domain
-│           │   │   │   └── ServiceTest.java
-│           │   │   ├── Stepdefs.java.txt
-│           │   │   └── ui
-│           │   │       └── AppUiTest.java
-│           │   └── database
-│           │       └── LibraryObjectDaoTest.java
-│           └── resources
-│               ├── bookcase
-│               │   └── startup.feature
-│               └── cucumber.properties
+│   ├── src
+│   │   ├── main
+│   │   │   └── java
+│   │   │       └── bookcase
+│   │   │           ├── App.java
+│   │   │           ├── dao
+│   │   │           │   ├── CourseDAO.java
+│   │   │           │   ├── DAO.java
+│   │   │           │   ├── LibraryObjectDAO.java
+│   │   │           │   └── TagDAO.java
+│   │   │           ├── domain
+│   │   │           │   └── LibraryObject.java
+│   │   │           ├── logic
+│   │   │           │   └── LibraryService.java
+│   │   │           └── ui
+│   │   │               └── AppUi.java
+│   │   └── test
+│   │       ├── java
+│   │       │   └── bookcase
+│   │       │       ├── dao
+│   │       │       │   ├── CourseDaoTest.java
+│   │       │       │   ├── LibraryObjectDaoTest.java
+│   │       │       │   └── TagDaoTest.java
+│   │       │       ├── logic
+│   │       │       │   └── ServiceTest.java
+│   │       │       └── ui
+│   │       │           ├── RunCucumberTest.java
+│   │       │           ├── StepDefinitions.java
+│   │       │           └── TestFXBase.java
+│   │       └── resources
+│   │           ├── bookcase
+│   │           │   ├── addblogpost.feature
+│   │           │   ├── addbook.feature
+│   │           │   └── addpodcast.feature
+│   │           └── cucumber.properties
+│   └── test.db
+├── codecov.yml
 ├── config
 │   └── checkstyle
 │       ├── checkstyle.xml
 │       └── suppressions.xml
+├── documents
+│   └── User Manual.md
 ├── gradle
 │   └── wrapper
 │       ├── gradle-wrapper.jar
 │       └── gradle-wrapper.properties
 ├── gradlew
 ├── gradlew.bat
+├── LICENSE
 ├── README.md
-└── settings.gradle
-``
+└── settings.gra
+```
