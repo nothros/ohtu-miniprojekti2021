@@ -37,8 +37,8 @@ public class CourseDAO {
             tryCreateTable(stmt, sq1, "COURSES");
             tryCreateTable(stmt, sq2, "COURSE_LIBRARY");
         } catch (SQLException e) {
-        	System.out.println(e.getMessage());
-            System.out.println("Tables already exists.");
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: createNewTable().");
         }
     }
 
@@ -47,7 +47,8 @@ public class CourseDAO {
             stmt.execute(sq1);
             //System.out.println("Table " + name + " created.");
         } catch (SQLException e) {
-            System.out.println("Failed to create " + name + " table.");
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: tryCreateTable().");
         }
     }
 
@@ -67,7 +68,8 @@ public class CourseDAO {
                 list.add(rs.getString("NAME"));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: getCourses().");
         }
         return list;
     }
@@ -85,7 +87,8 @@ public class CourseDAO {
                 list.add(rs.getString("NAME"));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: getAllCourses().");
         }
         return list;
     }
@@ -112,16 +115,18 @@ public class CourseDAO {
     }
 
     private boolean connectCourseToLibrary(int libraryId, int courseId) {
+    	boolean t = false;
         String sq1 = "INSERT INTO COURSE_LIBRARY(LIBRARY_ID, COURSE_ID) VALUES(?,?)";
         try (PreparedStatement pstmt = getConnection().prepareStatement(sq1)) {
             pstmt.setInt(1, libraryId);
             pstmt.setInt(2, courseId);
             pstmt.executeUpdate();
+            t = true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            //e.printStackTrace();
+            System.out.println("Error: connectCourseToLibrary().");
         }
-        return true;
+        return t;
     }
 
     /* Returns id of course, -1 if not found*/

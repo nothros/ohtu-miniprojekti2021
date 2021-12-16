@@ -91,6 +91,36 @@ public class CourseDaoTest {
         dao.addCourse(ld.getLibraryId("1111222233"), "kurssi");
         assertEquals(1, dao.getCourses(ld.getLibraryId("1111222233")).size());
     }
+    
+    @Test
+    public void testFailCreateNewTable() {
+    	try {
+    		dao.deleteDatabase(testDB);
+    		dao.createNewTable();
+    	} catch(Exception e) {
+    		assertTrue(e.getMessage().contains("Error: createNewTable()."));
+    	}
+    }
+    
+    @Test
+    public void testFailGetCourses() {
+    	try {
+    		dao.deleteDatabase(testDB);
+    		dao.getCourses(1);
+    	} catch(Exception e) {
+    		assertTrue(e.getMessage().contains("Error: getCourses()."));
+    	}
+    }
+    
+    @Test
+    public void testFailGetAllCourses() {
+    	try {
+    		dao.deleteDatabase(testDB);
+    		dao.getAllCourses();
+    	} catch(Exception e) {
+    		assertTrue(e.getMessage().contains("Error: getAllCourses()."));
+    	}
+    }
 
     @After
     public void tearDown() throws SQLException {

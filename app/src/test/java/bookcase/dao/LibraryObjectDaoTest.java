@@ -1,13 +1,9 @@
 package bookcase.dao;
 
-import org.junit.Test;
-
 import bookcase.domain.LibraryObject;
-import bookcase.dao.LibraryObjectDAO;
-
 import org.junit.After;
 import org.junit.Before;
-
+import org.junit.Test;
 import static org.junit.Assert.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
