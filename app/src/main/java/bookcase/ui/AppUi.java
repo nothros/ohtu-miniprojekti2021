@@ -4,11 +4,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.sql.rowset.serial.SerialArray;
-import com.google.common.util.concurrent.Service;
 
 import bookcase.logic.LibraryService;
 import bookcase.dao.DAO;
