@@ -187,6 +187,14 @@ public class LibraryService {
         addTagsByLibraryObjectId(id, tags);
     }
 
+    public void updateCourses(int id, String courses) {
+        ArrayList<String> coursesById = getTagsById(id);
+        for (int i = 0; i < coursesById.size(); i++) {
+            courseDao.deleteFromCourseLibrary(id);
+        }
+        addCoursesByLibraryObjectId(id, courses);
+    }
+
     public void addTagsByLibraryObjectId(int id, String tags) {
         String[] taglist = tags.split(",");
         for (String s : taglist) {
@@ -194,8 +202,19 @@ public class LibraryService {
         }
     }
 
+    public void addCoursesByLibraryObjectId(int id, String courses) {
+        String[] courseList = courses.split(",");
+        for (String s : courseList) {
+            courseDao.addCourse(id, s.trim());
+        }
+    }
+
     public ArrayList<String> getTagsById(int id) {
         return tagDao.getTags(id);
+    }
+
+    public ArrayList<String> getCoursesById(int id) {
+        return courseDao.getCourses(id);
     }
 
     public String getTagString(int id) {

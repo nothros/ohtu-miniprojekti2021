@@ -175,6 +175,7 @@ public class AppUi extends Application {
                 commentTF.clear();
             } else if (id !=0 && (errMsg = service.updateLibraryObject(id, typeValue, title, author, isbn_website, comment)).equals("")) {
                 service.updateTags(id, tags);
+                service.updateCourses(id, course);
                 error.setText(typeValue + " updated");
                 error.setTextFill(Color.GREEN);
                 error.setVisible(true);

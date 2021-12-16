@@ -8,6 +8,7 @@ coverage:
   range: 10...90
   
 ignore:
-  app/src/main/java/bookcase/App.java
-  app/src/main/java/bookcase/dao/DAO.java
-  app/src/main/java/bookcase/domain/LibraryObject.java
+  - "app/src/main/java/bookcase/App.java"
+  - "app/src/main/java/bookcase/dao/DAO.java"
+  - "app/src/main/java/bookcase/domain/LibraryObject.java"
+  

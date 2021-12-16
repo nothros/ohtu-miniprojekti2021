@@ -160,6 +160,20 @@ public class CourseDAO {
         return false;
     }
 
+    public boolean deleteFromCourseLibrary(int libId) {
+        String sql = "DELETE FROM COURSE_LIBRARY WHERE LIBRARY_ID=?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, libId);
+            pstmt.executeUpdate();
+            //System.out.println("insertTag: TAG ADDED");
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     /*
      *  Remove databasefile
      */
