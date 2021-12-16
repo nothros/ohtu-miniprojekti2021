@@ -7,10 +7,10 @@ import bookcase.dao.LibraryObjectDAO;
 
 import org.junit.After;
 import org.junit.Before;
+
 import static org.junit.Assert.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -36,7 +36,99 @@ public class LibraryObjectDaoTest {
     public void testEmptyDatabaseSize() {
         assertEquals(0, dao.getAll().size());
     }
+    
+    @Test
+    public void testFailCreateNewTable() {
+    	try {
+    		dao.deleteDatabase(testDB);
+    		dao.createNewTable();
+    	} catch(Exception e) {
+    		assertTrue(e.getMessage().contains("Error: createNewTable()."));
+    	}
+    }
+    
+    @Test
+    public void testFailGetCurrLibraryId() {
+        try {
+        	dao.deleteDatabase(testDB);
+            dao.getCurrLibraryId();
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: getCurrLibraryId()."));
+        }
+    }
+    
+    @Test
+    public void testFailGetLibraryId() {
+        try {
+        	dao.deleteDatabase(testDB);
+        	dao.getLibraryId("1111111111");
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: getLibraryId()."));
+        }
+    }
+    
+    @Test
+    public void testFailInsertLibrary() {
+        try {
+        	dao.deleteDatabase(testDB);
+        	LibraryObject book = new LibraryObject("book", "Weapons of Math Destruction", "Cathy O'Neil", "12345678910", null, null);
+            dao.insertLibrary(book);
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: insertLibrary()."));
+        }
+    }
+    
+    @Test
+    public void testFailUpdateLibrary() {
+        try {
+        	dao.deleteDatabase(testDB);
+        	LibraryObject book = new LibraryObject("book", "Weapons of Math Destruction", "Cathy O'Neil", "12345678910", null, null);
+            dao.updateLibrary(book);
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: updateLibrary()."));
+        }
+    }
+    
+    @Test
+    public void testFailIsUnique() {
+        try {
+        	dao.deleteDatabase(testDB);
+            dao.isUnique("1111111111");
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: isUnique()."));
+        }
+    }
+    
+    @Test
+    public void testFailDeleteEntry() {
+        try {
+        	dao.deleteDatabase(testDB);
+            dao.deleteEntry(1);
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: deleteEntry()."));
+        }
+    }
+    
+    @Test
+    public void testFailGetAll() {
+        try {
+        	dao.deleteDatabase(testDB);
+            dao.getAll();
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: getAll()."));
+        }
+    }
 
+    @Test
+    public void testFailGetllAllWithId() {
+        try {
+        	dao.deleteDatabase(testDB);
+            dao.getAll(1);
+        } catch(Exception e) {
+            assertTrue(e.getMessage().contains("Error: getAll()."));
+        }
+    }
+    
     @Test
     public void testDatabaseInsertion() {
         LibraryObject book1 = new LibraryObject("book", "Weapons of Math Destruction", "Cathy O'Neil", "12345678910", null, null);

@@ -32,10 +32,9 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
         try (Statement stmt = conn.createStatement()) {
         	stmt.execute(sq1);
         } catch (SQLException e) {
-            e.printStackTrace();
+        	//System.out.println(e.getMessage());
+        	System.out.println("Error: createNewTable()");
         }
-        
-
     }
 
     /*
@@ -49,8 +48,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             rs.next();
             count = rs.getInt(1);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: getCurrLibraryId().");
         }
         return count;
     }
@@ -68,8 +67,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             	id = rs.getInt("ID");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: getLibraryId().");
         }
         return id;
     }
@@ -78,6 +77,7 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
      *  Insert entries into table LIBRARY.
      */
     public boolean insertLibrary(LibraryObject libObj) {
+    	boolean t = false;
         String sq1 = "INSERT INTO LIBRARY(TYPE, TITLE, AUTHOR, ISBN, URL, COMMENT, DELETED) VALUES(?,?,?,?,?,?,?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sq1)) {
             pstmt.setString(1, libObj.getType());
@@ -88,17 +88,19 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(6, libObj.getComment());            
             pstmt.setInt(7, 0);
             pstmt.executeUpdate();
+            t = true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: insertLibrary().");
         }
-        return true;
+        return t;
     }
     
     /*
      *  Update table LIBRARY entries on edit.
      */
     public boolean updateLibrary(LibraryObject libObj) {
+    	boolean t = false;
     	String sq1 = "UPDATE LIBRARY SET TITLE=?, AUTHOR=?, ISBN=?, URL=?, COMMENT=? WHERE ID=?";
     	try (PreparedStatement pstmt = conn.prepareStatement(sq1)) {
             pstmt.setString(1, libObj.getTitle());
@@ -108,11 +110,12 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             pstmt.setString(5, libObj.getComment());   
             pstmt.setInt(6, libObj.getId());
             pstmt.executeUpdate();
+            t = true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        	//System.out.println(e.getMessage());
+            System.out.println("Error: updateLibrary().");
         }
-        return true;
+        return t;
     	
     }
 
@@ -145,7 +148,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 t = true;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: isUnique().");
         }
         return t;
     }
@@ -159,7 +163,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
             ptmt.setInt(1, id);
             ptmt.execute();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: deleteEntry().");
         }
     }
 
@@ -178,7 +183,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 list.add(libObj);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: getAll().");
         }
         return list;
     }
@@ -197,7 +203,8 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
                 list.add(libObj);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            System.out.println("Error: getAll().");
         }
         return list;
     }
@@ -218,15 +225,6 @@ public class LibraryObjectDAO implements DAO<LibraryObject> {
     @Override
     public void delete(LibraryObject t) {
     	deleteEntry(t.getId());
-    	/*
-        String sq1 = "DELETE FROM LIBRARY WHERE ID = ?";
-        try (PreparedStatement ptmt = conn.prepareStatement(sq1)) {
-            ptmt.setInt(1, t.getId());
-            ptmt.execute();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }*/
     }
 
     /*
