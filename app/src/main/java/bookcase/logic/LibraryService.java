@@ -171,12 +171,14 @@ public class LibraryService {
     }
 
     public void addTagsToLatestLibraryObject(String tags) {
-        String[] taglist = tags.split(",");
-        int latestId = libraryDao.getCurrLibraryId();
-
-        for (String s : taglist) {
-            tagDao.addTag(latestId, s.trim());
-        }
+    	if (!tags.trim().equals("")) {
+	        String[] taglist = tags.split(",");
+	        int latestId = libraryDao.getCurrLibraryId();
+	
+	        for (String s : taglist) {
+	            tagDao.addTag(latestId, s.trim());
+	        }
+    	}
     }
 
     public void updateTags(int id, String tags) {
@@ -184,7 +186,8 @@ public class LibraryService {
         for (int i = 0; i < tagsByItem.size(); i++) {
             tagDao.deleteFromTagLibrary(id);
         }
-        addTagsByLibraryObjectId(id, tags);
+        if (!tags.trim().equals(""))
+        	addTagsByLibraryObjectId(id, tags);
     }
 
     public void updateCourses(int id, String courses) {
@@ -192,7 +195,8 @@ public class LibraryService {
         for (int i = 0; i < coursesById.size(); i++) {
             courseDao.deleteFromCourseLibrary(id);
         }
-        addCoursesByLibraryObjectId(id, courses);
+        if (!courses.trim().equals(""))
+        	addCoursesByLibraryObjectId(id, courses);
     }
 
     public void addTagsByLibraryObjectId(int id, String tags) {
@@ -230,11 +234,13 @@ public class LibraryService {
     }
     
     public void addCoursesToLatestLibraryObject(String courses) {
-        String[] courselist = courses.split(",");
-        int latestId = libraryDao.getCurrLibraryId();
-        for (String s : courselist) {
-            courseDao.addCourse(latestId, s.trim());
-        }
+    	if (!courses.trim().equals("")) {
+	        String[] courselist = courses.split(",");
+	        int latestId = libraryDao.getCurrLibraryId();
+	        for (String s : courselist) {
+	            courseDao.addCourse(latestId, s.trim());
+	        }
+    	}
     }
 
     public String getCourseString(int id) {
