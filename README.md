@@ -32,6 +32,9 @@ Windows: ``` $gradlew.bat run ```
 
 [Backlog](https://docs.google.com/spreadsheets/d/1Mqu61MkBKXb47hqxVo3GOnbK3Os7-lqfA4JLydHTWgk/edit?usp=sharing)
 
+## Loppuraportti
+
+[Loppuraportti](https://github.com/nothros/ohtu-miniprojekti2021/blob/main/documents/Ohtu2021-loppuraportti-kurssikirjahylly.pdf)
 ## User Manual
 
 [User Manual](https://github.com/nothros/ohtu-miniprojekti2021/blob/main/documents/User%20Manual.md)
