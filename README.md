@@ -1,9 +1,13 @@
-# ohtu-miniprojekti2021 
+# ohtu-miniprojekti2021
+
 
 ![workflow](https://github.com/nothros/ohtu-miniprojekti2021/actions/workflows/main.yml/badge.svg)
  [![codecov](https://codecov.io/gh/nothros/ohtu-miniprojekti2021/branch/main/graph/badge.svg?token=T5B64DEFPH)](https://codecov.io/gh/nothros/ohtu-miniprojekti2021)
 
-## Käyttö
+
+Tämä on Helsingin Yliopiston ohjelmistotuotanto-kurssin miniprojekti. Sovellukseen on mahdollista tallentaa lukuvinkkejä (Kirja, Blogi tai Podcast) ja viiteitä käyttäjän syöttämiin kursseihin sekä erilaisia omia tageja. Sovellus käyttää SQLite-tietokantaa. Graafinen käyttöliittymä on toteutettu JavaFX:llä.
+
+## Käyttöohjeet
 
 Linux: ```$gradle run``` tai ``` ./gradlew run``` 
 
@@ -11,15 +15,13 @@ Windows: ``` $gradlew.bat run ```
 
 **JAR-tiedoston luonti** ``` ./gradlew shadowJar``` 
 
-## Testaus 
-
 **Testit** ``` $gradle test``` tai ``` ./gradlew test```
 
 **Checkstyle** ``` $gradle checkstyleMain``` tai ``` ./gradlew checkstyleMain```
 
 **jacoco** ``` $gradle jacocoTestReport``` tai ``` ./gradlew jacocoTestReport```
 
-
+# Dokumentaatio
 ## Definition of done
 
 - Automaattisessa yksikkötestauksessa edellytämme 70% rivi- ja haaraumakattavuutta.
@@ -39,9 +41,8 @@ Windows: ``` $gradlew.bat run ```
 
 [User Manual](https://github.com/nothros/ohtu-miniprojekti2021/blob/main/documents/User%20Manual.md)
 
-# Gradle
+# Riippuvuudet
 
-## Riippuvuuksia
 Riippuvuudet lisätään ```build.gradle```-tiedostoon. [Lisätietoa](https://docs.gradle.org/current/userguide/dependency_management_for_java_projects.html).
 
 Mukana:
