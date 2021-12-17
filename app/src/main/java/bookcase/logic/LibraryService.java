@@ -186,8 +186,9 @@ public class LibraryService {
         for (int i = 0; i < tagsByItem.size(); i++) {
             tagDao.deleteFromTagLibrary(id);
         }
-        if (!tags.trim().equals(""))
+        if (!tags.trim().equals("")) {
         	addTagsByLibraryObjectId(id, tags);
+        }
     }
 
     public void updateCourses(int id, String courses) {
@@ -195,8 +196,9 @@ public class LibraryService {
         for (int i = 0; i < coursesById.size(); i++) {
             courseDao.deleteFromCourseLibrary(id);
         }
-        if (!courses.trim().equals(""))
+        if (!courses.trim().equals("")) {
         	addCoursesByLibraryObjectId(id, courses);
+        }
     }
 
     public void addTagsByLibraryObjectId(int id, String tags) {
