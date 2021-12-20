@@ -28,7 +28,7 @@ Windows: ``` $gradlew.bat run ```
 - Testien tulee olla relevantteja ja selkeästi luettavia. Niiden pitää mennä läpi lokaalisti ja GitHub Actionissa.
 - Ylläpidämme koodin luettavuutta Checkstyle:n avulla. 
 - Luokka- ja metodijaon tulee olla järkevä.
-- Ohjelma ei hajoa sitä käytettäessä
+- Ohjelma ei hajoa sitä käytettäessä.
 
 ## Backlog
 
